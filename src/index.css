@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Cal Sans";
+  src: url("/public/cal-sans/fonts/webfonts/CalSans-SemiBold.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/gilroy/Gilroy-Regular.ttf") format("truetype");
+}
