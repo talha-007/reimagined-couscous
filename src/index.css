@@ -13,3 +13,7 @@
   font-family: "Gilroy";
   src: url("/gilroy/Gilroy-Regular.ttf") format("truetype");
 }
+
+body {
+  background-color: black;
+}

@@ -26,7 +26,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed w-full bg-black bg-opacity-40 shadow-md z-50 py-4">
+    <nav className="fixed w-full bg-black bg-opacity-40 shadow-md z-50 py-4 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
@@ -145,7 +145,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
       <div
-        className="absolute bottom-0 left-0 right-0 h-[3px]"
+        className="absolute bottom-0 left-0 right-0 h-[1px]"
         style={{
           background:
             "linear-gradient(to right, transparent 0%, #FFE395 50%, transparent 100%)",

@@ -10,8 +10,9 @@ const CustomButton = ({ name }) => {
           "linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)",
         backgroundSize: "200% 100%",
         backgroundPosition: "center",
+        cursor: "pointer",
       }}
-      whileHover={{ backgroundPosition: "left", scale: 1.1 }}
+      whileHover={{ backgroundPosition: "left" }}
       whileTap={{ scale: 0.9 }}
     >
       <span
