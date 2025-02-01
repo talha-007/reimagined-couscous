@@ -38,7 +38,7 @@ const PixelGrid = () => {
           >
             Your pixel grid
           </h1>
-          <p className="text-white font-[Montserrat]">
+          <p className="text-white font-[Montserrat] mt-[.5rem]">
             Where you claim your space and resides, amplify and share your
             vision
           </p>
@@ -50,6 +50,7 @@ const PixelGrid = () => {
             backgroundRepeat: "no-repeat",
             backgroundSize: "contain",
             backgroundPosition: "center",
+            marginTop: "2rem",
           }}
         />
       </div>
