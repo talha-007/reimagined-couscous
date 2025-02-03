@@ -79,7 +79,7 @@ function App() {
         {/* Main Sections */}
         <Navbar />
         {/* Sections with animations triggered on scroll & navbar clicks */}
-        <AnimatedSection id="hero">
+        <AnimatedSection id="home">
           <Hero />
         </AnimatedSection>
 

@@ -35,14 +35,14 @@ const Navbar = () => {
           </a>
           {/* Desktop Nav Items */}
           <div className="hidden md:flex md:items-center md:space-x-6">
-            {["Home", "How It Works", "Features", "FAQ", "Contact Us"].map(
+            {["Home", "How It Works", "Features", "Pricing"].map(
               (item, index) => {
                 const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
                 return (
                   <motion.a
                     key={index}
                     href={`#${id}`} // Scroll to section
-                    className={`relative ${
+                    className={`relative font-[Montserrat] text-[16px] ${
                       activeIndex === item ? "text-[#FFE395]" : "text-white"
                     }`}
                     whileHover={{ scale: 1.1, color: "#FFE395" }}
@@ -119,22 +119,26 @@ const Navbar = () => {
             onMouseMove={handleMouseMove} // Track cursor movement
           >
             {["Home", "How It Works", "Features", "Pricing"].map(
-              (item, index) => (
-                <motion.a
-                  key={index}
-                  style={{ fontFamily: "Gilroy" }}
-                  href={`/${item.toLowerCase()}`}
-                  className={`menu-item text-white text-lg text-center relative ${
-                    hoveredIndex === index
-                      ? "border-[#FFE395] border-2"
-                      : "border-transparent"
-                  }`}
-                  whileHover={{ scale: 1.1, color: "#FFE395" }}
-                  transition={{ type: "spring", stiffness: 200 }}
-                >
-                  {item}
-                </motion.a>
-              )
+              (item, index) => {
+                const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
+                return (
+                  <motion.a
+                    key={index}
+                    href={`#${id}`} // Scroll to section
+                    className={`relative font-[Montserrat] text-[16px] ${
+                      activeIndex === item ? "text-[#FFE395]" : "text-white"
+                    }`}
+                    whileHover={{ scale: 1.1, color: "#FFE395" }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    onClick={() => {
+                      setActiveIndex(item);
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    {item}
+                  </motion.a>
+                );
+              }
             )}
             <CustomButton py="py-2" hidden="hidden" name="Get Started for $1" />
           </motion.div>
