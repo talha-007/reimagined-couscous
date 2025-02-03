@@ -16,7 +16,7 @@ const Hero = () => {
       >
         <div className="max-w-7xl w-full mx-auto">
           <div className="max-w-[700px] flex flex-col gap-[2.5rem] sm:items-start items-center">
-            <div className="flex flex-col text-center sm:text-left gap-[1rem]">
+            <div className="flex flex-col text-center sm:text-left gap-[1rem]  ">
               <h1
                 className="text-[36px] lg:text-[4rem] leading-[1.2] lg:leading-[100px] uppercase"
                 style={{
@@ -30,7 +30,7 @@ const Hero = () => {
               >
                 Make Every Pixel Count
               </h1>
-              <h1 className="font-montserrat font-semibold text-white sm:text-[32px] text-[24px] uppercase">
+              <h1 className="font-montserrat font-semibold text-white sm:text-[32px] text-[26px] uppercase">
                 Amplify Your Influence Today
               </h1>
             </div>

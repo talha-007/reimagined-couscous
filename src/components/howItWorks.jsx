@@ -38,7 +38,7 @@ const HowItWorks = () => {
             <div className="flex justify-center items-center bg-gradient-to-b from-[rgba(254,246,192,0.15)] to-[rgba(232,200,118,0.53)] rounded-md w-16 h-16">
               <img src={item.icon} alt={item.title} className="w-8 h-8" />
             </div>
-            <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center">
+            <h1 className="text-[24px] font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center max-w-[200px]">
               {item.title}
             </h1>
             <div
