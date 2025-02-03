@@ -3,8 +3,8 @@ import gridMobile from "../assets/grid-m.png";
 
 const PixelGrid = () => {
   return (
-    <>
-      <div className="bg-black text-white lg:py-8 py-4 relative text-center lg:text-[32px] text-[14px] font-[Montserrat]">
+    <div className="relative">
+      <div className="bg-black text-white lg:py-6 py-4 relative text-center lg:text-[32px] md:text-[24px] sm:text-[16px] text-[14px] font-[Montserrat]">
         <div
           className="absolute top-0 left-0 right-0 h-[1px]"
           style={{
@@ -66,7 +66,7 @@ const PixelGrid = () => {
           }}
         />
       </div>
-    </>
+    </div>
   );
 };
 

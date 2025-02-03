@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { HiMinusSmall } from "react-icons/hi2";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqs = [
   {
@@ -77,7 +78,7 @@ const Faq = () => {
             ></div>
             {/* Question Section */}
             <button
-              className="w-full flex justify-between items-center  text-white text-left"
+              className="w-full flex justify-between items-center text-white text-left"
               onClick={() => toggleFaq(index)}
             >
               <span className="font-semibold font-[Montserrat] text-[16px] sm:text-[24px] uppercase">
@@ -90,12 +91,24 @@ const Faq = () => {
               )}
             </button>
 
-            {/* Answer Section (Dropdown) */}
-            {openIndex === index && (
-              <div className="font-[Montserrat] text-[14px] sm:text-[16px] font-[400] text-white uppercase pt-[1rem]">
-                {faq.answer}
-              </div>
-            )}
+            {/* Answer Section (Dropdown) with Animation */}
+            <AnimatePresence>
+              {openIndex === index && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    ease: [0.5, 0, 0.5, 1], // Custom easing for smoother effect
+                  }}
+                  style={{ overflow: "hidden" }} // Ensure no overflow during animation
+                  className="font-[Montserrat] text-[14px] sm:text-[16px] font-[400] text-white uppercase pt-[1rem]"
+                >
+                  {faq.answer}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ))}
       </div>

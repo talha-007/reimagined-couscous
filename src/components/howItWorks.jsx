@@ -41,12 +41,6 @@ const HowItWorks = () => {
             <h1 className="text-[24px] font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center max-w-[200px]">
               {item.title}
             </h1>
-            <div
-              className="absolute bottom-[-100px]  w-[150px] h-[150px] rounded-full bg-[#B48B34] blur-[100px] opacity-50"
-              style={{
-                boxShadow: "0 0 200px 100px rgba(180, 139, 52, 0.6)",
-              }}
-            ></div>
           </div>
         ))}
       </div>

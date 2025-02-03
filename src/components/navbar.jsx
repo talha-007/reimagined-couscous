@@ -35,28 +35,24 @@ const Navbar = () => {
           </a>
           {/* Desktop Nav Items */}
           <div className="hidden md:flex md:items-center md:space-x-6">
-            {["Home", "How It Works", "Features", "Pricing"].map(
-              (item, index) => (
-                <motion.a
-                  key={index}
-                  href={`#${item.toLowerCase()}`}
-                  style={{ fontFamily: "Gilroy" }}
-                  className={`relative ${
-                    activeIndex === item ? "text-[#FFE395]" : "text-white"
-                  }`}
-                  whileHover={{ scale: 1.1, color: "#FFE395" }}
-                  transition={{ type: "spring", stiffness: 200 }}
-                  onClick={() => setActiveIndex(item)} // Set active index on click
-                >
-                  {item}
-                  {console.log(
-                    activeIndex === item ? "text-[#FFE395]" : "text-white"
-                  )}
-                  {activeIndex === item && (
-                    <span className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-[#FFE395] "></span> // Dot under active item
-                  )}
-                </motion.a>
-              )
+            {["Home", "How It Works", "Features", "FAQ", "Contact Us"].map(
+              (item, index) => {
+                const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
+                return (
+                  <motion.a
+                    key={index}
+                    href={`#${id}`} // Scroll to section
+                    className={`relative ${
+                      activeIndex === item ? "text-[#FFE395]" : "text-white"
+                    }`}
+                    whileHover={{ scale: 1.1, color: "#FFE395" }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    onClick={() => setActiveIndex(item)}
+                  >
+                    {item}
+                  </motion.a>
+                );
+              }
             )}
           </div>
 
@@ -64,7 +60,7 @@ const Navbar = () => {
 
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-[#FFE395]"
+            className="md:hidden p-2 text-[#FFE395] z-50"
             whileHover={{ scale: 1.2, rotate: 10, color: "#FFD700" }}
             whileTap={{ scale: 0.9 }}
           >
@@ -107,7 +103,7 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="md:hidden bg-black bg-opacity-40 shadow-lg absolute top-16 left-0 w-full px-4 py-3 flex flex-col"
+            className="md:hidden bg-black bg-opacity-40 shadow-lg absolute top-0 h-screen left-0 w-full px-4 py-3 flex flex-col items-center justify-center"
             variants={{
               hidden: { opacity: 0, y: "-100%" },
               visible: {
