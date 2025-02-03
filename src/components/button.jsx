@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 
-const CustomButton = ({ name }) => {
+const CustomButton = ({ name, hidden, py }) => {
   return (
     <motion.button
-      className="hidden md:block text-black font-bold px-8 py-2 transition-all duration-500 bg-[length:200%] bg-left relative"
+      className={`${hidden} md:block text-black font-bold px-8 ${py} transition-all duration-500 bg-[length:200%] bg-left relative`}
       style={{
         fontFamily: "Cal Sans, sans-serif",
         background:

@@ -1,9 +1,10 @@
 import grid from "../assets/grid.png";
+import gridMobile from "../assets/grid-m.png";
 
 const PixelGrid = () => {
   return (
     <>
-      <div className="bg-black text-white py-8 relative text-center text-2xl font-[Gilroy]">
+      <div className="bg-black text-white lg:py-8 py-4 relative text-center lg:text-[32px] text-[14px] font-[Montserrat]">
         <div
           className="absolute top-0 left-0 right-0 h-[1px]"
           style={{
@@ -21,8 +22,8 @@ const PixelGrid = () => {
           }}
         />
       </div>
-      <div className="max-w-7xl w-full mx-auto my-[5rem]">
-        <div className="text-center ">
+      <div className="max-w-7xl w-full mx-auto px-4 lg:my-[10rem] md:my-[8rem] sm:my-[4rem] my-[2rem]">
+        <div className="text-center">
           <h1
             style={{
               backgroundImage:
@@ -32,20 +33,31 @@ const PixelGrid = () => {
               fontFamily: "Montserrat",
               fontWeight: "900",
               fontSize: "2rem",
-
               textTransform: "uppercase",
             }}
           >
             Your pixel grid
           </h1>
-          <p className="text-white font-[Montserrat] mt-[.5rem]">
+          <p className="text-white font-[Montserrat] mt-[.5rem] text-[24px]">
             Where you claim your space and resides, amplify and share your
             vision
           </p>
         </div>
         <div
+          className="hidden md:block" // Hide mobile image and show grid on larger screens
           style={{
             backgroundImage: `url(${grid})`,
+            height: "100vh",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "contain",
+            backgroundPosition: "center",
+            marginTop: "2rem",
+          }}
+        />
+        <div
+          className="md:hidden" // Show mobile image on smaller screens
+          style={{
+            backgroundImage: `url(${gridMobile})`,
             height: "100vh",
             backgroundRepeat: "no-repeat",
             backgroundSize: "contain",

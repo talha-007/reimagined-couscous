@@ -26,8 +26,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed w-full bg-black bg-opacity-40 shadow-md z-50 py-4 ">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed w-full bg-black bg-opacity-40 shadow-md z-50 py-4 px-4 ">
+      <div className="max-w-7xl mx-auto  ">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <a href="/">
@@ -60,7 +60,7 @@ const Navbar = () => {
             )}
           </div>
 
-          <CustomButton name="Get Started for $1" />
+          <CustomButton py="py-2" hidden="hidden" name="Get Started for $1" />
 
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
@@ -140,7 +140,7 @@ const Navbar = () => {
                 </motion.a>
               )
             )}
-            <CustomButton name="Get Started for $1" />
+            <CustomButton py="py-2" hidden="hidden" name="Get Started for $1" />
           </motion.div>
         )}
       </AnimatePresence>
