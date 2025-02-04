@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"; // Import framer-motion
-import spotlight from "../assets/spotlight.png";
+import mobileBg from "../assets/mobile pattern.png";
 import herobg from "../assets/herobg.png";
 import CustomButton from "./button";
 
@@ -15,7 +15,19 @@ const Hero = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="max-w-7xl w-full mx-auto">
+        {/* Mobile background overlay */}
+        <div
+          className="absolute inset-0 sm:hidden"
+          style={{
+            backgroundImage: `url(${mobileBg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            zIndex: 0,
+          }}
+        ></div>
+
+        <div className="max-w-7xl w-full mx-auto relative z-10">
           <div className="max-w-[700px] flex flex-col gap-[2.5rem] sm:items-start items-center">
             <div className="flex flex-col text-center sm:text-left gap-[1rem]">
               <motion.h1
@@ -28,17 +40,17 @@ const Hero = () => {
                   fontFamily: "Montserrat",
                   fontWeight: "800",
                 }}
-                initial={{ opacity: 0, y: -50 }} // Initial state
-                animate={{ opacity: 1, y: 0 }} // Final state
-                transition={{ duration: 0.8, ease: "easeOut" }} // Animation properties
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 Make Every Pixel Count
               </motion.h1>
               <motion.h1
                 className="font-montserrat font-semibold text-white sm:text-[32px] text-[26px] uppercase"
-                initial={{ opacity: 0, y: -50 }} // Initial state
-                animate={{ opacity: 1, y: 0 }} // Final state
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Animation properties with delay
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
               >
                 Amplify Your Influence Today
               </motion.h1>

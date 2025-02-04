@@ -1,3 +1,4 @@
+import { motion } from "framer-motion"; // Import motion from framer-motion
 import image1 from "../assets/image1.png";
 import image3 from "../assets/globe.png";
 import image2 from "../assets/image2.png";
@@ -39,26 +40,33 @@ const Features = () => {
       textLeft: true,
     },
   ];
+
   return (
     <div className="max-w-7xl w-full mx-auto relative px-4 overflow-hidden">
-      <div className="text-center px-4">
-        <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent  font-[Montserrat] font-extrabold lg:text-[36px] sm:text-[24px] text-[24px] uppercase">
+      <motion.div
+        className="text-center px-4"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false, amount: 0.2 }}
+      >
+        <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent font-[Montserrat] font-extrabold lg:text-[36px] sm:text-[24px] text-[24px] uppercase">
           why million dollar pixel grid
         </h1>
-        <p className="text-white  font-[Montserrat] mt-2 lg:text-[24px] sm:text-[20px] text-[16px]">
+        <p className="text-white font-[Montserrat] mt-2 lg:text-[24px] sm:text-[20px] text-[16px]">
           Join a global community of influencers for just $1 and unlock
           exclusive opportunities to connect, collaborate, and grow your
           influence.
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-[5rem]">
         {items.map((item, index) => (
           <div
             key={index}
-            className={`relative min-h-[372px] flex flex-col justify-end border border-transparent overflow-hidden ${item.colSpan} w-full`} // Add w-full for mobile width
+            className={`relative min-h-[372px] flex flex-col justify-end border border-transparent overflow-hidden ${item.colSpan} w-full`}
             style={{
-              borderImage: "linear-gradient(to right, #7A5018, #FEEA9A) 1",
+              borderImage: "linear-gradient(to right, #7A5018cc, #FEEA9Acc) 1",
             }}
           >
             {item.glow && (
@@ -82,12 +90,16 @@ const Features = () => {
                 className={`${item.right ? "" : "mx-auto"}`}
               />
             </div>
-            <div
+            <motion.div
               className={`text-left ${
                 item.textLeft ? "pl-[2rem] sm:pl-[3rem]" : "pr-4 sm:pr-12"
-              }  ${
+              } ${
                 item.bottom ? "pb-[15rem] sm:pb-[2rem]" : "pb-[2rem]"
-              } max-w-[380px]`} // Ensure max width on mobile
+              } max-w-[380px]`}
+              initial={{ opacity: 0, y: 30 }} // Initial state
+              whileInView={{ opacity: 1, y: 0 }} // Animate when in view
+              transition={{ duration: 0.5, ease: "easeOut" }} // Transition properties
+              viewport={{ once: false, amount: 0.2 }} // Trigger on 20% visibility
             >
               <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent font-[Montserrat] font-extrabold text-[24px] uppercase">
                 {item.title}
@@ -95,7 +107,7 @@ const Features = () => {
               <p className="text-white font-[Montserrat] font-light mt-2 text-base">
                 {item.text}
               </p>
-            </div>
+            </motion.div>
           </div>
         ))}
       </div>

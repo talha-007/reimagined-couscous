@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import videoImage from "../assets/image4.png";
 import playIcon from "../assets/icon5.svg";
+import { motion } from "framer-motion";
 
 const PlatformInAction = () => {
   const videoRef = useRef(null);
@@ -15,7 +16,13 @@ const PlatformInAction = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center max-w-7xl w-full mx-auto relative px-4">
-      <div className="text-center sm:text-left">
+      <motion.div
+        className="text-center sm:text-left"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false, amount: 0.2 }}
+      >
         <h1
           className="text-[24px] sm:text-[36px] uppercase"
           style={{
@@ -32,7 +39,7 @@ const PlatformInAction = () => {
         <p className="text-white text-[16px] sm:text-[24px] font-normal font-[Montserrat]">
           Watch the platform's video tutorial to easily understand how it works.
         </p>
-      </div>
+      </motion.div>
       {/* Video Section */}
       <div className="relative mt-[40px]">
         {/* Video */}
@@ -55,7 +62,8 @@ const PlatformInAction = () => {
           >
             <div
               style={{
-                borderImage: "linear-gradient(to right, #FEEA9A, #7A5018) 1",
+                borderImage:
+                  "linear-gradient(to right, #FEEA9Acc, #7A5018cc) 1",
               }}
               className="flex justify-center items-center bg-gradient-to-b border border-transparent from-[rgba(254,246,192,0.15)] to-[rgba(232,200,118,0.53)]  w-16 h-16"
             >

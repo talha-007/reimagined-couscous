@@ -17,22 +17,22 @@ const faqs = [
   {
     question: "How much does it cost to buy pixels?",
     answer:
-      "Yes! Upon successful completion of the course, you will receive a verified certificate.",
+      "The cost is $1 per pixel per year. You can buy as many pixels as you need to showcase your brand.",
   },
   {
     question: "Can I update my image or link after purchasing pixels?",
     answer:
-      "Yes! Upon successful completion of the course, you will receive a verified certificate.",
+      "Yes, you can update your image or link at any time through your account dashboard.",
   },
   {
     question: "What happens if I don’t renew my pixels?",
     answer:
-      "Yes! Upon successful completion of the course, you will receive a verified certificate.",
+      "If you don't renew, your pixels will be made available for others to purchase after a grace period.",
   },
   {
     question: "Is there a free trial?",
     answer:
-      "Yes! Upon successful completion of the course, you will receive a verified certificate.",
+      "No, but you can start with a minimal purchase and expand later as needed.",
   },
 ];
 
@@ -45,8 +45,7 @@ const Faq = () => {
 
   return (
     <div className="max-w-7xl w-full mx-auto relative px-4 lg:my-[10rem] md:my-[8rem] sm:my-[4rem] my-[2rem]">
-      {/* FAQ Title */}
-      <h1
+      <motion.h1
         className="text-[24px] sm:text-[36px] uppercase text-center"
         style={{
           backgroundImage:
@@ -56,18 +55,21 @@ const Faq = () => {
           fontFamily: "Montserrat",
           fontWeight: "800",
         }}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false, amount: 0.2 }}
       >
         Frequently Asked Questions
-      </h1>
+      </motion.h1>
 
-      {/* FAQ List */}
       <div className="mt-8 space-y-4">
         {faqs.map((faq, index) => (
           <div
             key={index}
             className="border border-transparent bg-[rgba(40,28,24,0.16)] relative overflow-hidden p-[1rem] sm:p-[2rem]"
             style={{
-              borderImage: "linear-gradient(to right, #7A5018, #FEEA9A) 1",
+              borderImage: "linear-gradient(to right, #7a5018cc, #FEEA9Acc) 1",
             }}
           >
             <div
@@ -76,7 +78,7 @@ const Faq = () => {
                 boxShadow: "0 0 200px 100px rgba(180, 139, 52, 0.6)",
               }}
             ></div>
-            {/* Question Section */}
+
             <button
               className="w-full flex justify-between items-center text-white text-left"
               onClick={() => toggleFaq(index)}
@@ -85,27 +87,24 @@ const Faq = () => {
                 {faq.question}
               </span>
               {openIndex === index ? (
-                <HiMinusSmall className="text-yellow-500 text-[2rem]" />
+                <HiMinusSmall className="text-yellow-500 text-[2rem] cursor-pointer" />
               ) : (
-                <AiOutlinePlus className="text-yellow-500 text-[2rem]" />
+                <AiOutlinePlus className="text-yellow-500 text-[2rem] cursor-pointer" />
               )}
             </button>
 
-            {/* Answer Section (Dropdown) with Animation */}
             <AnimatePresence>
               {openIndex === index && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{
-                    duration: 0.3,
-                    ease: [0.5, 0, 0.5, 1], // Custom easing for smoother effect
-                  }}
-                  style={{ overflow: "hidden" }} // Ensure no overflow during animation
-                  className="font-[Montserrat] text-[14px] sm:text-[16px] font-[400] text-white uppercase pt-[1rem]"
+                  className="overflow-hidden"
+                  initial={{ opacity: 0, maxHeight: 0 }}
+                  animate={{ opacity: 1, maxHeight: 500 }} // Set a maxHeight to a value greater than your expected content
+                  exit={{ opacity: 0, maxHeight: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                 >
-                  {faq.answer}
+                  <p className="font-[Montserrat] text-[14px] sm:text-[16px] font-[400] text-white uppercase pt-[1rem]">
+                    {faq.answer}
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>

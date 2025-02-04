@@ -2,7 +2,7 @@ import icon1 from "../assets/icon1.svg";
 import icon2 from "../assets/icon2.svg";
 import icon3 from "../assets/icon3.svg";
 import icon4 from "../assets/icon4.svg";
-import GlowingCircle from "./glowingCircle";
+import { motion } from "framer-motion";
 
 const HowItWorks = () => {
   const items = [
@@ -14,7 +14,13 @@ const HowItWorks = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-transparent lg:my-[10rem] md:my-[8rem] sm:my-[4rem] my-[2rem]">
-      <div className="text-center sm:px-[12rem]">
+      <motion.div
+        className="text-center sm:px-[12rem]"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false, amount: 0.2 }}
+      >
         <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent  font-[Montserrat] font-extrabold lg:text-[36px] sm:text-[24px] text-[24px] uppercase">
           How it works
         </h1>
@@ -22,25 +28,38 @@ const HowItWorks = () => {
           upload your DP or logo and link your account. Then, sit back and enjoy
           your growth!
         </p>
-      </div>
+      </motion.div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 sm:mt-[4rem] mt-[2rem]">
         {items.map((item) => (
           <div
             key={item.id}
             className="relative border border-transparent flex flex-col items-center justify-center h-[242px] overflow-hidden"
             style={{
-              borderImage: "linear-gradient(to right, #7A5018, #FEEA9A) 1",
+              borderImage: "linear-gradient(to right, #7A5018cc, #FEEA9Acc) 1",
             }}
           >
             <div className="bg-gradient-to-b from-[rgba(254,246,192,0.15)] to-[rgba(232,200,118,0.53)] p-2 text-center h-[48px] w-[48px] absolute top-0 left-0 font-[Montserrat] text-[#FEEA9A] font-bold flex justify-center items-center">
               <p>{item.id}</p>
             </div>
-            <div className="flex justify-center items-center bg-gradient-to-b from-[rgba(254,246,192,0.15)] to-[rgba(232,200,118,0.53)] rounded-md w-16 h-16">
+            <motion.div
+              className="flex justify-center items-center bg-gradient-to-b from-[rgba(254,246,192,0.15)] to-[rgba(232,200,118,0.53)]  w-16 h-16"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: false, amount: 0.2 }}
+              s
+            >
               <img src={item.icon} alt={item.title} className="w-8 h-8" />
-            </div>
-            <h1 className="text-[24px] font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center max-w-[200px]">
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: false, amount: 0.2 }}
+              className="text-[24px] font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center max-w-[200px]"
+            >
               {item.title}
-            </h1>
+            </motion.h1>
           </div>
         ))}
       </div>

@@ -19,7 +19,7 @@ const CustomButton = ({ name, hidden, py }) => {
         className="absolute inset-0 border-2 "
         style={{
           borderImageSource:
-            "linear-gradient(to right, #7A5018 0%, #FEEA9A 100%)",
+            "linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)",
           borderImageSlice: 1,
         }}
       />
