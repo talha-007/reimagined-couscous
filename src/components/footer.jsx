@@ -1,5 +1,6 @@
 import { BsLinkedin, BsTwitter, BsYoutube } from "react-icons/bs";
 import logo from "../assets/logo.png";
+import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
@@ -7,12 +8,23 @@ const Footer = () => {
       <div className=" max-w-7xl w-full mx-auto relative px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 text-center gap-2 py-[3rem]">
           <div className="flex flex-col">
-            <div className="flex justify-center sm:justify-start">
+            <motion.div
+              className="flex justify-center sm:justify-start"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: false, amount: 0.2 }}
+            >
               <img src={logo} alt="logo" />
-            </div>
+            </motion.div>
           </div>
           <div className="flex flex-col">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: false, amount: 0.2 }}
+            >
               <ul className="text-white space-y-3 text-left w-fit mx-auto sm:mx-[unset]">
                 <li>
                   <a
@@ -47,7 +59,7 @@ const Footer = () => {
                   </a>
                 </li>
               </ul>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

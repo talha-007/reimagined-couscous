@@ -1,11 +1,18 @@
 import CustomButton from "./button";
+import { motion } from "framer-motion";
 
 const ContactUs = () => {
   return (
     <div className="relative max-w-screen overflow-hidden">
       <div className="max-w-7xl w-full px-4 mx-auto relative py-12">
         {/* Contact Title & Description */}
-        <div className="text-center max-w-5xl mx-auto">
+        <motion.div
+          className="text-center max-w-5xl mx-auto"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: false, amount: 0.2 }}
+        >
           <h1
             className="text-[24px] sm:text-[36px] uppercase"
             style={{
@@ -23,7 +30,7 @@ const ContactUs = () => {
             Regardless if you possess an inquiry, require aid, or wish to
             initiate a fresh endeavor, our crew is available to assist.
           </p>
-        </div>
+        </motion.div>
 
         {/* Contact Form */}
         <form className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6  shadow-lg">
