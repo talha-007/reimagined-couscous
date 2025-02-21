@@ -2,8 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomButton from "./button";
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null); // Track which item is hovered
   const [activeIndex, setActiveIndex] = useState("Home"); // Track active item
@@ -35,28 +37,41 @@ const Navbar = () => {
           </a>
           {/* Desktop Nav Items */}
           <div className="hidden md:flex md:items-center md:space-x-6">
-            {["Home", "How It Works", "Features", "Pricing"].map(
-              (item, index) => {
-                const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
-                return (
-                  <motion.a
-                    key={index}
-                    href={`#${id}`} // Scroll to section
-                    className={`relative font-[Montserrat] text-[16px] ${
-                      activeIndex === item ? "text-[#FFE395]" : "text-white"
-                    }`}
-                    whileHover={{ scale: 1.1, color: "#FFE395" }}
-                    transition={{ type: "spring", stiffness: 200 }}
-                    onClick={() => setActiveIndex(item)}
-                  >
-                    {item}
-                  </motion.a>
-                );
-              }
-            )}
+            {["Home", "Pixel Grid", "Marketplace"].map((item, index) => {
+              const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
+              return (
+                <motion.a
+                  key={index}
+                  href={`#${id}`} // Scroll to section
+                  className={`relative font-[Montserrat] text-[16px] ${
+                    activeIndex === item ? "text-[#FFE395]" : "text-white"
+                  }`}
+                  whileHover={{ scale: 1.1, color: "#FFE395" }}
+                  transition={{ type: "spring", stiffness: 200 }}
+                  onClick={() => setActiveIndex(item)}
+                >
+                  {item}
+                </motion.a>
+              );
+            })}
           </div>
-
-          <CustomButton py="py-2" hidden="hidden" name="Get Started for $1" />
+          <div className="flex gap-4">
+            <CustomButton
+              py="py-2"
+              hidden="hidden"
+              name="Get Started for $1"
+              bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+              strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+            />
+            <CustomButton
+              onClick={() => navigate("/sign-in")}
+              py="py-2"
+              hidden="hidden"
+              name="Sign in"
+              bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
+              strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
+            />
+          </div>
 
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
@@ -118,29 +133,43 @@ const Navbar = () => {
             exit="exit"
             onMouseMove={handleMouseMove} // Track cursor movement
           >
-            {["Home", "How It Works", "Features", "Pricing"].map(
-              (item, index) => {
-                const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
-                return (
-                  <motion.a
-                    key={index}
-                    href={`#${id}`} // Scroll to section
-                    className={`relative font-[Montserrat] text-[16px] ${
-                      activeIndex === item ? "text-[#FFE395]" : "text-white"
-                    }`}
-                    whileHover={{ scale: 1.1, color: "#FFE395" }}
-                    transition={{ type: "spring", stiffness: 200 }}
-                    onClick={() => {
-                      setActiveIndex(item);
-                      setIsOpen(!isOpen);
-                    }}
-                  >
-                    {item}
-                  </motion.a>
-                );
-              }
-            )}
-            <CustomButton py="py-2" hidden="hidden" name="Get Started for $1" />
+            {["Home", "Pixel Grid", "Marketplace"].map((item, index) => {
+              const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
+              return (
+                <motion.a
+                  key={index}
+                  href={`#${id}`} // Scroll to section
+                  className={`relative font-[Montserrat] text-[16px] ${
+                    activeIndex === item ? "text-[#FFE395]" : "text-white"
+                  }`}
+                  whileHover={{ scale: 1.1, color: "#FFE395" }}
+                  transition={{ type: "spring", stiffness: 200 }}
+                  onClick={() => {
+                    setActiveIndex(item);
+                    setIsOpen(!isOpen);
+                  }}
+                >
+                  {item}
+                </motion.a>
+              );
+            })}
+            <div className="flex gap-4">
+              <CustomButton
+                py="py-2"
+                hidden="hidden"
+                name="Get Started for $1"
+                bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+                strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+              />
+              <CustomButton
+                onClick={() => navigate("/sign-in")}
+                py="py-2"
+                hidden="hidden"
+                name="Sign in"
+                bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
+                strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

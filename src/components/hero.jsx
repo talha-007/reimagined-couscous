@@ -55,7 +55,22 @@ const Hero = () => {
                 Amplify Your Influence Today
               </motion.h1>
             </div>
-            <CustomButton py="py-4" hidden="block" name="Get Started for $1" />
+            <div className="flex gap-4">
+              <CustomButton
+                py="py-4"
+                hidden="block"
+                name="Get Started for $1"
+                bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+                strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+              />
+              <CustomButton
+                bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
+                strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
+                py="py-2"
+                hidden="hidden"
+                name="View Pixel Grid"
+              />
+            </div>
           </div>
         </div>
       </div>

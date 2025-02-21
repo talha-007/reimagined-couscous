@@ -100,7 +100,13 @@ const ContactUs = () => {
 
           {/* Submit Button */}
           <div className="sm:col-span-2">
-            <CustomButton name="Submit Now" py="py-3" hidden="block" />
+            <CustomButton
+              bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+              strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+              name="Submit Now"
+              py="py-3"
+              hidden="block"
+            />
           </div>
         </form>
       </div>
