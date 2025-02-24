@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomButton from "./button";
 import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Get current route
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null); // Track which item is hovered
   const [activeIndex, setActiveIndex] = useState("Home"); // Track active item
   console.log(activeIndex);
 
+  useEffect(() => {
+    const path = location.pathname.replace("/", "").replace("-", " ");
+    setActiveIndex(path || "Home");
+  }, [location.pathname]);
   const handleMouseMove = (e) => {
     // Calculate cursor position relative to the menu items
     const menuItems = document.querySelectorAll(".menu-item");
@@ -38,26 +43,33 @@ const Navbar = () => {
           {/* Desktop Nav Items */}
           <div className="hidden md:flex md:items-center md:space-x-6">
             {["Home", "Pixel Grid", "Marketplace"].map((item, index) => {
-              const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
               return (
                 <motion.a
                   key={index}
-                  href={`#${id}`} // Scroll to section
-                  className={`relative font-[Montserrat] text-[16px] ${
-                    activeIndex === item ? "text-[#FFE395]" : "text-white"
+                  // href={`#${id}`} // Scroll to section
+                  className={`relative font-[Montserrat] cursor-pointer text-[16px] ${
+                    activeIndex.toLowerCase() === item.toLowerCase()
+                      ? "text-[#FFE395]"
+                      : "text-white"
                   }`}
                   whileHover={{ scale: 1.1, color: "#FFE395" }}
                   transition={{ type: "spring", stiffness: 200 }}
-                  onClick={() => setActiveIndex(item)}
+                  onClick={() => {
+                    if (activeIndex !== item) {
+                      setActiveIndex(item);
+                      navigate(`/${item.toLowerCase().replace(/\s+/g, "-")}`);
+                    }
+                  }}
                 >
                   {item}
                 </motion.a>
               );
             })}
           </div>
-          <div className="flex gap-4">
+          <div className="md:flex hidden items-center gap-4">
             <CustomButton
               py="py-2"
+              onClick={() => navigate("/sign-up")}
               hidden="hidden"
               name="Get Started for $1"
               bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
@@ -75,7 +87,7 @@ const Navbar = () => {
 
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-[#FFE395] z-50"
+            className="md:hidden p-2 text-[#FFE395] z-60"
             whileHover={{ scale: 1.2, rotate: 10, color: "#FFD700" }}
             whileTap={{ scale: 0.9 }}
           >
@@ -118,7 +130,7 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="md:hidden bg-black bg-opacity-40 shadow-lg absolute top-0 h-screen left-0 w-full px-4 py-3 flex flex-col items-center justify-center"
+            className="md:hidden bg-black bg-opacity-40 shadow-lg absolute top-0 h-screen left-0 w-full px-4 py-3 flex flex-col items-center justify-center z-50"
             variants={{
               hidden: { opacity: 0, y: "-100%" },
               visible: {
@@ -134,11 +146,10 @@ const Navbar = () => {
             onMouseMove={handleMouseMove} // Track cursor movement
           >
             {["Home", "Pixel Grid", "Marketplace"].map((item, index) => {
-              const id = item.toLowerCase().replace(/\s+/g, "-"); // Convert to valid `id`
               return (
                 <motion.a
                   key={index}
-                  href={`#${id}`} // Scroll to section
+                  // href={`#${id}`} // Scroll to section
                   className={`relative font-[Montserrat] text-[16px] ${
                     activeIndex === item ? "text-[#FFE395]" : "text-white"
                   }`}
@@ -147,13 +158,14 @@ const Navbar = () => {
                   onClick={() => {
                     setActiveIndex(item);
                     setIsOpen(!isOpen);
+                    navigate(`/${item.toLowerCase().replace(/\s+/g, "-")}`);
                   }}
                 >
                   {item}
                 </motion.a>
               );
             })}
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4">
               <CustomButton
                 py="py-2"
                 hidden="hidden"

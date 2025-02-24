@@ -2,8 +2,10 @@ import { motion } from "framer-motion"; // Import framer-motion
 import mobileBg from "../assets/mobile pattern.png";
 import herobg from "../assets/herobg.png";
 import CustomButton from "./button";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <div className="pt-20">
       <div
@@ -55,11 +57,12 @@ const Hero = () => {
                 Amplify Your Influence Today
               </motion.h1>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
               <CustomButton
                 py="py-4"
                 hidden="block"
                 name="Get Started for $1"
+                onClick={() => navigate("/sign-in")}
                 bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                 strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
               />
@@ -68,6 +71,7 @@ const Hero = () => {
                 strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
                 py="py-2"
                 hidden="hidden"
+                onClick={() => navigate("/pixel-grid")}
                 name="View Pixel Grid"
               />
             </div>
