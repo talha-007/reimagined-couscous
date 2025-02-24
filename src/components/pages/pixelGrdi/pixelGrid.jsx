@@ -16,7 +16,7 @@ const dummyUsers = [
     id: 1,
     name: "Alice",
     profilePic: user1,
-    selectedPixels: [{ startPos: { x: 0, y: 0 }, endPos: { x: 30, y: 30 } }],
+    selectedPixels: [{ startPos: { x: 40, y: 40 }, endPos: { x: 80, y: 80 } }],
   },
   {
     id: 2,
@@ -116,13 +116,14 @@ function PixelGrid() {
         };
       });
     });
+    console.log("dummyUsers", dummyUsers);
 
     // Highlight the newly selected area (without image)
     if (startPos && endPos) {
       const x = Math.min(startPos.x, endPos.x);
       const y = Math.min(startPos.y, endPos.y);
-      const width = Math.abs(endPos.x - startPos.x) + pixelSize;
-      const height = Math.abs(endPos.y - startPos.y) + pixelSize;
+      const width = Math.abs(endPos.x - startPos.x);
+      const height = Math.abs(endPos.y - startPos.y);
 
       ctx.fillStyle = "#FEEA9AA3"; // Blue transparent selection
       ctx.fillRect(x, y, width, height);
@@ -133,6 +134,8 @@ function PixelGrid() {
 
   const handleMouseDown = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
+    console.log("rect", rect);
+
     const x = Math.floor((e.clientX - rect.left) / pixelSize) * pixelSize;
     const y = Math.floor((e.clientY - rect.top) / pixelSize) * pixelSize;
 
@@ -155,11 +158,17 @@ function PixelGrid() {
     if (startPos && endPos) {
       const newSelection = { startPos, endPos };
 
-      // Add selection to a dummy user (you can modify this logic to select a specific user)
+      // Ensure immutability by creating a new array and object
       setUsers((prevUsers) => {
-        const updatedUsers = [...prevUsers];
-        updatedUsers[0].selectedPixels.push(newSelection);
-        return updatedUsers;
+        return prevUsers.map((user, index) => {
+          if (index === 0) {
+            return {
+              ...user,
+              selectedPixels: [...user.selectedPixels, newSelection],
+            };
+          }
+          return user;
+        });
       });
     }
 
@@ -168,14 +177,27 @@ function PixelGrid() {
 
   const handleMouseMove = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
+    console.log("rect", rect);
+
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    console.log("xy", x, y);
 
     if (dragging && startPos) {
-      // Selection logic
+      // Snap to grid using Math.floor
       const newX = Math.floor(x / pixelSize) * pixelSize;
       const newY = Math.floor(y / pixelSize) * pixelSize;
-      setEndPos({ x: newX, y: newY });
+
+      // Ensure width and height are calculated correctly
+      const width = newX - startPos.x;
+      const height = newY - startPos.y;
+
+      console.log("newx", startPos, newX, newY, width, height);
+
+      setEndPos({
+        x: startPos.x + width + pixelSize,
+        y: startPos.y + height + pixelSize,
+      });
     } else {
       // Tooltip logic
       let foundUser = null;
