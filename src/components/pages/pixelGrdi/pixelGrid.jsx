@@ -1,12 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import Layout from "../../layout/layout";
-import { motion } from "framer-motion";
 import filledGrid from "../../../assets/icons/filledGrid.svg";
 import outlinedGrid from "../../../assets/icons/outlinedGrid.svg";
 import dimension from "../../../assets/icons/dimension.svg";
-import user1 from "../../../assets/users/image1.png";
 import user2 from "../../../assets/users/image2.png";
 import user3 from "../../../assets/users/image3.png";
+import user4 from "../../../assets/users/image4.png";
+import UserToolTip from "./userToolTip";
+import SelectionToolTip from "./selectionToolTip";
 
 const BASE_GRID_SIZE = 100;
 const BASE_PIXEL_SIZE = 10;
@@ -14,8 +15,12 @@ const BASE_PIXEL_SIZE = 10;
 const dummyUsers = [
   {
     id: 1,
-    name: "Alice",
-    profilePic: user1,
+    name: "Alex Carter",
+    profilePic: user4,
+    bio: "A creative soul blending design, tech, and a dash of humor, Alex shares their journey through design tips and daily life quirks. Coffee lover and weekend adventurer.Socials:",
+    fbLink: "@acarterdesigns",
+    instaLink: "@alexdesigns",
+    tiktokLink: "@alexcarterdesigns",
     selectedPixels: [{ startPos: { x: 40, y: 40 }, endPos: { x: 80, y: 80 } }],
   },
   {
@@ -31,7 +36,7 @@ const dummyUsers = [
     name: "Bob",
     profilePic: user3,
     selectedPixels: [
-      { startPos: { x: 130, y: 70 }, endPos: { x: 170, y: 90 } },
+      { startPos: { x: 230, y: 90 }, endPos: { x: 270, y: 130 } },
     ],
   },
 ];
@@ -44,10 +49,11 @@ function PixelGrid() {
   const [startPos, setStartPos] = useState(null);
   const [endPos, setEndPos] = useState(null);
   const [users, setUsers] = useState(dummyUsers);
+  const [mousePos, setMousePos] = useState(null);
   const [hoveredUser, setHoveredUser] = useState(null);
-
   const [tooltipPos, setTooltipPos] = useState(null);
-  console.log("start", startPos, endPos);
+  const [selections, setSelections] = useState([]);
+  const [hoveredSelection, setHoveredSelection] = useState([]);
 
   useEffect(() => {
     updateGridSize();
@@ -86,7 +92,6 @@ function PixelGrid() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Grid
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
         ctx.strokeStyle = "#000";
@@ -94,7 +99,6 @@ function PixelGrid() {
       }
     }
 
-    // Highlight user-selected areas and draw images
     dummyUsers.forEach((user) => {
       user.selectedPixels.forEach(({ startPos, endPos }) => {
         const x = startPos.x;
@@ -102,30 +106,56 @@ function PixelGrid() {
         const width = endPos.x - startPos.x;
         const height = endPos.y - startPos.y;
 
-        // Highlight selection
+        const isHovered =
+          mousePos &&
+          mousePos.x >= x &&
+          mousePos.x <= x + width &&
+          mousePos.y >= y &&
+          mousePos.y <= y + height;
+
+        ctx.save();
+
+        if (isHovered) {
+          ctx.shadowColor = "#000";
+          ctx.shadowBlur = 25;
+        } else {
+          ctx.shadowBlur = 0;
+        }
+
         ctx.fillStyle = "#FEEA9AA3";
         ctx.fillRect(x, y, width, height);
         ctx.strokeStyle = "#FFF8C5";
         ctx.strokeRect(x, y, width, height);
 
-        // Load and draw user image in the selected area
-        const img = new Image();
-        img.src = user.profilePic;
-        img.onload = () => {
-          ctx.drawImage(img, x, y, width, height);
-        };
+        if (!user.imgElement) {
+          user.imgElement = new Image();
+          user.imgElement.src = user.profilePic;
+          user.imgElement.onload = () => {
+            drawGrid(); // Redraw grid to show image after loading
+          };
+        }
+
+        if (user.imgElement.complete) {
+          ctx.drawImage(user.imgElement, x, y, width, height);
+
+          if (isHovered) {
+            // Draw inner border only when hovered
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#FFD700"; // Gold inner border
+            ctx.strokeRect(x + 1, y + 1, width - 2, height - 2);
+          }
+        }
+
+        ctx.restore(); // Restore state after drawing
       });
     });
-    console.log("dummyUsers", dummyUsers);
-
-    // Highlight the newly selected area (without image)
     if (startPos && endPos) {
       const x = Math.min(startPos.x, endPos.x);
       const y = Math.min(startPos.y, endPos.y);
       const width = Math.abs(endPos.x - startPos.x);
       const height = Math.abs(endPos.y - startPos.y);
 
-      ctx.fillStyle = "#FEEA9AA3"; // Blue transparent selection
+      ctx.fillStyle = "#FEEA9AA3";
       ctx.fillRect(x, y, width, height);
       ctx.strokeStyle = "#FFF8C5";
       ctx.strokeRect(x, y, width, height);
@@ -144,32 +174,11 @@ function PixelGrid() {
     setDragging(true);
   };
 
-  //   const handleMouseMove = (e) => {
-  //     if (!dragging || !startPos) return;
-
-  //     const rect = canvasRef.current.getBoundingClientRect();
-  //     const x = Math.floor((e.clientX - rect.left) / pixelSize) * pixelSize;
-  //     const y = Math.floor((e.clientY - rect.top) / pixelSize) * pixelSize;
-
-  //     setEndPos({ x, y });
-  //   };
-
   const handleMouseUp = () => {
     if (startPos && endPos) {
       const newSelection = { startPos, endPos };
 
-      // Ensure immutability by creating a new array and object
-      setUsers((prevUsers) => {
-        return prevUsers.map((user, index) => {
-          if (index === 0) {
-            return {
-              ...user,
-              selectedPixels: [...user.selectedPixels, newSelection],
-            };
-          }
-          return user;
-        });
-      });
+      setSelections((prevSelections) => [...prevSelections, newSelection]);
     }
 
     setDragging(false);
@@ -177,47 +186,74 @@ function PixelGrid() {
 
   const handleMouseMove = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    console.log("rect", rect);
-
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    console.log("xy", x, y);
-
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
     if (dragging && startPos) {
-      // Snap to grid using Math.floor
       const newX = Math.floor(x / pixelSize) * pixelSize;
       const newY = Math.floor(y / pixelSize) * pixelSize;
 
-      // Ensure width and height are calculated correctly
       const width = newX - startPos.x;
       const height = newY - startPos.y;
-
-      console.log("newx", startPos, newX, newY, width, height);
 
       setEndPos({
         x: startPos.x + width + pixelSize,
         y: startPos.y + height + pixelSize,
       });
-    } else {
-      // Tooltip logic
-      let foundUser = null;
-      users.forEach((user) => {
-        user.selectedPixels.forEach(({ startPos, endPos }) => {
-          if (
-            x >= startPos.x &&
-            x <= endPos.x &&
-            y >= startPos.y &&
-            y <= endPos.y
-          ) {
-            foundUser = user;
-            setTooltipPos({ x: e.clientX, y: e.clientY });
-          }
-        });
-      });
 
+      setHoveredUser(null);
+      setHoveredSelection(null);
+      setTooltipPos(null);
+      return;
+    }
+
+    let foundUser = null;
+    let foundSelection = null;
+    for (const user of users) {
+      for (const { startPos, endPos } of user.selectedPixels) {
+        if (
+          x >= startPos.x &&
+          x <= endPos.x &&
+          y >= startPos.y &&
+          y <= endPos.y
+        ) {
+          foundUser = user;
+          break;
+        }
+      }
+      if (foundUser) break;
+    }
+    for (const { startPos, endPos } of selections) {
+      if (
+        x >= startPos.x &&
+        x <= endPos.x &&
+        y >= startPos.y &&
+        y <= endPos.y
+      ) {
+        foundSelection = { startPos, endPos };
+        break;
+      }
+    }
+
+    if (foundUser) {
       setHoveredUser(foundUser);
+      setHoveredSelection(null);
+      setTooltipPos({ x: e.clientX, y: e.clientY });
+    } else if (foundSelection) {
+      setHoveredUser(null);
+      setHoveredSelection(foundSelection);
+      setTooltipPos({ x: e.clientX, y: e.clientY });
+    } else {
+      setHoveredUser(null);
+      setHoveredSelection(null);
+      setTooltipPos(null);
     }
   };
+
+  console.log("hovered", hoveredUser);
 
   return (
     <Layout>
@@ -272,22 +308,13 @@ function PixelGrid() {
                 onMouseUp={handleMouseUp}
               />
               {hoveredUser && tooltipPos && (
-                <motion.div
-                  className="absolute bg-white text-black text-sm px-3 py-2 rounded shadow-lg"
-                  style={{ top: tooltipPos.y + 10, left: tooltipPos.x + 10 }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={hoveredUser.profilePic}
-                      alt={hoveredUser.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <p className="font-medium">{hoveredUser.name}</p>
-                  </div>
-                </motion.div>
+                <UserToolTip
+                  hoveredUser={hoveredUser}
+                  tooltipPos={tooltipPos}
+                />
+              )}
+              {hoveredSelection && tooltipPos && (
+                <SelectionToolTip tooltipPos={tooltipPos} />
               )}
             </div>
           </div>
