@@ -10,6 +10,7 @@ import Home from "./components/pages/Home";
 import Signup from "./components/pages/signup";
 import PixelGrid from "./components/pages/pixelGrdi/pixelGrid";
 import InfluencerProfile from "./components/pages/influencerProfile/profile";
+import BuyGrid from "./components/pages/buy grid/buyGrid";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/pixel-grid" element={<PixelGrid />} />
+            <Route path="/buy-grid" element={<BuyGrid />} />
             <Route path="/influencer-profile" element={<InfluencerProfile />} />
             <Route path="/sign-in" element={<Signin />} />
             <Route path="/sign-up" element={<Signup />} />

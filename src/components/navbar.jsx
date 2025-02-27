@@ -3,11 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import CustomButton from "./button";
 import logo from "../assets/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import coinsIcon from "../assets/icons/Coins.svg";
+import Bell from "../assets/icons/Bell.svg";
+import { FaChevronDown } from "react-icons/fa";
+import userImage from "../assets/users/image4.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
+  const isLoggedIn = true;
   const [isOpen, setIsOpen] = useState(false);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null); // Track which item is hovered
   const [activeIndex, setActiveIndex] = useState("Home"); // Track active item
   console.log(activeIndex);
@@ -42,7 +49,12 @@ const Navbar = () => {
           </a>
           {/* Desktop Nav Items */}
           <div className="hidden md:flex md:items-center md:space-x-6">
-            {["Home", "Pixel Grid", "Marketplace"].map((item, index) => {
+            {[
+              "Home",
+              "Pixel Grid",
+              isLoggedIn && "Buy Grid",
+              "Marketplace",
+            ].map((item, index) => {
               return (
                 <motion.a
                   key={index}
@@ -66,25 +78,80 @@ const Navbar = () => {
               );
             })}
           </div>
-          <div className="md:flex hidden items-center gap-4">
-            <CustomButton
-              py="py-2"
-              onClick={() => navigate("/sign-up")}
-              hidden="hidden"
-              name="Get Started for $1"
-              bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
-              strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
-            />
-            <CustomButton
-              onClick={() => navigate("/sign-in")}
-              py="py-2"
-              hidden="hidden"
-              name="Sign in"
-              bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
-              strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
-            />
-          </div>
+          {isLoggedIn ? (
+            <div className="flex gap-4 items-center relative">
+              <div>
+                <img src={coinsIcon} alt="Coins" />
+              </div>
+              <div>
+                <img src={Bell} alt="Notifications" />
+              </div>
+              {/* User Image and Dropdown */}
+              <div className="relative">
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  <FaChevronDown
+                    className="text-white transition-transform"
+                    style={{
+                      transform: isDropdownOpen
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                    }}
+                  />
+                  <div className="relative w-10 h-10  p-[1px] before:absolute before:inset-0 before:bg-gradient-to-r before:from-[#FFF8C5] before:to-[#8C5E1C]  before:-z-10">
+                    <img
+                      src={userImage}
+                      alt="User"
+                      className="w-full h-full "
+                    />
+                  </div>
+                </div>
 
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg overflow-hidden z-50"
+                  >
+                    <ul className="text-black">
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Profile
+                      </li>
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Settings
+                      </li>
+                      <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Logout
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="md:flex hidden items-center gap-4">
+              <CustomButton
+                py="py-2"
+                onClick={() => navigate("/sign-up")}
+                hidden="hidden"
+                name="Get Started for $1"
+                bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+                strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+              />
+              <CustomButton
+                onClick={() => navigate("/sign-in")}
+                py="py-2"
+                hidden="hidden"
+                name="Sign in"
+                bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
+                strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
+              />
+            </div>
+          )}
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 text-[#FFE395] z-60"

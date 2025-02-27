@@ -12,14 +12,14 @@ const CustomButton = ({
 }) => {
   return (
     <motion.button
-      className={`${hidden} md:block text-black font-bold px-8 ${py} transition-all duration-500 bg-[length:200%] bg-left relative `}
+      className={`${hidden} md:block ${width} text-black font-bold px-8 ${py} transition-all duration-500 bg-[length:200%] bg-left relative `}
       style={{
         fontFamily: "Cal Sans, sans-serif",
         background: bgGradient,
         backgroundSize: "200% 100%",
         backgroundPosition: "center",
         cursor: "pointer",
-        width: width,
+
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
