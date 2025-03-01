@@ -5,6 +5,8 @@ import ProfileCreation from "./profileCreation";
 import CustomButton from "../../button";
 import tick from "../../../assets/icons/tick.svg";
 import SelectPixels from "./selectPixels";
+import PixelInformation from "./pixelInformation";
+import Checkout from "./checkout";
 
 const BuyGrid = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -107,17 +109,31 @@ const BuyGrid = () => {
       </div>
       {activeStep === 0 && <ProfileCreation />}
       {activeStep === 1 && <SelectPixels />}
+      {activeStep === 2 && <PixelInformation />}
+      {activeStep === 3 && <Checkout />}
       {/* Navigation Buttons */}
       <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8">
-        <CustomButton
-          py="py-4"
-          hidden="block"
-          name="Next"
-          onClick={handleNext}
-          width="w-[200px] md:w-[400px]"
-          bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
-          strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
-        />
+        {activeStep === 3 ? (
+          <CustomButton
+            py="py-4"
+            hidden="block"
+            name="Pay Now"
+            onClick={handleNext}
+            width="w-[200px] md:w-[400px]"
+            bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+            strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+          />
+        ) : (
+          <CustomButton
+            py="py-4"
+            hidden="block"
+            name="Next"
+            onClick={handleNext}
+            width="w-[200px] md:w-[400px]"
+            bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+            strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+          />
+        )}
       </div>
     </Layout>
   );

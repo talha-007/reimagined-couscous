@@ -7,6 +7,9 @@ import { motion } from "framer-motion";
 
 const UserToolTip = ({ tooltipPos, hoveredUser }) => {
   const navigate = useNavigate();
+  console.log("tooltipPos", tooltipPos);
+  console.log("hoveredUser", hoveredUser);
+
   return (
     <motion.div
       className="absolute text-black text-sm px-3 py-2 shadow-lg font-[Montserrat] "

@@ -38,7 +38,7 @@ const dummyUsers = [
   },
 ];
 
-const Grid = () => {
+const Grid = ({ Summary }) => {
   const canvasRef = useRef(null);
   const [gridSize, setGridSize] = useState(BASE_GRID_SIZE);
   const [pixelSize, setPixelSize] = useState(BASE_PIXEL_SIZE);
@@ -51,6 +51,48 @@ const Grid = () => {
   const [tooltipPos, setTooltipPos] = useState(null);
   const [selections, setSelections] = useState([]);
   const [hoveredSelection, setHoveredSelection] = useState([]);
+  const [saveSelection, setSaveSelection] = useState(false);
+  console.log("selections", selections);
+  const [selectionSummary, setSelectionSummary] = useState({
+    totalBlocks: 0,
+    subtotal: 0,
+    pixelsInRow: 0,
+    pixelsInColumn: 0,
+  });
+
+  useEffect(() => {
+    const calculateSelectionMetrics = () => {
+      let totalBlocks = 0;
+      let pixelsInRow = 0;
+      let pixelsInColumn = 0;
+      let selectedCoordinates = [];
+
+      selections.forEach(({ startPos, endPos }) => {
+        const width = Math.abs(endPos.x - startPos.x);
+        const height = Math.abs(endPos.y - startPos.y);
+
+        pixelsInRow += width; // Sum of all row pixels across selections
+        pixelsInColumn += height; // Sum of all column pixels across selections
+
+        const blocks = (width / 10) * (height / 10);
+        totalBlocks += blocks;
+        // Store the coordinates of the selection
+        selectedCoordinates.push({ startPos, endPos });
+      });
+
+      const subtotal = pixelsInRow * pixelsInColumn; // Each block has 10 pixels, each pixel is $1
+
+      setSelectionSummary({
+        totalBlocks,
+        pixelsInRow,
+        pixelsInColumn,
+        subtotal,
+        selectedCoordinates, // Include coordinates in the summary
+      });
+    };
+
+    calculateSelectionMetrics();
+  }, [selections]); // Runs whenever selections change
 
   useEffect(() => {
     updateGridSize();
@@ -60,7 +102,7 @@ const Grid = () => {
 
   useEffect(() => {
     drawGrid();
-  }, [startPos, endPos, gridSize, pixelSize, users]);
+  }, [startPos, endPos, gridSize, pixelSize, users, saveSelection, Summary]);
 
   const updateGridSize = () => {
     const screenWidth = window.innerWidth;
@@ -146,13 +188,27 @@ const Grid = () => {
         ctx.restore(); // Restore state after drawing
       });
     });
+    if (Summary?.selectedCoordinates) {
+      Summary.selectedCoordinates.forEach(({ startPos, endPos }) => {
+        const x = Math.min(startPos.x, endPos.x);
+        const y = Math.min(startPos.y, endPos.y);
+        const width = Math.abs(endPos.x - startPos.x);
+        const height = Math.abs(endPos.y - startPos.y);
+
+        ctx.fillStyle = Summary ? "#FEEA9A" : "#FEEA9AA3"; // Highlight color
+        ctx.fillRect(x, y, width, height);
+        ctx.strokeStyle = "#FFF8C5";
+        ctx.strokeRect(x, y, width, height);
+      });
+    }
+
     if (startPos && endPos) {
       const x = Math.min(startPos.x, endPos.x);
       const y = Math.min(startPos.y, endPos.y);
       const width = Math.abs(endPos.x - startPos.x);
       const height = Math.abs(endPos.y - startPos.y);
 
-      ctx.fillStyle = "#FEEA9AA3";
+      ctx.fillStyle = saveSelection ? "#FEEA9A" : "#FEEA9AA3";
       ctx.fillRect(x, y, width, height);
       ctx.strokeStyle = "#FFF8C5";
       ctx.strokeRect(x, y, width, height);
@@ -185,10 +241,9 @@ const Grid = () => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+
+    setMousePos({ x, y });
+
     if (dragging && startPos) {
       const newX = Math.floor(x / pixelSize) * pixelSize;
       const newY = Math.floor(y / pixelSize) * pixelSize;
@@ -209,6 +264,7 @@ const Grid = () => {
 
     let foundUser = null;
     let foundSelection = null;
+
     for (const user of users) {
       for (const { startPos, endPos } of user.selectedPixels) {
         if (
@@ -223,6 +279,7 @@ const Grid = () => {
       }
       if (foundUser) break;
     }
+
     for (const { startPos, endPos } of selections) {
       if (
         x >= startPos.x &&
@@ -234,20 +291,24 @@ const Grid = () => {
         break;
       }
     }
-
     if (foundUser) {
       setHoveredUser(foundUser);
       setHoveredSelection(null);
-      setTooltipPos({ x: e.clientX, y: e.clientY });
+      setTooltipPos({ x: e.pageX, y: e.pageY }); // Use pageX and pageY
     } else if (foundSelection) {
       setHoveredUser(null);
       setHoveredSelection(foundSelection);
-      setTooltipPos({ x: e.clientX, y: e.clientY });
+      setTooltipPos({ x: e.pageX, y: e.pageY }); // Use pageX and pageY
     } else {
       setHoveredUser(null);
       setHoveredSelection(null);
       setTooltipPos(null);
     }
+  };
+
+  const handleSelectPixels = () => {
+    localStorage.setItem("selectionSummary", JSON.stringify(selectionSummary));
+    setSaveSelection(true);
   };
   return (
     <>
@@ -267,7 +328,12 @@ const Grid = () => {
         <UserToolTip hoveredUser={hoveredUser} tooltipPos={tooltipPos} />
       )}
       {hoveredSelection && tooltipPos && (
-        <SelectionToolTip tooltipPos={tooltipPos} />
+        <SelectionToolTip
+          hoveredSelection={hoveredSelection}
+          tooltipPos={tooltipPos}
+          selectionSummary={selectionSummary}
+          handleSelectPixels={handleSelectPixels}
+        />
       )}
     </>
   );
