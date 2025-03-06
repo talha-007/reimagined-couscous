@@ -73,7 +73,7 @@ const BuyGrid = () => {
                   onClick={() => setActiveStep(index)}
                   style={{
                     height: "48px",
-                    background: "#3535353d",
+                    background: "#353535",
                     border: "1px solid #feea9a3d",
                     borderRadius: "0px",
                     maxWidth: "170px",
