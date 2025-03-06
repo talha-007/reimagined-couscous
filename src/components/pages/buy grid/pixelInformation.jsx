@@ -83,7 +83,7 @@ const PixelInformation = () => {
             <div className="flex items-center gap-1.5">
               <img src={coinsIcon} alt="" />
               <p className="font-[Montserrat] text-[14px] font-semibold text-white">
-                {!selectionSummary.subtotal ? 0 : selectionSummary.subtotal}
+                {!selectionSummary?.subtotal ? 0 : selectionSummary?.subtotal}
               </p>
             </div>
           </div>

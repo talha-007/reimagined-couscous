@@ -52,7 +52,9 @@ const Grid = ({ Summary }) => {
   const [selections, setSelections] = useState([]);
   const [hoveredSelection, setHoveredSelection] = useState([]);
   const [saveSelection, setSaveSelection] = useState(false);
+  const [tooltipActive, setToolTipActive] = useState(false);
   console.log("selections", selections);
+
   const [selectionSummary, setSelectionSummary] = useState({
     totalBlocks: 0,
     subtotal: 0,
@@ -155,8 +157,10 @@ const Grid = ({ Summary }) => {
         ctx.save();
 
         if (isHovered) {
-          ctx.shadowColor = "#000";
+          ctx.shadowColor = "#0007";
           ctx.shadowBlur = 25;
+
+          setToolTipActive(true);
         } else {
           ctx.shadowBlur = 0;
         }
@@ -186,10 +190,11 @@ const Grid = ({ Summary }) => {
         }
 
         ctx.restore(); // Restore state after drawing
+        // setToolTipActive(false);
       });
     });
     if (Summary?.selectedCoordinates) {
-      Summary.selectedCoordinates.forEach(({ startPos, endPos }) => {
+      Summary.selectedCoordinates?.forEach(({ startPos, endPos }) => {
         const x = Math.min(startPos.x, endPos.x);
         const y = Math.min(startPos.y, endPos.y);
         const width = Math.abs(endPos.x - startPos.x);
@@ -214,6 +219,7 @@ const Grid = ({ Summary }) => {
       ctx.strokeRect(x, y, width, height);
     }
   };
+  console.log(tooltipActive);
 
   const handleMouseDown = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
@@ -227,11 +233,29 @@ const Grid = ({ Summary }) => {
     setDragging(true);
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e) => {
     if (startPos && endPos) {
       const newSelection = { startPos, endPos };
 
+      // Check if the mouse click is inside any existing selection
+      const isInsideSelection = selections.some(({ startPos, endPos }) => {
+        return (
+          mousePos.x >= startPos.x &&
+          mousePos.x <= endPos.x &&
+          mousePos.y >= startPos.y &&
+          mousePos.y <= endPos.y
+        );
+      });
+
+      if (isInsideSelection) {
+        setDragging(false);
+        return; // Do not clear selections if clicking inside
+      }
+
       setSelections((prevSelections) => [...prevSelections, newSelection]);
+    } else {
+      // Clear selections when clicking outside
+      setSelections([]);
     }
 
     setDragging(false);
@@ -259,6 +283,7 @@ const Grid = ({ Summary }) => {
       setHoveredUser(null);
       setHoveredSelection(null);
       setTooltipPos(null);
+
       return;
     }
 
@@ -310,6 +335,21 @@ const Grid = ({ Summary }) => {
     localStorage.setItem("selectionSummary", JSON.stringify(selectionSummary));
     setSaveSelection(true);
   };
+
+  const handleClickOutside = (event) => {
+    if (!canvasRef.current.contains(event.target)) {
+      // Clicked outside canvas → clear everything
+      setToolTipActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <canvas
