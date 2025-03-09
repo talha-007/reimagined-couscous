@@ -1,0 +1,170 @@
+import { useEffect, useState } from "react";
+import CustomButton from "../../button";
+import { motion } from "framer-motion";
+import { buyNow } from "./data";
+import hourglass from "../../../assets/icons/HourglassMedium.svg";
+
+const Bids = () => {
+  const [hoveredId, setHoveredId] = useState(null);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 5,
+    hours: 24,
+    minutes: 18,
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        let { days, hours, minutes } = prev;
+
+        if (minutes > 0) {
+          minutes -= 1;
+        } else {
+          if (hours > 0) {
+            hours -= 1;
+            minutes = 59;
+          } else if (days > 0) {
+            days -= 1;
+            hours = 23;
+            minutes = 59;
+          } else {
+            clearInterval(timer);
+          }
+        }
+
+        return { days, hours, minutes };
+      });
+    }, 60000); // Updates every minute
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4">
+      {buyNow.map((item) => (
+        <motion.div
+          key={item.id}
+          className="max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
+          onHoverStart={() => setHoveredId(item.id)}
+          onHoverEnd={() => setHoveredId(null)}
+        >
+          {hoveredId === item.id && (
+            <div className="absolute right-2 top-2 z-30">
+              <CustomButton
+                bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
+                strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
+                py="py-1"
+                px="px-2"
+                text="text-[10px]"
+                name="View Profile"
+              />
+            </div>
+          )}
+          {/* Profile Image */}
+          <div
+            style={{
+              backgroundImage: `url(${item.userProfile})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+              width: "100%",
+              height: "235px",
+              position: "relative",
+            }}
+          >
+            <div
+              className="absolute bottom-4 right-2 left-2 z-10 text-[#FEDB6B] uppercase py-3 px-2"
+              style={{
+                background:
+                  "linear-gradient(-60deg, rgb(53, 53, 53) 50%, rgb(118, 110, 83) 100%)",
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <img src={hourglass} alt="Hourglass" className="w-6 h-6" />
+                <p className="font-[Movie Poster] text-[12px]">
+                  {timeLeft.days} <span className="text-[#FEF6C0]">Days</span>
+                </p>
+                <p className="font-[Movie Poster] text-[12px]">
+                  {timeLeft.hours} <span className="text-[#FEF6C0]">Hours</span>
+                </p>
+                <p className="font-[Movie Poster] text-[12px]">
+                  {timeLeft.minutes} <span className="text-[#FEF6C0]">Min</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Details Section (Will Slide Up on Hover) */}
+          <motion.div
+            className="absolute bottom-0 left-0 w-full bg-black z-30"
+            initial={{ y: 56 }}
+            animate={{ y: hoveredId === item.id ? 0 : 56 }}
+            transition={{ stiffness: 150 }}
+          >
+            <div
+              className="p-4"
+              style={{
+                background: "linear-gradient(0deg, #fef6c026,#e8c77685)",
+              }}
+            >
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                    {item.name}
+                  </p>
+                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                    {item.price}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-[#feea9a9c] font-light text-[12px]">
+                    {item.username}
+                  </p>
+                  <p className="text-[#feea9a9c] font-light text-[12px]">
+                    Followers
+                  </p>
+                </div>
+                {hoveredId === item.id && (
+                  <div className="flex items-center justify-between">
+                    <a
+                      href="#"
+                      className="text-[#feea9a9c] font-light text-[12px] underline"
+                    >
+                      View Grid
+                    </a>
+                    <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                      {item.gridSize}
+                    </p>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <p className="text-[#feea9a9c] font-light text-[12px]">
+                    Reserved Price
+                  </p>
+                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                    {item.price}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-[#feea9a9c] font-light text-[12px]">
+                    Highest Bid
+                  </p>
+                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                    {item.price}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-[#feea9a9c] font-light text-[12px]">
+                    Bidder
+                  </p>
+                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                    {item.username}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+export default Bids;

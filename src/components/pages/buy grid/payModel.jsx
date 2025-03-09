@@ -2,11 +2,8 @@ import {
   Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
-  Button,
   ThemeProvider,
   IconButton,
-  Input,
   Radio,
 } from "@material-tailwind/react";
 import closeBtn from "../../../assets/icons/close btn.svg";

@@ -13,6 +13,10 @@
   font-family: "Gilroy";
   src: url("/gilroy/Gilroy-Regular.ttf") format("truetype");
 }
+@font-face {
+  font-family: "Movie Poster";
+  src: url("/public/sf-movie-poster-2/SFMoviePoster.ttf") format("truetype");
+}
 
 body {
   background-color: black;
