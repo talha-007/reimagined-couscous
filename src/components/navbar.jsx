@@ -22,8 +22,8 @@ const Navbar = () => {
   const [isCurrDropdownOpen, setIsCurrDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null); // Track which item is hovered
-  const [activeIndex, setActiveIndex] = useState("Home"); // Track active item
-  console.log(activeIndex);
+  const [activeIndex, setActiveIndex] = useState(""); // Track active item
+
   const currDropdownRef = useRef(null);
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
@@ -99,10 +99,12 @@ const Navbar = () => {
                     }}
                   >
                     {item}
-                    {isActive ? (
+                    {activeIndex.toLowerCase() === item.toLowerCase() && (
                       <span className="absolute left-1/2 -bottom-2 h-1 w-1  bg-[#FFE395] transform -translate-x-1/2"></span>
-                    ) : (
-                      ""
+                    )}
+                    {console.log(
+                      activeIndex.toLowerCase() === item.toLowerCase(),
+                      isActive
                     )}
                   </motion.a>
                 );

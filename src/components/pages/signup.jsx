@@ -4,8 +4,77 @@ import googleIcon from "../../assets/google.svg";
 import { motion } from "framer-motion";
 
 import AuthLayout from "../layout/authLayout";
-
+import { useState } from "react";
+const initialValues = {
+  email: "",
+  password: "",
+  confirm_password: "",
+};
 const Signup = () => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email") {
+      if (!value) {
+        // Remove error if the field is empty
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.email;
+          return newErrors;
+        });
+      } else if (!validateEmail(value)) {
+        setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
+      } else {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.email;
+          return newErrors;
+        });
+      }
+    }
+
+    if (name === "password") {
+      if (!value) {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.password;
+          return newErrors;
+        });
+      }
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let newErrors = {};
+
+    if (!values.email) {
+      newErrors.email = "Email is required";
+    } else if (!validateEmail(values.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!values.password) {
+      newErrors.password = "Password is required";
+    }
+    if (!values.confirm_password) {
+      newErrors.confirm_password = "Confirm Password is required";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      console.log("Form submitted", values);
+    }
+  };
+  console.log(values);
+
   return (
     <AuthLayout>
       <div className="flex items-center justify-center">
@@ -48,6 +117,10 @@ const Signup = () => {
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
                 placeholder="Enter your email"
                 required
+                name="email"
+                autoComplete="off"
+                value={values.email}
+                onChange={handleOnChange}
               />
             </div>
 
@@ -60,6 +133,10 @@ const Signup = () => {
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
                 placeholder="Enter your password"
                 required
+                name="password"
+                autoComplete="off"
+                value={values.password}
+                onChange={handleOnChange}
               />
             </div>
 
@@ -72,6 +149,10 @@ const Signup = () => {
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
                 placeholder="Confirm your password"
                 required
+                name="confirm_password"
+                autoComplete="off"
+                value={values.confirm_password}
+                onChange={handleOnChange}
               />
             </div>
             <div className="flex flex-col items-center gap-6">
@@ -80,8 +161,9 @@ const Signup = () => {
                 strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
                 py="py-4"
                 hidden="block"
-                name="Login"
-                width="100%"
+                name="Sign Up"
+                onClick={handleSubmit}
+                width="w-full"
               />
               <p className="text-white">
                 Already have an account?{" "}
@@ -95,9 +177,9 @@ const Signup = () => {
                 strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
                 py="py-4"
                 hidden="block"
-                name="Countinue with Google"
+                name="Continue with Google"
                 icon={googleIcon}
-                width="100%"
+                width="w-full"
               />
             </div>
           </motion.div>

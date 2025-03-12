@@ -24,6 +24,10 @@ const dummyUsers = [
     id: 2,
     name: "Bob",
     profilePic: user2,
+    bio: "A creative soul blending design, tech, and a dash of humor, Alex shares their journey through design tips and daily life quirks. Coffee lover and weekend adventurer.Socials:",
+    fbLink: "@acarterdesigns",
+    instaLink: "@alexdesigns",
+    tiktokLink: "@alexcarterdesigns",
     selectedPixels: [
       { startPos: { x: 130, y: 70 }, endPos: { x: 170, y: 90 } },
     ],
@@ -32,6 +36,10 @@ const dummyUsers = [
     id: 3,
     name: "Bob",
     profilePic: user3,
+    bio: "A creative soul blending design, tech, and a dash of humor, Alex shares their journey through design tips and daily life quirks. Coffee lover and weekend adventurer.Socials:",
+    fbLink: "@acarterdesigns",
+    instaLink: "@alexdesigns",
+    tiktokLink: "@alexcarterdesigns",
     selectedPixels: [
       { startPos: { x: 230, y: 90 }, endPos: { x: 270, y: 130 } },
     ],
@@ -53,6 +61,8 @@ const Grid = ({ Summary }) => {
   const [hoveredSelection, setHoveredSelection] = useState([]);
   const [saveSelection, setSaveSelection] = useState(false);
   const [tooltipActive, setToolTipActive] = useState(false);
+  const [clickedUser, setClickedUser] = useState(null);
+
   console.log("selections", selections);
 
   const [selectionSummary, setSelectionSummary] = useState({
@@ -269,22 +279,18 @@ const Grid = ({ Summary }) => {
     setMousePos({ x, y });
 
     if (dragging && startPos) {
-      const newX = Math.floor(x / pixelSize) * pixelSize;
-      const newY = Math.floor(y / pixelSize) * pixelSize;
-
-      const width = newX - startPos.x;
-      const height = newY - startPos.y;
-
       setEndPos({
-        x: startPos.x + width + pixelSize,
-        y: startPos.y + height + pixelSize,
+        x:
+          startPos.x +
+          Math.floor((x - startPos.x) / pixelSize) * pixelSize +
+          pixelSize,
+        y:
+          startPos.y +
+          Math.floor((y - startPos.y) / pixelSize) * pixelSize +
+          pixelSize,
       });
 
-      setHoveredUser(null);
-      setHoveredSelection(null);
-      setTooltipPos(null);
-
-      return;
+      return; // Do NOT reset tooltip here
     }
 
     let foundUser = null;
@@ -316,20 +322,92 @@ const Grid = ({ Summary }) => {
         break;
       }
     }
+
+    // 🛠 If there's a clickedUser, do NOT override the tooltip
+    if (clickedUser) return;
+
     if (foundUser) {
       setHoveredUser(foundUser);
       setHoveredSelection(null);
-      setTooltipPos({ x: e.pageX, y: e.pageY }); // Use pageX and pageY
+      setTooltipPos({ x: e.pageX, y: e.pageY });
     } else if (foundSelection) {
       setHoveredUser(null);
       setHoveredSelection(foundSelection);
-      setTooltipPos({ x: e.pageX, y: e.pageY }); // Use pageX and pageY
+      setTooltipPos({ x: e.pageX, y: e.pageY });
     } else {
       setHoveredUser(null);
       setHoveredSelection(null);
       setTooltipPos(null);
     }
   };
+
+  const handleClick = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    let foundUser = null;
+    let foundSelection = null;
+
+    // Check if click is inside a user image
+    for (const user of users) {
+      for (const { startPos, endPos } of user.selectedPixels) {
+        if (
+          x >= startPos.x &&
+          x <= endPos.x &&
+          y >= startPos.y &&
+          y <= endPos.y
+        ) {
+          foundUser = user;
+          break;
+        }
+      }
+      if (foundUser) break;
+    }
+
+    // If no user image was clicked, check for normal selected pixels
+    if (!foundUser) {
+      for (const { startPos, endPos } of selections) {
+        if (
+          x >= startPos.x &&
+          x <= endPos.x &&
+          y >= startPos.y &&
+          y <= endPos.y
+        ) {
+          foundSelection = { startPos, endPos };
+          break;
+        }
+      }
+    }
+
+    if (foundUser) {
+      setClickedUser(foundUser); // Store clicked user to keep tooltip persistent
+      setHoveredUser(foundUser);
+      setHoveredSelection(null);
+      setTooltipPos({ x: e.pageX, y: e.pageY });
+    } else if (foundSelection) {
+      setClickedUser(null);
+      setHoveredUser(null);
+      setHoveredSelection(foundSelection);
+      setTooltipPos({ x: e.pageX, y: e.pageY });
+    } else {
+      setClickedUser(null);
+      setHoveredUser(null);
+      setHoveredSelection(null);
+      setTooltipPos(null);
+    }
+  };
+
+  // Attach event listeners
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    canvas.addEventListener("click", handleClick);
+    return () => {
+      canvas.removeEventListener("click", handleClick);
+    };
+  }, [users]);
 
   const handleSelectPixels = () => {
     localStorage.setItem("selectionSummary", JSON.stringify(selectionSummary));

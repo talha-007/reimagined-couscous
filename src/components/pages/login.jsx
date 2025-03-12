@@ -4,8 +4,88 @@ import googleIcon from "../../assets/google.svg";
 import { motion } from "framer-motion";
 
 import AuthLayout from "../layout/authLayout";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import authService from "../../redux/services/authServices";
+import { toast } from "react-toastify";
 
+const initialValues = {
+  email: "",
+  password: "",
+};
 const Signin = () => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+
+  const dispatch = useDispatch();
+
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email") {
+      if (!value) {
+        // Remove error if the field is empty
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.email;
+          return newErrors;
+        });
+      } else if (!validateEmail(value)) {
+        setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
+      } else {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.email;
+          return newErrors;
+        });
+      }
+    }
+
+    if (name === "password") {
+      if (!value) {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.password;
+          return newErrors;
+        });
+      }
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let newErrors = {};
+
+    if (!values.email) {
+      newErrors.email = "Email is required";
+    } else if (!validateEmail(values.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!values.password) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+    const datas = {
+      ...values,
+    };
+    try {
+      const res = authService.login(datas);
+      console.log("login res", res);
+      if (res.success) {
+        toast.success();
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  console.log(values);
+
   return (
     <AuthLayout>
       <div className="flex items-center justify-center">
@@ -48,7 +128,14 @@ const Signin = () => {
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
                 placeholder="Enter your email"
                 required
+                name="email"
+                autoComplete="off"
+                value={values.email}
+                onChange={handleOnChange}
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
             </div>
 
             <div className="flex flex-col mb-4">
@@ -60,7 +147,13 @@ const Signin = () => {
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
                 placeholder="Enter your password"
                 required
+                name="password"
+                value={values.password}
+                onChange={handleOnChange}
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm">{errors.password}</p>
+              )}
             </div>
 
             <div className="flex flex-col items-center gap-6">
@@ -70,7 +163,8 @@ const Signin = () => {
                 py="py-4"
                 hidden="block"
                 name="Login"
-                width="100%"
+                width="w-full"
+                onClick={handleSubmit}
               />
               <p className="text-white">
                 Don't have an account?{" "}
@@ -84,9 +178,9 @@ const Signin = () => {
                 strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
                 py="py-4"
                 hidden="block"
-                name="Countinue with Google"
+                name="Continue with Google"
                 icon={googleIcon}
-                width="100%"
+                width="w-full"
               />
             </div>
           </motion.div>

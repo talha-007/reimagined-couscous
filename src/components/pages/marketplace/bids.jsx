@@ -42,7 +42,7 @@ const Bids = () => {
       {buyNow.map((item) => (
         <motion.div
           key={item.id}
-          className="max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
+          className="max-w-none md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
           onHoverStart={() => setHoveredId(item.id)}
           onHoverEnd={() => setHoveredId(null)}
         >
@@ -53,7 +53,7 @@ const Bids = () => {
                 strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
                 py="py-1"
                 px="px-2"
-                text="text-[10px]"
+                text="text-[12px]"
                 name="View Profile"
               />
             </div>
@@ -63,7 +63,7 @@ const Bids = () => {
             style={{
               backgroundImage: `url(${item.userProfile})`,
               backgroundRepeat: "no-repeat",
-              backgroundSize: "contain",
+              backgroundSize: "cover",
               width: "100%",
               height: "235px",
               position: "relative",
@@ -95,7 +95,7 @@ const Bids = () => {
           <motion.div
             className="absolute bottom-0 left-0 w-full bg-black z-30"
             initial={{ y: 56 }}
-            animate={{ y: hoveredId === item.id ? 0 : 56 }}
+            animate={{ y: hoveredId === item.id ? 0 : 74 }}
             transition={{ stiffness: 150 }}
           >
             <div
@@ -104,22 +104,24 @@ const Bids = () => {
                 background: "linear-gradient(0deg, #fef6c026,#e8c77685)",
               }}
             >
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                    {item.name}
-                  </p>
-                  <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                    {item.price}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-[#feea9a9c] font-light text-[12px]">
-                    {item.username}
-                  </p>
-                  <p className="text-[#feea9a9c] font-light text-[12px]">
-                    Followers
-                  </p>
+              <div className="flex flex-col gap-4">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                      {item.name}
+                    </p>
+                    <p className="text-[#FEDB6B] font-semibold text-[16px]">
+                      {item.price}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[#feea9a9c] font-light text-[12px]">
+                      {item.username}
+                    </p>
+                    <p className="text-[#feea9a9c] font-light text-[12px]">
+                      Followers
+                    </p>
+                  </div>
                 </div>
                 {hoveredId === item.id && (
                   <div className="flex items-center justify-between">
@@ -136,12 +138,13 @@ const Bids = () => {
                 )}
                 <div className="flex items-center justify-between">
                   <p className="text-[#feea9a9c] font-light text-[12px]">
-                    Reserved Price
+                    Reserve Price
                   </p>
                   <p className="text-[#FEDB6B] font-semibold text-[16px]">
                     {item.price}
                   </p>
                 </div>
+
                 <div className="flex items-center justify-between">
                   <p className="text-[#feea9a9c] font-light text-[12px]">
                     Highest Bid

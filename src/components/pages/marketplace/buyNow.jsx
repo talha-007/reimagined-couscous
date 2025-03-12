@@ -11,7 +11,7 @@ const BuyNow = () => {
       {buyNow.map((item) => (
         <motion.div
           key={item.id}
-          className="max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
+          className="max-w-[none] md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
           onHoverStart={() => setHoveredId(item.id)}
           onHoverEnd={() => setHoveredId(null)}
         >
@@ -22,18 +22,18 @@ const BuyNow = () => {
                 strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
                 py="py-1"
                 px="px-2"
-                text="text-[10px]"
+                text="text-[12px]"
                 name="View Profile"
               />
             </div>
           )}
           {/* Profile Image */}
           <div
+            className="w-full md:w-[235px]"
             style={{
               backgroundImage: `url(${item.userProfile})`,
               backgroundRepeat: "no-repeat",
-              backgroundSize: "contain",
-              width: "235px",
+              backgroundSize: "cover",
               height: "235px",
             }}
           ></div>
@@ -57,7 +57,7 @@ const BuyNow = () => {
                     {item.name}
                   </p>
                   <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                    {item.price}
+                    {item.followers}
                   </p>
                 </div>
                 <div className="flex items-center justify-between">

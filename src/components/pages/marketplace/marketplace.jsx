@@ -9,6 +9,30 @@ const Marketplace = () => {
   const [activeTab, setActiveTab] = useState("Buy Now");
   return (
     <Layout>
+      <div
+        className="absolute bottom-[75%] left-[-30%] translate-x-1/2 w-[450px] h-[450px] rounded-full bg-[#B48B34] blur-[250px] opacity-50 -z-10"
+        style={{
+          boxShadow: "0 0 200px 100px rgba(180, 139, 52, 0.6)",
+        }}
+      ></div>
+      <div
+        className="absolute bottom-[30%] left-[-250px] translate-x-1/2 w-[450px] h-[450px] rounded-full bg-[#B48B34] blur-[350px] opacity-50 -z-10"
+        style={{
+          boxShadow: "0 0 200px 100px rgba(180, 139, 52, 0.6)",
+        }}
+      ></div>
+      <div
+        className="absolute bottom-[50%] right-0 translate-x-1/2 w-[450px] h-[450px] rounded-full bg-[#B48B34] blur-[250px] opacity-50 -z-10"
+        style={{
+          boxShadow: "0 0 200px 100px rgba(180, 139, 52, 0.6)",
+        }}
+      ></div>
+      <div
+        className="absolute bottom-[550px] right-0 translate-x-1/2 w-[450px] h-[450px] rounded-full bg-[#B48B34] blur-[250px] opacity-50 -z-10"
+        style={{
+          boxShadow: "0 0 200px 100px rgba(180, 139, 52, 0.6)",
+        }}
+      ></div>
       <div className="max-w-7xl w-full mx-auto relative px-4 mt-30">
         <div>
           <h1
