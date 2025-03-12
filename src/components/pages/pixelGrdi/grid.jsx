@@ -125,6 +125,9 @@ const Grid = ({ Summary, image }) => {
     image,
   ]);
   useEffect(() => {
+    if (!Summary) return; // Ensure Summary exists
+
+    Summary.imgElement = null; // Reset previous image
     if (image) {
       Summary.imgElement = null; // Reset previous image
       const img = new Image();
