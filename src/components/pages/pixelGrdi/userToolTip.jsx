@@ -155,7 +155,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
             {hoveredUser?.bio}
           </p>
         </div>
-        <div className="flex items-center justify-center gap-2.5">
+        <div className="flex items-center justify-center gap-2">
           <CustomButton
             py="py-2"
             hidden="block"
