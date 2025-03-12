@@ -46,7 +46,7 @@ const dummyUsers = [
   },
 ];
 
-const Grid = ({ Summary }) => {
+const Grid = ({ Summary, image }) => {
   const canvasRef = useRef(null);
   const [gridSize, setGridSize] = useState(BASE_GRID_SIZE);
   const [pixelSize, setPixelSize] = useState(BASE_PIXEL_SIZE);
@@ -114,7 +114,31 @@ const Grid = ({ Summary }) => {
 
   useEffect(() => {
     drawGrid();
-  }, [startPos, endPos, gridSize, pixelSize, users, saveSelection, Summary]);
+  }, [
+    startPos,
+    endPos,
+    gridSize,
+    pixelSize,
+    users,
+    saveSelection,
+    Summary,
+    image,
+  ]);
+  useEffect(() => {
+    if (image) {
+      Summary.imgElement = null; // Reset previous image
+      const img = new Image();
+      img.src = image;
+      img.onload = () => {
+        Summary.imgElement = img;
+        drawGrid(); // Redraw grid with the new image
+      };
+    } else {
+      Summary.imgElement = null; // Ensure it's reset when no image
+      drawGrid(); // Redraw grid with fallback color
+    }
+  }, [image]); // Reload when `image` changes
+  // Reload image when `image` prop changes
 
   const updateGridSize = () => {
     const screenWidth = window.innerWidth;
@@ -210,10 +234,14 @@ const Grid = ({ Summary }) => {
         const width = Math.abs(endPos.x - startPos.x);
         const height = Math.abs(endPos.y - startPos.y);
 
-        ctx.fillStyle = Summary ? "#FEEA9A" : "#FEEA9AA3"; // Highlight color
-        ctx.fillRect(x, y, width, height);
-        ctx.strokeStyle = "#FFF8C5";
-        ctx.strokeRect(x, y, width, height);
+        if (Summary.imgElement) {
+          ctx.drawImage(Summary.imgElement, x, y, width, height);
+        } else {
+          ctx.fillStyle = "#FEEA9A";
+          ctx.fillRect(x, y, width, height);
+          ctx.strokeStyle = "#FFF8C5";
+          ctx.strokeRect(x, y, width, height);
+        }
       });
     }
 
@@ -229,6 +257,7 @@ const Grid = ({ Summary }) => {
       ctx.strokeRect(x, y, width, height);
     }
   };
+
   console.log(tooltipActive);
 
   const handleMouseDown = (e) => {

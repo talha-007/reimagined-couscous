@@ -194,7 +194,7 @@ const PixelInformation = () => {
                 </p>
               </div>
             </div>
-            <Grid Summary={selectionSummary} />
+            <Grid Summary={selectionSummary} image={profileImage} />
           </div>
         </div>
       </div>
