@@ -11,6 +11,7 @@ const CustomButton = ({
   icon,
   px,
   text,
+  isLoading,
 }) => {
   return (
     <motion.button
@@ -43,7 +44,8 @@ const CustomButton = ({
           <img src={icon} alt="icon" />
         </>
       )}
-      {name}
+
+      {isLoading ? "loading..." : name}
     </motion.button>
   );
 };

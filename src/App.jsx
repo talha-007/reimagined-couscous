@@ -6,8 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import Signin from "./components/pages/login";
-import Home from "./components/pages/Home";
 import Signup from "./components/pages/signup";
+import Home from "./components/pages/Home";
 import PixelGrid from "./components/pages/pixelGrdi/pixelGrid";
 import InfluencerProfile from "./components/pages/influencerProfile/profile";
 import BuyGrid from "./components/pages/buy grid/buyGrid";
@@ -16,11 +16,28 @@ import EditProfile from "./components/pages/userprofile/editProfile";
 import Marketplace from "./components/pages/marketplace/marketplace";
 
 function App() {
+  const isAuthenticated = !!localStorage.getItem("token"); // Ensure boolean value
+
+  console.log("isAuthenticated", isAuthenticated);
+
   return (
-    <>
-      <div>
-        <Router>
-          <Routes>
+    <Router>
+      <Routes>
+        {/* Public Routes (Accessible only if NOT logged in) */}
+        {!isAuthenticated && (
+          <>
+            <Route path="/sign-in" element={<Signin />} />
+            <Route path="/sign-up" element={<Signup />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/pixel-grid" element={<PixelGrid />} />
+            <Route path="/marketplace" element={<Marketplace />} />
+          </>
+        )}
+
+        {/* Private Routes (Accessible only if logged in) */}
+        {isAuthenticated && (
+          <>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/pixel-grid" element={<PixelGrid />} />
@@ -29,13 +46,18 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/influencer-profile" element={<InfluencerProfile />} />
             <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/sign-in" element={<Signin />} />
-            <Route path="/sign-up" element={<Signup />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
-        </Router>
-      </div>
-    </>
+          </>
+        )}
+
+        {/* Redirect unknown routes */}
+        <Route
+          path="*"
+          element={
+            <Navigate to={isAuthenticated ? "/home" : "/sign-in"} replace />
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

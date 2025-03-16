@@ -6,16 +6,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 import coinsIcon from "../assets/icons/Coins.svg";
 import Bell from "../assets/icons/Bell.svg";
 import { FaChevronDown } from "react-icons/fa";
-import userImage from "../assets/users/image4.png";
+import userImage from "../assets/users/dummy.png";
 
 import close from "../assets/icons/close btn.svg";
 import { IconButton } from "@material-tailwind/react";
 import grid from "../assets/icons/grid.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../redux/slice/userSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
-  const isLoggedIn = true;
+  const isLoggedIn = localStorage.getItem("token");
+  // console.log("isloggedin", isLoggedIn);
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -27,6 +31,20 @@ const Navbar = () => {
   const currDropdownRef = useRef(null);
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
+  const profileData = useSelector((s) => s?.user?.data?.data);
+  // console.log("profileData", profileData);
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      await dispatch(getUserProfile());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -102,10 +120,6 @@ const Navbar = () => {
                     {activeIndex.toLowerCase() === item.toLowerCase() && (
                       <span className="absolute left-1/2 -bottom-2 h-1 w-1  bg-[#FFE395] transform -translate-x-1/2"></span>
                     )}
-                    {console.log(
-                      activeIndex.toLowerCase() === item.toLowerCase(),
-                      isActive
-                    )}
                   </motion.a>
                 );
               })}
@@ -122,7 +136,7 @@ const Navbar = () => {
                 >
                   <img src={coinsIcon} alt="Coins" />
                   <p className="text-[#FEDF7A] font-[Inter] text-[16px] ">
-                    7000
+                    {profileData?.coins ? profileData?.coins : "0"}
                   </p>
                 </div>
                 <div onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
@@ -142,9 +156,13 @@ const Navbar = () => {
                           : "rotate(0deg)",
                       }}
                     />
-                    <div className="relative w-10 h-10  p-[1px] before:absolute before:inset-0 before:bg-gradient-to-r before:from-[#FFF8C5] before:to-[#8C5E1C]  before:-z-10">
+                    <div className="relative w-10 h-10  p-[1px] before:absolute before:inset-0  before:-z-10">
                       <img
-                        src={userImage}
+                        src={
+                          profileData?.userImage
+                            ? profileData?.userImage
+                            : userImage
+                        }
                         alt="User"
                         className="w-full h-full "
                       />
@@ -239,33 +257,43 @@ const Navbar = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       ref={dropdownRef}
-                      className="absolute right-0 mt-7 p-[24px] bg-black shadow-lg overflow-hidden z-50 border"
+                      className="absolute right-0 mt-7 p-[24px] min-w-[404px] bg-black shadow-lg overflow-hidden z-50 border"
                       style={{
                         borderImage:
                           "linear-gradient(to right, #ffe39554, #ffe39554) 1",
                       }}
                     >
                       <div>
-                        <div className="flex items-center gap-4">
-                          <div
-                            style={{
-                              backgroundImage: `url(${userImage})`,
-                              width: "148px",
-                              height: "148px",
-                              backgroundRepeat: "no-repeat",
-                              backgroundSize: "cover",
-                            }}
-                          ></div>
-                          <div className="flex flex-col gap-4">
-                            <p className="text-[#FEDB6B] font-[Montserrat] font-bold text-[32px] w-max">
-                              Alex Carter
-                            </p>
-                            <p className="text-[#FEDB6B] font-[Montserrat] font-light text-[20px]">
-                              @acarterdesigns
-                            </p>
+                        {(profileData?.name ||
+                          profileData?.userName ||
+                          profileData?.userImage) && (
+                          <div className="flex items-center gap-4 mb-8">
+                            <div
+                              style={{
+                                backgroundImage: `url(${
+                                  profileData?.userImage
+                                    ? profileData?.userImage
+                                    : ""
+                                })`,
+                                width: "148px",
+                                height: "148px",
+                                backgroundRepeat: "no-repeat",
+                                backgroundSize: "cover",
+                              }}
+                            ></div>
+                            <div className="flex flex-col gap-4">
+                              <p className="text-[#FEDB6B] font-[Montserrat] font-bold text-[32px] w-max">
+                                {profileData?.name ? profileData?.name : ""}
+                              </p>
+                              <p className="text-[#FEDB6B] font-[Montserrat] font-light text-[20px]">
+                                {profileData?.userName
+                                  ? profileData?.userName
+                                  : ""}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex flex-col md:flex-row gap-4 mt-8">
+                        )}
+                        <div className="flex flex-col md:flex-row gap-4 ">
                           <CustomButton
                             bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
                             strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
@@ -273,13 +301,27 @@ const Navbar = () => {
                             hidden="hidden"
                             width="w-full"
                             name="Logout"
+                            onClick={() => {
+                              localStorage.removeItem("token");
+                              setIsDropdownOpen(false);
+                            }}
                           />
                           <CustomButton
                             py="py-2"
                             hidden="block"
-                            name="View Profile"
+                            name={
+                              profileData?.role === "user"
+                                ? "Get Started"
+                                : "View Profile"
+                            }
                             width="w-full"
-                            onClick={() => navigate("/profile")}
+                            onClick={() =>
+                              navigate(
+                                profileData?.role === "user"
+                                  ? "/buy-grid"
+                                  : "/profile"
+                              )
+                            }
                             bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                             strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
                           />
@@ -293,7 +335,9 @@ const Navbar = () => {
               <div className="md:flex hidden items-center gap-4">
                 <CustomButton
                   py="py-2"
-                  onClick={() => navigate("/sign-up")}
+                  onClick={() =>
+                    navigate(isLoggedIn ? "/buy-grid" : "/sign-up")
+                  }
                   hidden="hidden"
                   name="Get Started for $1"
                   bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
@@ -370,7 +414,12 @@ const Navbar = () => {
             exit="exit"
             onMouseMove={handleMouseMove} // Track cursor movement
           >
-            {["Home", "Pixel Grid", "Marketplace"].map((item, index) => {
+            {[
+              "Home",
+              "Pixel Grid",
+              isLoggedIn && "Buy Grid",
+              "Marketplace",
+            ].map((item, index) => {
               return (
                 <motion.a
                   key={index}
@@ -390,11 +439,12 @@ const Navbar = () => {
                 </motion.a>
               );
             })}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mt-8">
               <CustomButton
                 py="py-2"
                 hidden="hidden"
                 name="Get Started for $1"
+                onClick={() => navigate("/buy-grid")}
                 bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                 strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
               />

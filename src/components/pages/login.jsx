@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   email: "",
@@ -16,8 +17,8 @@ const initialValues = {
 const Signin = () => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
-
-  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
@@ -56,7 +57,7 @@ const Signin = () => {
       }
     }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
 
@@ -75,16 +76,39 @@ const Signin = () => {
       ...values,
     };
     try {
-      const res = authService.login(datas);
-      console.log("login res", res);
-      if (res.success) {
-        toast.success();
+      setIsLoading(true);
+      const res = await authService.login(datas);
+
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setIsLoading(false);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userData", JSON.stringify(res.data));
+        navigate("/home");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log("error", error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await authService.googleLogin();
+      console.log("google login res", res);
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setIsLoading(false);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userData", JSON.stringify(res.data));
+        navigate("/home");
       }
     } catch (error) {
       console.log("error", error);
+      toast.error(error?.response?.data?.message);
     }
   };
-  console.log(values);
 
   return (
     <AuthLayout>
@@ -134,7 +158,7 @@ const Signin = () => {
                 onChange={handleOnChange}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
+                <p className="text-red-500 text-[10px]">{errors.email}</p>
               )}
             </div>
 
@@ -152,7 +176,7 @@ const Signin = () => {
                 onChange={handleOnChange}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm">{errors.password}</p>
+                <p className="text-red-500 text-[10px]">{errors.password}</p>
               )}
             </div>
 
@@ -165,6 +189,7 @@ const Signin = () => {
                 name="Login"
                 width="w-full"
                 onClick={handleSubmit}
+                isLoading={isLoading}
               />
               <p className="text-white">
                 Don't have an account?{" "}
@@ -180,6 +205,7 @@ const Signin = () => {
                 hidden="block"
                 name="Continue with Google"
                 icon={googleIcon}
+                onClick={handleGoogleLogin}
                 width="w-full"
               />
             </div>

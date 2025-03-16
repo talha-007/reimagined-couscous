@@ -17,12 +17,11 @@ const AuthLayout = ({ children }) => {
         {/* Left Side - Form */}
         {children}
 
-        {/* Right Side - Placeholder for Image or Content */}
         <div
-          className="h-full w-full justify-center border-l col-span-2 overflow-hidden hidden md:flex"
+          className="h-full w-full justify-center border-l col-span-2  overflow-hidden hidden md:flex"
           style={{
-            borderLeft: "1px solid", // Set a solid border to make the gradient visible
-            borderImage: "linear-gradient(to bottom, #7A5018cc, #FEEA9Acc) 1", // Apply gradient only to the left border
+            borderLeft: "1px solid",
+            borderImage: "linear-gradient(to bottom, #7A5018cc, #FEEA9Acc) 1",
           }}
         >
           <div className="flex flex-col justify-center items-center text-center ">

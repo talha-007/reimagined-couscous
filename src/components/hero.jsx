@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("token");
+  console.log("isloggedin", isLoggedIn);
   return (
     <div className="pt-20">
       <div
@@ -62,7 +64,7 @@ const Hero = () => {
                 py="py-4"
                 hidden="block"
                 name="Get Started for $1"
-                onClick={() => navigate("/sign-in")}
+                onClick={() => navigate(isLoggedIn ? "buy-grid" : "/sign-in")}
                 bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                 strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
               />

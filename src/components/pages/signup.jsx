@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 
 import AuthLayout from "../layout/authLayout";
 import { useState } from "react";
+import authService from "../../redux/services/authServices";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 const initialValues = {
   email: "",
   password: "",
@@ -13,6 +16,8 @@ const initialValues = {
 const Signup = () => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
   };
@@ -50,7 +55,7 @@ const Signup = () => {
       }
     }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
 
@@ -66,14 +71,43 @@ const Signup = () => {
     if (!values.confirm_password) {
       newErrors.confirm_password = "Confirm Password is required";
     }
-
     setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Form submitted", values);
+    const datas = {
+      ...values,
+      confirmPassword: values.confirm_password,
+    };
+    try {
+      setIsLoading(true);
+      const res = await authService.signup(datas);
+      console.log("login res", res);
+      if (res.data.success) {
+        setIsLoading(false);
+        toast.success(res?.data?.message);
+        setValues(initialValues);
+        navigate("/sign-in");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log("error", error);
+      toast.error(error?.response?.data?.message);
     }
   };
-  console.log(values);
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await authService.googleLogin();
+      console.log("google login res", res);
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setIsLoading(false);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userData", JSON.stringify(res.data));
+        navigate("/home");
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
 
   return (
     <AuthLayout>
@@ -122,6 +156,9 @@ const Signup = () => {
                 value={values.email}
                 onChange={handleOnChange}
               />
+              {errors.email && (
+                <p className="text-red-500 text-[10px]">{errors.email}</p>
+              )}
             </div>
 
             <div className="flex flex-col mb-4">
@@ -138,6 +175,9 @@ const Signup = () => {
                 value={values.password}
                 onChange={handleOnChange}
               />
+              {errors.password && (
+                <p className="text-red-500 text-[10px]">{errors.password}</p>
+              )}
             </div>
 
             <div className="flex flex-col mb-6">
@@ -154,6 +194,11 @@ const Signup = () => {
                 value={values.confirm_password}
                 onChange={handleOnChange}
               />
+              {errors.confirm_password && (
+                <p className="text-red-500 text-[10px]">
+                  {errors.confirm_password}
+                </p>
+              )}
             </div>
             <div className="flex flex-col items-center gap-6">
               <CustomButton
@@ -164,6 +209,7 @@ const Signup = () => {
                 name="Sign Up"
                 onClick={handleSubmit}
                 width="w-full"
+                isLoading={isLoading}
               />
               <p className="text-white">
                 Already have an account?{" "}
@@ -179,6 +225,7 @@ const Signup = () => {
                 hidden="block"
                 name="Continue with Google"
                 icon={googleIcon}
+                onClick={handleGoogleLogin}
                 width="w-full"
               />
             </div>

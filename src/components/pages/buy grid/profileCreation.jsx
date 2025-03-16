@@ -2,9 +2,58 @@ import { motion } from "framer-motion"; // Import framer-motion
 import imageIcon from "../../../assets/icons/ImageSquare.svg";
 import { useState } from "react";
 import close from "../../../assets/icons/close btn.svg";
+import influencerProfileServices from "../../../redux/services/influencerProfileServices";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import CustomButton from "../../button";
 
-const ProfileCreation = () => {
+const initialValues = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  bio: "",
+  profilePicture: "",
+  facebook_link: "",
+  instagram_link: "",
+  twitter_link: "",
+  brand_name: "",
+  details: "",
+  testimonial: "",
+};
+
+const ProfileCreation = ({ handleNext, updateFormData }) => {
   const [profileImage, setProfileImage] = useState(null);
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "email") {
+      if (!value) {
+        // Remove error if the field is empty
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.email;
+          return newErrors;
+        });
+      } else if (!validateEmail(value)) {
+        setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
+      } else {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.email;
+          return newErrors;
+        });
+      }
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -16,6 +65,41 @@ const ProfileCreation = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const validateProfileForm = (values) => {
+    let errors = {};
+
+    if (!values.first_name) errors.first_name = "First name is required";
+    if (!values.last_name) errors.last_name = "Last name is required";
+    if (!values.email) errors.email = "Email is required";
+    if (!values.bio) errors.bio = "Bio is required";
+    if (!values.facebook_link)
+      errors.facebook_link = "Facebook link is required";
+    if (!values.instagram_link)
+      errors.instagram_link = "Instagram link is required";
+    if (!values.twitter_link) errors.twitter_link = "Twitter link is required";
+    if (!values.brand_name) errors.brand_name = "Brand name is required";
+    if (!values.details) errors.details = "Details are required";
+    if (!values.testimonial) errors.testimonial = "Testimonial is required";
+    if (!profileImage) errors.profileImage = "Profile Image is required";
+
+    return errors;
+  };
+
+  const handleProfileCreation = () => {
+    const newErrors = validateProfileForm(values);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      const datas = {
+        ...values,
+        profilePicture: profileImage,
+      };
+      updateFormData("profile", datas);
+      handleNext();
+    }
+  };
+
   return (
     <div className="max-w-5xl w-full mx-auto relative z-10 font-[Montserrat]">
       <motion.div
@@ -49,7 +133,14 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter First Name"
               required
+              name="first_name"
+              autoComplete="off"
+              value={values.first_name}
+              onChange={handleOnChange}
             />
+            {errors.first_name && (
+              <p className="text-red-500 text-[10px]">{errors.first_name}</p>
+            )}
           </div>
         </div>
         <div className="w-full">
@@ -62,7 +153,14 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter Last Name"
               required
+              name="last_name"
+              autoComplete="off"
+              value={values.last_name}
+              onChange={handleOnChange}
             />
+            {errors.last_name && (
+              <p className="text-red-500 text-[10px]">{errors.last_name}</p>
+            )}
           </div>
         </div>
         <div className="w-full">
@@ -75,7 +173,14 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter Email"
               required
+              name="email"
+              autoComplete="off"
+              value={values.email}
+              onChange={handleOnChange}
             />
+            {errors.email && (
+              <p className="text-red-500 text-[10px]">{errors.email}</p>
+            )}
           </div>
         </div>
         <div className="w-full col-span-3">
@@ -87,8 +192,15 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase resize-none"
               placeholder="Enter Bio"
               required
-              rows={4} // Adjust the number of rows as needed
+              rows={4}
+              name="bio"
+              autoComplete="off"
+              value={values.bio}
+              onChange={handleOnChange}
             />
+            {errors.bio && (
+              <p className="text-red-500 text-[10px]">{errors.bio}</p>
+            )}
           </div>
         </div>
         <div className="w-full">
@@ -105,6 +217,7 @@ const ProfileCreation = () => {
                 id="profile-upload"
                 accept="image/*"
                 className="hidden"
+                name="profileImage"
                 onChange={handleImageChange}
               />
 
@@ -142,6 +255,9 @@ const ProfileCreation = () => {
                 </button>
               )}
             </div>
+            {errors.profileImage && (
+              <p className="text-red-500 text-[10px]">{errors.profileImage}</p>
+            )}
           </div>
         </div>
         {/* social links */}
@@ -162,7 +278,14 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter Facebook link"
               required
+              name="facebook_link"
+              autoComplete="off"
+              value={values.facebook_link}
+              onChange={handleOnChange}
             />
+            {errors.facebook_link && (
+              <p className="text-red-500 text-[10px]">{errors.facebook_link}</p>
+            )}
           </div>
         </div>
         <div className="w-full">
@@ -175,7 +298,16 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter Instagram Link"
               required
+              name="instagram_link"
+              autoComplete="off"
+              value={values.instagram_link}
+              onChange={handleOnChange}
             />
+            {errors.instagram_link && (
+              <p className="text-red-500 text-[10px]">
+                {errors.instagram_link}
+              </p>
+            )}
           </div>
         </div>
         <div className="w-full">
@@ -188,7 +320,14 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter Twitter Link"
               required
+              name="twitter_link"
+              autoComplete="off"
+              value={values.twitter_link}
+              onChange={handleOnChange}
             />
+            {errors.twitter_link && (
+              <p className="text-red-500 text-[10px]">{errors.twitter_link}</p>
+            )}
           </div>
         </div>
         <div className="w-full col-span-3 h-[1px] bg-[#FEF6C026] mt-4 mb-4"></div>
@@ -210,7 +349,14 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
               placeholder="Enter Brand name"
               required
+              name="brand_name"
+              autoComplete="off"
+              value={values.brand_name}
+              onChange={handleOnChange}
             />
+            {errors.brand_name && (
+              <p className="text-red-500 text-[10px]">{errors.brand_name}</p>
+            )}
           </div>
         </div>
         <div className="w-full col-span-3">
@@ -222,8 +368,15 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase resize-none"
               placeholder="Enter Details"
               required
-              rows={4} // Adjust the number of rows as needed
+              rows={4}
+              name="details"
+              autoComplete="off"
+              value={values.details}
+              onChange={handleOnChange}
             />
+            {errors.details && (
+              <p className="text-red-500 text-[10px]">{errors.details}</p>
+            )}
           </div>
         </div>
         <div className="w-full col-span-3">
@@ -235,9 +388,27 @@ const ProfileCreation = () => {
               className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase resize-none"
               placeholder="Enter Testimonial"
               required
-              rows={4} // Adjust the number of rows as needed
+              rows={4}
+              name="testimonial"
+              autoComplete="off"
+              value={values.testimonial}
+              onChange={handleOnChange}
             />
+            {errors.testimonial && (
+              <p className="text-red-500 text-[10px]">{errors.testimonial}</p>
+            )}
           </div>
+        </div>
+        <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8 col-span-3">
+          <CustomButton
+            py="py-4"
+            hidden="block"
+            name={"Next"}
+            onClick={handleProfileCreation}
+            width="w-[200px] md:w-[400px]"
+            bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+            strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+          />
         </div>
       </div>
     </div>

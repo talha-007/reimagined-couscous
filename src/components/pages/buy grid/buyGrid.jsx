@@ -1,5 +1,5 @@
 import Layout from "../../layout/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Stepper, Step } from "@material-tailwind/react";
 import ProfileCreation from "./profileCreation";
 import CustomButton from "../../button";
@@ -14,8 +14,15 @@ import FinishScreen from "./finishScreen";
 const BuyGrid = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [OpenPayModel, setOpenPayModel] = useState(false);
-
   const [showSccessPopup, setShowSccessPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    profile: {},
+    selectPixels: {},
+    pixelInfo: {},
+    checkout: {},
+  });
+  console.log("form data", formData);
+
   const steps = [
     "Profile Creation",
     "Select Pixels",
@@ -23,16 +30,20 @@ const BuyGrid = () => {
     "Checkout",
     "Finish",
   ];
+  useEffect(() => {
+    const savedStep = JSON.parse(localStorage.getItem("activeStep"));
+    const savedData = JSON.parse(localStorage.getItem("stepperFormData"));
+    if (savedStep !== null) setActiveStep(savedStep);
+    if (savedData) setFormData(savedData);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("activeStep", JSON.stringify(activeStep));
+  }, [activeStep]);
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (activeStep > 0) {
-      setActiveStep((prev) => prev - 1);
     }
   };
 
@@ -44,6 +55,26 @@ const BuyGrid = () => {
     setOpenPayModel(false);
   };
   const coins = 0;
+
+  const updateFormData = (step, data) => {
+    const updatedData = { ...formData, [step]: data };
+    setFormData(updatedData);
+    localStorage.setItem("stepperFormData", JSON.stringify(updatedData));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await api.post("/submit-all", formData);
+      if (response.status === 200) {
+        console.log("Form submitted successfully!");
+        localStorage.removeItem("stepperFormData");
+        localStorage.removeItem("activeStep");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
   return (
     <>
       <Layout>
@@ -146,35 +177,29 @@ const BuyGrid = () => {
             ))}
           </Stepper>
         </div>
-        {activeStep === 0 && <ProfileCreation />}
-        {activeStep === 1 && <SelectPixels />}
-        {activeStep === 2 && <PixelInformation />}
-        {activeStep === 3 && <Checkout />}
-        {activeStep === 4 && <FinishScreen />}
+        {activeStep === 0 && (
+          <ProfileCreation
+            handleNext={handleNext}
+            updateFormData={updateFormData}
+          />
+        )}
+        {activeStep === 1 && (
+          <SelectPixels
+            handleNext={handleNext}
+            updateFormData={updateFormData}
+          />
+        )}
+        {activeStep === 2 && (
+          <PixelInformation
+            handleNext={handleNext}
+            updateFormData={updateFormData}
+          />
+        )}
+        {activeStep === 3 && (
+          <Checkout handleNext={handleNext} updateFormData={updateFormData} />
+        )}
+        {activeStep === 4 && <FinishScreen handleSubmit={handleSubmit} />}
         {/* Navigation Buttons */}
-        <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8">
-          {activeStep === 3 && !coins > 0 ? (
-            <CustomButton
-              py="py-4"
-              hidden="block"
-              name="Pay Now"
-              onClick={handleOpenPay}
-              width="w-[200px] md:w-[400px]"
-              bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
-              strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
-            />
-          ) : (
-            <CustomButton
-              py="py-4"
-              hidden="block"
-              name={`${activeStep === 4 ? "Finish" : "Next"}`}
-              onClick={handleNext}
-              width="w-[200px] md:w-[400px]"
-              bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
-              strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
-            />
-          )}
-        </div>
       </Layout>
       <PayModel
         open={OpenPayModel}
