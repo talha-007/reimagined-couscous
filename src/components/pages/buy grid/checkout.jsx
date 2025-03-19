@@ -1,13 +1,54 @@
 import React, { useEffect, useState } from "react";
 
 import coinsIcon from "../../../assets/icons/Coins.svg";
-const Checkout = () => {
+import CustomButton from "../../button";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../../redux/slice/userSlice";
+import { toast } from "react-toastify";
+import BuyCredits from "./buyCredits";
+import PayModel from "./payModel";
+import Popup from "./popup";
+
+const Checkout = ({ handleNext }) => {
+  const dispatch = useDispatch();
   const [selectionSummary, setSelectionSummary] = useState("");
+  const [openCoinsPopup, setOpenCoinsPopup] = useState(false);
+  const [OpenPayModel, setOpenPayModel] = useState(false);
+  const [showSccessPopup, setShowSccessPopup] = useState(false);
   useEffect(() => {
-    const summary = localStorage.getItem("selectionSummary");
+    const summary = JSON.parse(localStorage.getItem("selectionSummary"));
     console.log("summary", summary);
-    setSelectionSummary(JSON.parse(summary));
+    setSelectionSummary(summary);
   }, []);
+  const profileData = useSelector((s) => s?.user?.data?.data);
+  // console.log("profileData", profileData);
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const handleOpenPay = () => {
+    setOpenPayModel(true);
+  };
+  const handleShowSuccessPop = () => {
+    setShowSccessPopup(true);
+    setOpenPayModel(false);
+  };
+
+  const fetchProfileData = async () => {
+    try {
+      await dispatch(getUserProfile());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  let coins = 0;
+  const handleCheckout = () => {
+    if (Number(coins) < Number(selectionSummary?.subtotal)) {
+      toast.error("Buy Coins!");
+      setOpenCoinsPopup(true);
+    }
+  };
   return (
     <div className="max-w-5xl w-full mx-auto  font-[Montserrat]">
       {" "}
@@ -68,6 +109,35 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+      <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8 ">
+        <CustomButton
+          py="py-4"
+          hidden="block"
+          name={"Pay Now"}
+          onClick={handleCheckout}
+          width="w-[200px] md:w-[400px]"
+          bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+          strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+        />
+      </div>
+      <BuyCredits
+        open={openCoinsPopup}
+        handleClose={() => setOpenCoinsPopup(false)}
+        handleOpenPay={handleOpenPay}
+      />
+      <PayModel
+        open={OpenPayModel}
+        handleClose={() => setOpenPayModel(false)}
+        handleShowSuccessPop={handleShowSuccessPop}
+      />
+      <Popup
+        open={showSccessPopup}
+        close={() => setShowSccessPopup()}
+        head={" Credits purchased succesfully"}
+        text={"Credits are added in your credits vault"}
+        btnText="Countinue"
+        handlenext={handleNext}
+      />
     </div>
   );
 };

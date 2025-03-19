@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import coinsIcon from "../../../assets/icons/Coins.svg";
 import CustomButton from "../../button";
+import { useNavigate } from "react-router-dom";
 
 const SelectionToolTip = ({
   tooltipPos,
@@ -9,7 +10,8 @@ const SelectionToolTip = ({
   handleSelectPixels,
 }) => {
   console.log("selectionSummary", selectionSummary);
-
+  const isAuthenticated = !!localStorage.getItem("token"); // Ensure boolean value
+  const navigate = useNavigate();
   return (
     <motion.div
       className="absolute text-black text-sm px-3 py-2 shadow-lg font-[Montserrat] "
@@ -81,9 +83,11 @@ const SelectionToolTip = ({
         <CustomButton
           py="py-2"
           hidden="block"
-          name="Select"
+          name={isAuthenticated ? "Select" : "Get Started"}
           width="w-full"
-          onClick={handleSelectPixels}
+          onClick={() => {
+            isAuthenticated ? handleSelectPixels() : navigate("/sign-in");
+          }}
           bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
           strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
         />

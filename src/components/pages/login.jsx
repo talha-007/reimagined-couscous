@@ -84,7 +84,8 @@ const Signin = () => {
         setIsLoading(false);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("userData", JSON.stringify(res.data));
-        navigate("/home");
+        navigate("/");
+        window.location.reload();
       }
     } catch (error) {
       setIsLoading(false);

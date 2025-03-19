@@ -5,6 +5,8 @@ import user3 from "../../../assets/users/image3.png";
 import user4 from "../../../assets/users/image4.png";
 import UserToolTip from "./userToolTip";
 import SelectionToolTip from "./selectionToolTip";
+import { useDispatch, useSelector } from "react-redux";
+import { getInfluencers } from "../../../redux/slice/InfluencerSlice";
 
 const BASE_GRID_SIZE = 100;
 const BASE_PIXEL_SIZE = 10;
@@ -47,6 +49,7 @@ const dummyUsers = [
 ];
 
 const Grid = ({ Summary, image }) => {
+  const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const [gridSize, setGridSize] = useState(BASE_GRID_SIZE);
   const [pixelSize, setPixelSize] = useState(BASE_PIXEL_SIZE);
@@ -63,7 +66,20 @@ const Grid = ({ Summary, image }) => {
   const [tooltipActive, setToolTipActive] = useState(false);
   const [clickedUser, setClickedUser] = useState(null);
 
-  console.log("selections", selections);
+  const influencersData = useSelector((s) => s?.influencer);
+  console.log("influencersData", influencersData);
+
+  useEffect(() => {
+    getData();
+  }, []);
+  const getData = async () => {
+    try {
+      const res = dispatch(getInfluencers());
+      console.log(res);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const [selectionSummary, setSelectionSummary] = useState({
     totalBlocks: 0,

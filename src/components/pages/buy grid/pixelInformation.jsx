@@ -7,16 +7,20 @@ import Grid from "../pixelGrdi/grid";
 import filledGrid from "../../../assets/icons/filledGrid.svg";
 import outlinedGrid from "../../../assets/icons/outlinedGrid.svg";
 import dimension from "../../../assets/icons/dimension.svg";
+import influencerProfileServices from "../../../redux/services/influencerProfileServices";
+import CustomButton from "../../button";
+import { toast } from "react-toastify";
 
-const PixelInformation = () => {
+const PixelInformation = ({ handleNext, updateFormData }) => {
   const [profileImage, setProfileImage] = useState(null);
 
   const [selectionSummary, setSelectionSummary] = useState("");
   useEffect(() => {
-    const summary = localStorage.getItem("selectionSummary");
+    const summary = JSON.parse(localStorage.getItem("selectionSummary"));
     console.log("summary", summary);
-    setSelectionSummary(JSON.parse(summary));
+    setSelectionSummary(summary);
   }, []);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -28,6 +32,23 @@ const PixelInformation = () => {
     }
   };
   console.log(selectionSummary);
+
+  const handleUploadImage = async () => {
+    if (!profileImage) {
+      toast.error("Please upload pixel image ");
+      return;
+    }
+    const datas = { pixelImage: profileImage };
+
+    try {
+      const res = await influencerProfileServices.uploadPixelImage(datas);
+      console.log(res);
+    } catch (error) {
+      console.log("error", error);
+    }
+    updateFormData("pixelInfo", profileImage);
+    handleNext();
+  };
 
   return (
     <div className="max-w-5xl w-full mx-auto  font-[Montserrat]">
@@ -197,6 +218,17 @@ const PixelInformation = () => {
             <Grid Summary={selectionSummary} image={profileImage} />
           </div>
         </div>
+      </div>
+      <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8 ">
+        <CustomButton
+          py="py-4"
+          hidden="block"
+          name={"Next"}
+          onClick={handleUploadImage}
+          width="w-[200px] md:w-[400px]"
+          bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+          strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+        />
       </div>
     </div>
   );

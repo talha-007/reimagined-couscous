@@ -14,9 +14,14 @@ import BuyGrid from "./components/pages/buy grid/buyGrid";
 import UserProfile from "./components/pages/userprofile/profile";
 import EditProfile from "./components/pages/userprofile/editProfile";
 import Marketplace from "./components/pages/marketplace/marketplace";
+import { useEffect, useState } from "react";
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem("token"); // Ensure boolean value
+  const [isAuthenticated, setisAuthenticated] = useState(null);
+  useEffect(() => {
+    const Authenticated = !!localStorage.getItem("token"); // Ensure boolean value
+    setisAuthenticated(Authenticated);
+  }, []);
 
   console.log("isAuthenticated", isAuthenticated);
 

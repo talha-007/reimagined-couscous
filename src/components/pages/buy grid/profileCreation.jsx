@@ -1,11 +1,13 @@
 import { motion } from "framer-motion"; // Import framer-motion
 import imageIcon from "../../../assets/icons/ImageSquare.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import close from "../../../assets/icons/close btn.svg";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../button";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../../redux/slice/userSlice";
 
 const initialValues = {
   first_name: "",
@@ -26,10 +28,27 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const profileData = useSelector((s) => s?.user?.data?.data);
+  console.log("profileData", profileData);
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      await dispatch(getUserProfile());
+      setValues({ ...values, email: profileData.email });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
   };
+
   const handleOnChange = (e) => {
     const { name, value } = e.target;
 
@@ -86,7 +105,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
     return errors;
   };
 
-  const handleProfileCreation = () => {
+  const handleProfileCreation = async () => {
     const newErrors = validateProfileForm(values);
     setErrors(newErrors);
 
@@ -94,9 +113,27 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
       const datas = {
         ...values,
         profilePicture: profileImage,
+        projetcs: [
+          {
+            brand_name: values.brand_name,
+            details: values.details,
+            testimonial: values.testimonial,
+          },
+        ],
       };
       updateFormData("profile", datas);
-      handleNext();
+      try {
+        const res = await influencerProfileServices.createInfluencerProfile(
+          datas
+        );
+        console.log("asdasdas", res);
+        if (res) {
+          toast.success("Information saved");
+          handleNext();
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
     }
   };
 
@@ -176,6 +213,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
               name="email"
               autoComplete="off"
               value={values.email}
+              disabled
               onChange={handleOnChange}
             />
             {errors.email && (

@@ -4,8 +4,16 @@ import Grid from "../pixelGrdi/grid";
 import filledGrid from "../../../assets/icons/filledGrid.svg";
 import outlinedGrid from "../../../assets/icons/outlinedGrid.svg";
 import dimension from "../../../assets/icons/dimension.svg";
+import CustomButton from "../../button";
+import { useEffect, useState } from "react";
 
-const SelectPixels = () => {
+const SelectPixels = ({ handleNext }) => {
+  const [selectionSummary, setSelectionSummary] = useState("");
+  useEffect(() => {
+    const summary = JSON.parse(localStorage.getItem("selectionSummary"));
+    console.log("summary", summary);
+    setSelectionSummary(summary);
+  }, []);
   return (
     <div className="max-w-5xl w-full mx-auto  font-[Montserrat]">
       <div>
@@ -55,11 +63,21 @@ const SelectPixels = () => {
                 </p>
               </div>
             </div>
-            <Grid />
+            <Grid selectionSummary={selectionSummary} />
           </div>
         </div>
       </div>
-      ;
+      <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8 ">
+        <CustomButton
+          py="py-4"
+          hidden="block"
+          name={"Next"}
+          onClick={handleNext}
+          width="w-[200px] md:w-[400px]"
+          bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
+          strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
+        />
+      </div>
     </div>
   );
 };

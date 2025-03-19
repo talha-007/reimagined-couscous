@@ -304,6 +304,7 @@ const Navbar = () => {
                             onClick={() => {
                               localStorage.removeItem("token");
                               setIsDropdownOpen(false);
+                              window.location.reload();
                             }}
                           />
                           <CustomButton
