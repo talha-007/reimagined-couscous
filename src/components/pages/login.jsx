@@ -97,7 +97,7 @@ const Signin = () => {
 
   const handleGoogleLogin = async () => {
     const response = await loginWithGoogle();
-    console.log("response", response);
+    // console.log("response", response);
 
     if (response.success) {
       setUser(response.user);

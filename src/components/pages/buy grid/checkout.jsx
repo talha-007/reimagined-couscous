@@ -147,7 +147,7 @@ const Checkout = ({ handleNext }) => {
       />
       <Popup
         open={showSccessPopup}
-        close={() => setShowSccessPopup()}
+        close={() => setShowSccessPopup(false)}
         head={" Credits purchased succesfully"}
         text={"Credits are added in your credits vault"}
         btnText="Countinue"

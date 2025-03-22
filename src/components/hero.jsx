@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Hero = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
-  console.log("isloggedin", isLoggedIn);
+  // console.log("isloggedin", isLoggedIn);
   return (
     <div className="pt-20">
       <div

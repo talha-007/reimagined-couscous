@@ -20,7 +20,7 @@ import { logout } from "./redux/slice/authSlice";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  console.log("isAuthenticated", isAuthenticated);
+  // console.log("isAuthenticated", isAuthenticated);
   const dispatch = useDispatch();
   useEffect(() => {
     if (!isAuthenticated) {

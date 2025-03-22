@@ -68,6 +68,15 @@ const customTheme = {
   },
 };
 
+const initialCardDetails = {
+  cardNumber: "",
+  expiryDate: "",
+  cvv: "",
+  cardHolder: "",
+  country: "",
+  address: "",
+};
+
 const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   const dispatch = useDispatch();
   const [selected, setSelected] = useState("card");
@@ -76,14 +85,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   const { countries } = useCountries();
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState("");
-  const [cardDetails, setCardDetails] = useState({
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-    cardHolder: "",
-    country: "",
-    address: "",
-  });
+  const [cardDetails, setCardDetails] = useState(initialCardDetails);
 
   const [errors, setErrors] = useState({});
 
@@ -154,6 +156,8 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
         if (res.status === 200) {
           handleShowSuccessPop();
           dispatch(getUserProfile());
+          setCardDetails(initialCardDetails);
+          setCredit(null);
         }
       } catch (error) {
         console.log("error", error);

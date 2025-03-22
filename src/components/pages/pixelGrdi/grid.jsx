@@ -226,9 +226,10 @@ const Grid = ({ Summary, image }) => {
 
         if (!user.imgElement) {
           user.imgElement = new Image();
+          user.imgElement.crossOrigin = "anonymous"; // Fix CORS issues
           user.imgElement.src = IMAGE_BASEURL + user.pixelImage;
           user.imgElement.onload = () => {
-            drawGrid(); // Redraw grid to show image after loading
+            requestAnimationFrame(drawGrid); // Redraw grid to show image after loading
           };
         }
 

@@ -15,7 +15,7 @@ const formSlice = createSlice({
       state.formData = { ...state.formData, [step]: data };
     },
     saveSelectionSummary: (state, action) => {
-      console.log("Action", action);
+      // console.log("Action", action);
 
       state.selectionSummary = action.payload;
       state.saveSelection = true;
