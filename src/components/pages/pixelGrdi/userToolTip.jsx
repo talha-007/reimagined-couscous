@@ -4,11 +4,12 @@ import instaIcon from "../../../assets/icons/insta.svg";
 import tiktokIcon from "../../../assets/icons/tiktok.svg";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const UserToolTip = ({ tooltipPos, hoveredUser }) => {
   const navigate = useNavigate();
   // console.log("tooltipPos", tooltipPos);
-  // console.log("hoveredUser", hoveredUser);
+  console.log("hoveredUser", hoveredUser);
 
   return (
     <motion.div
@@ -45,7 +46,9 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
         <div className="flex justify-between">
           <div
             style={{
-              backgroundImage: `url('${hoveredUser?.profilePicture}')`,
+              backgroundImage: hoveredUser?.profilePicture
+                ? `url('${IMAGE_BASEURL + hoveredUser?.profilePicture}')`
+                : "",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               backgroundSize: "cover",
@@ -55,7 +58,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
           />
           <div className="w-full flex flex-col items-center ">
             <p className="font-semibold text-[16px] text-[#FEDB6B]">
-              {hoveredUser?.name}
+              {hoveredUser?.firstName || ""} {hoveredUser?.lastName || ""}
             </p>
             <div>
               <ul className="text-[#FEDB6B] font-light text-[10px] gap-1">
@@ -74,7 +77,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
                   >
                     <img src={fbIcon} alt="icon" />
                   </div>
-                  <a href="">{hoveredUser?.fbLink}</a>
+                  <a href="">{hoveredUser?.facebook}</a>
                 </li>
 
                 {/* Middle item with top and bottom border fading on left and right */}
@@ -111,7 +114,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
                   >
                     <img src={instaIcon} alt="icon" />
                   </div>
-                  <a href="">{hoveredUser?.instaLink}</a>
+                  <a href="">{hoveredUser?.instagram}</a>
 
                   {/* Gradient border effect for bottom */}
                   <div
@@ -143,7 +146,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
                   >
                     <img src={tiktokIcon} alt="icon" />
                   </div>
-                  <a href="">{hoveredUser?.tiktokLink}</a>
+                  <a href="">{hoveredUser?.twitter}</a>
                 </li>
               </ul>
             </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../layout/layout";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
@@ -30,6 +30,7 @@ import AuctionDrawer from "./drawer";
 import { FaChevronRight } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const socailLinks = [
   { id: 1, logo: facebookLogo, followers: "2.3M" },
@@ -178,9 +179,13 @@ const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div className="relative flex items-center p-4">
                 <div className="relative w-40 h-40 overflow-hidden border-4 border-black -mt-20 bg-gray-200">
-                  {profileImage ? (
+                  {profileImage || profileData.profilePicture ? (
                     <img
-                      src={profileImage}
+                      src={
+                        profileData.profilePicture
+                          ? IMAGE_BASEURL + profileData.profilePicture
+                          : profileImage
+                      }
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />
@@ -207,7 +212,7 @@ const UserProfile = () => {
 
                 <div className="text-left p-3">
                   <h2 className="text-[20px] text-[#FEDB6B]  font-semibold">
-                    {profileData?.firstName || ""} {profileData.lastName || ""}
+                    {profileData?.firstName || ""} {profileData?.lastName || ""}
                   </h2>
                   <p className="text-[16px] font-light text-[#feea9a9c]">
                     {profileData?.userName || ""}
@@ -303,13 +308,12 @@ const UserProfile = () => {
               <p className="text-[#766E53] uppercase font-bold">Social Links</p>
               <div className="flex items-center flex-wrap gap-5 p-4">
                 {socailLinks.map((item, index) => (
-                  <>
-                    <div key={item.id} className="flex items-center gap-3">
+                  <React.Fragment key={item?.id || index}>
+                    <div className="flex items-center gap-3">
                       <div
                         style={{
                           backgroundImage:
                             "linear-gradient(120deg, rgba(254, 246, 192, 0.14) 30%, rgba(232, 199, 118, 0.52) 150%)",
-
                           minHeight: "40px",
                           minWidth: "40px",
                           width: "40px",
@@ -332,7 +336,7 @@ const UserProfile = () => {
                     {index !== socailLinks.length - 1 && (
                       <div className="w-[1px] h-10 bg-[#FEF6C026]"></div>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
             </div>
@@ -395,10 +399,10 @@ const UserProfile = () => {
               </p>
               <div className="mt-4">
                 <p className="text-[#FEDB6B]  font-semibold text-[16px]">
-                  {profileData?.projects[0] || ""}
+                  {profileData?.projects[0]?.brandName || ""}
                 </p>
                 <p className="text-[#FEEA9A]  font-light text-[12px]">
-                  {profileData?.projects[0] || ""}
+                  Brand Name
                 </p>
               </div>
             </motion.div>
@@ -414,7 +418,7 @@ const UserProfile = () => {
               </p>
               <div className="mt-4">
                 <p className="text-[16px] text-[#FEDB6B] font-extralight">
-                  {profileData?.projects[0] || ""}
+                  {profileData?.projects[0]?.details || ""}
                 </p>
               </div>
               <div className="mt-6">
@@ -426,7 +430,7 @@ const UserProfile = () => {
                     <img src={commas} alt="" />
                   </div>
                   <p className="text-[16px] text-[#FEDB6B] font-extralight ">
-                    {profileData?.projects[0] || ""}
+                    {profileData?.projects[0]?.testimonial || ""}
                   </p>
                   <div className="mt-2 flex justify-end items-center">
                     <img src={commas} alt="" className=" scale-x-[-1]" />
