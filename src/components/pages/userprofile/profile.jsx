@@ -28,6 +28,8 @@ import {
 import closeBtn from "../../../assets/icons/close btn.svg";
 import AuctionDrawer from "./drawer";
 import { FaChevronRight } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../../redux/slice/userSlice";
 
 const socailLinks = [
   { id: 1, logo: facebookLogo, followers: "2.3M" },
@@ -68,6 +70,7 @@ const customTheme = {
   },
 };
 const UserProfile = () => {
+  const dispatch = useDispatch();
   const [coverImage, setCoverImage] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [isOpenMenu, setOpenMenu] = useState(null);
@@ -75,7 +78,19 @@ const UserProfile = () => {
   const [isOpenDrawer, setOpenDrawer] = useState(false);
   const navigate = useNavigate();
   const openMenuRef = useRef();
+  const profileData = useSelector((s) => s?.user?.data?.data);
+  console.log("profileData", profileData);
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
 
+  const fetchProfileData = async () => {
+    try {
+      await dispatch(getUserProfile());
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (openMenuRef.current && !openMenuRef.current.contains(event.target)) {
@@ -192,10 +207,10 @@ const UserProfile = () => {
 
                 <div className="text-left p-3">
                   <h2 className="text-[20px] text-[#FEDB6B]  font-semibold">
-                    Alex Carter
+                    {profileData?.firstName || ""} {profileData.lastName || ""}
                   </h2>
                   <p className="text-[16px] font-light text-[#feea9a9c]">
-                    @Alexcarter8998
+                    {profileData?.userName || ""}
                   </p>
                 </div>
               </div>
@@ -270,9 +285,7 @@ const UserProfile = () => {
             </div>
             <div>
               <p className="text-[16px] text-[#FEDB6B] font-[200]">
-                A creative soul blending design, tech, and a dash of humor, Alex
-                shares their journey through design tips and daily life quirks.
-                Coffee lover and weekend adventurer Socials:
+                {profileData?.bio || ""}
               </p>
             </div>
           </div>
@@ -382,10 +395,10 @@ const UserProfile = () => {
               </p>
               <div className="mt-4">
                 <p className="text-[#FEDB6B]  font-semibold text-[16px]">
-                  PixelEmpire
+                  {profileData?.projects[0] || ""}
                 </p>
                 <p className="text-[#FEEA9A]  font-light text-[12px]">
-                  Brand Name
+                  {profileData?.projects[0] || ""}
                 </p>
               </div>
             </motion.div>
@@ -401,12 +414,7 @@ const UserProfile = () => {
               </p>
               <div className="mt-4">
                 <p className="text-[16px] text-[#FEDB6B] font-extralight">
-                  PixelEmpire is a revolutionary digital real estate marketplace
-                  where users can purchase, own, and customize pixels on a
-                  massive 100x100 grid. Each pixel costs $1 and can be
-                  personalized with colors, images, or brand logos. Whether for
-                  advertising, personal expression, or just fun, PixelEmpire
-                  lets you leave your mark on the digital world!
+                  {profileData?.projects[0] || ""}
                 </p>
               </div>
               <div className="mt-6">
@@ -418,10 +426,7 @@ const UserProfile = () => {
                     <img src={commas} alt="" />
                   </div>
                   <p className="text-[16px] text-[#FEDB6B] font-extralight ">
-                    The Pixel Grid Marketplace is a genius concept! The buying
-                    process was smooth, and customizing my pixels was super
-                    easy. I love how I can showcase my brand creatively.
-                    Definitely a fun and unique investment!
+                    {profileData?.projects[0] || ""}
                   </p>
                   <div className="mt-2 flex justify-end items-center">
                     <img src={commas} alt="" className=" scale-x-[-1]" />

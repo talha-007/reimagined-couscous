@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../layout/layout";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
@@ -14,6 +14,8 @@ import earlyAdopterIcon from "../../../assets/icons/early adopter.svg";
 import tenMIcon from "../../../assets/icons/10M.svg";
 import grid from "../../../assets/grid2.png";
 import commas from "../../../assets/icons/commas.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../../redux/slice/userSlice";
 
 const socailLinks = [
   { id: 1, logo: facebookLogo, followers: "2.3M" },
@@ -28,9 +30,11 @@ const Acheivments = [
   { id: 3, logo: tenMIcon, followers: "2.3M" },
 ];
 const InfluencerProfile = () => {
+  const dispatch = useDispatch();
   const [coverImage, setCoverImage] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const navigate = useNavigate();
+
   const handleImageUpload = (event, type) => {
     const file = event.target.files[0];
     if (file) {
@@ -52,7 +56,7 @@ const InfluencerProfile = () => {
               borderImage: "linear-gradient(to right, #7A5018cc, #FEEA9Acc) 1",
             }}
           >
-            <div className="  overflow-hidden shadow-lg">
+            <div className="overflow-hidden shadow-lg">
               {/* Cover Image Section */}
               <div className="relative w-full h-40 bg-gray-200">
                 {coverImage ? (

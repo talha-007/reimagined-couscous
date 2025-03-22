@@ -25,26 +25,25 @@ const initialValues = {
 
 const ProfileCreation = ({ handleNext, updateFormData }) => {
   const [profileImage, setProfileImage] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-
+  const formData = useSelector((state) => state.form.formData);
   const profileData = useSelector((s) => s?.user?.data?.data);
-  console.log("profileData", profileData);
+  console.log("profileData", profileData, formData);
 
   useEffect(() => {
-    fetchProfileData();
-  }, []);
+    dispatch(getUserProfile());
+  }, [dispatch]);
 
-  const fetchProfileData = async () => {
-    try {
-      await dispatch(getUserProfile());
-      setValues({ ...values, email: profileData.email });
-    } catch (error) {
-      console.log(error);
+  // Ensure `values.email` is updated when `profileData` changes
+  useEffect(() => {
+    if (profileData?.email) {
+      setValues((prevValues) => ({ ...prevValues, email: profileData.email }));
     }
-  };
+  }, [profileData]);
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
   };
@@ -81,6 +80,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
       reader.onload = () => {
         setProfileImage(reader.result);
       };
+      setProfile(file);
       reader.readAsDataURL(file);
     }
   };
@@ -104,7 +104,9 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
 
     return errors;
   };
-
+  const generateRandomUsername = () => {
+    return `User_${Math.floor(1000 + Math.random() * 9000)}`;
+  };
   const handleProfileCreation = async () => {
     const newErrors = validateProfileForm(values);
     setErrors(newErrors);
@@ -112,10 +114,16 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
     if (Object.keys(newErrors).length === 0) {
       const datas = {
         ...values,
-        profilePicture: profileImage,
+        userName: generateRandomUsername(),
+        profilePicture: profile,
+        firstName: values.first_name,
+        lastName: values.last_name,
+        facebook: values.facebook_link,
+        instagram: values.instagram_link,
+        twitter: values.twitter_link,
         projetcs: [
           {
-            brand_name: values.brand_name,
+            brandName: values.brand_name,
             details: values.details,
             testimonial: values.testimonial,
           },

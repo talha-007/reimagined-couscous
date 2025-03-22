@@ -7,10 +7,11 @@ const deleteUser = (data) => {
   return callAPi.patch(`/api/v1/deleteUser`, data);
 };
 
-const getInfluencer = callAPi.get("/api/v1/getInfluencer");
+const getInfluencer = () => callAPi.get("/api/v1/getInfluencer");
+const addCoins = (data) => callAPi.patch("/api/v1/addCoins", data);
 
-const uploadPixelImage = () =>
-  callAPiMultiPart.patch("/api/v1/uploadPixelImage");
+const uploadPixelImage = (data) =>
+  callAPiMultiPart.patch("/api/v1/uploadPixelImage", data);
 
 const influencerProfileServices = {
   deleteUser,
@@ -18,6 +19,7 @@ const influencerProfileServices = {
   createInfluencerProfile,
   uploadPixelImage,
   getInfluencer,
+  addCoins,
 };
 
 export default influencerProfileServices;

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import coinsIcon from "../../../assets/icons/Coins.svg";
 import CustomButton from "../../button";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const SelectionToolTip = ({
   tooltipPos,
@@ -9,8 +10,9 @@ const SelectionToolTip = ({
   selectionSummary,
   handleSelectPixels,
 }) => {
-  console.log("selectionSummary", selectionSummary);
-  const isAuthenticated = !!localStorage.getItem("token"); // Ensure boolean value
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  console.log("selectionSummary", selectionSummary, isAuthenticated);
+
   const navigate = useNavigate();
   return (
     <motion.div

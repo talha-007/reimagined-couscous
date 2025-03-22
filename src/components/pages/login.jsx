@@ -9,12 +9,14 @@ import { useDispatch } from "react-redux";
 import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { googleLoginUser, loginUser } from "../../redux/slice/authSlice";
 
 const initialValues = {
   email: "",
   password: "",
 };
 const Signin = () => {
+  const dispatch = useDispatch();
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -72,43 +74,19 @@ const Signin = () => {
     }
 
     setErrors(newErrors);
-    const datas = {
-      ...values,
-    };
-    try {
-      setIsLoading(true);
-      const res = await authService.login(datas);
-
-      if (res.data.success) {
-        toast.success(res.data.message);
-        setIsLoading(false);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("userData", JSON.stringify(res.data));
-        navigate("/");
-        window.location.reload();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log("error", error);
-      toast.error(error?.response?.data?.message);
+    if (Object.keys(newErrors).length === 0) {
+      dispatch(loginUser(values))
+        .unwrap()
+        .then(() => navigate("/"))
+        .catch((error) => toast.error(error));
     }
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      const res = await authService.googleLogin();
-      console.log("google login res", res);
-      if (res.data.success) {
-        toast.success(res.data.message);
-        setIsLoading(false);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("userData", JSON.stringify(res.data));
-        navigate("/home");
-      }
-    } catch (error) {
-      console.log("error", error);
-      toast.error(error?.response?.data?.message);
-    }
+    dispatch(googleLoginUser())
+      .unwrap()
+      .then(() => navigate("/home"))
+      .catch((error) => toast.error(error));
   };
 
   return (

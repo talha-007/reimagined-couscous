@@ -1,28 +1,27 @@
-import Layout from "../../layout/layout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Stepper, Step } from "@material-tailwind/react";
 import ProfileCreation from "./profileCreation";
-import CustomButton from "../../button";
+
 import tick from "../../../assets/icons/tick.svg";
 import SelectPixels from "./selectPixels";
 import PixelInformation from "./pixelInformation";
 import Checkout from "./checkout";
-import PayModel from "./payModel";
-import Popup from "./popup";
+
 import FinishScreen from "./finishScreen";
 import Navbar from "../../navbar";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearFormData, updateFormData } from "../../../redux/slice/formSlice";
+import { setActiveStep } from "../../../redux/slice/stepperSlice";
 
 const BuyGrid = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  // const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    profile: {},
-    selectPixels: {},
-    pixelInfo: {},
-    checkout: {},
-  });
-  console.log("form data", formData);
+
+  const dispatch = useDispatch();
+  const formData = useSelector((state) => state.form.formData);
+  const activeStep = useSelector((state) => state.stepper.activeStep);
+  console.log("formData", formData, activeStep);
 
   const steps = [
     "Profile Creation",
@@ -31,44 +30,19 @@ const BuyGrid = () => {
     "Checkout",
     "Finish",
   ];
-  useEffect(() => {
-    const savedStep = JSON.parse(localStorage.getItem("activeStep"));
-    const savedData = JSON.parse(localStorage.getItem("stepperFormData"));
-    if (savedStep !== null) setActiveStep(savedStep);
-    if (savedData) setFormData(savedData);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("activeStep", JSON.stringify(activeStep));
-
-    return () => {
-      localStorage.removeItem("activeStep"); // Remove on component unmount
-    };
-  }, [activeStep]);
 
   const handleNext = () => {
-    if (activeStep < steps.length - 1) {
-      setActiveStep((prev) => prev + 1);
-    }
+    dispatch(setActiveStep(activeStep + 1));
   };
 
-  const updateFormData = (step, data) => {
-    const updatedData = { ...formData, [step]: data };
-    setFormData(updatedData);
-    localStorage.setItem("stepperFormData", JSON.stringify(updatedData));
+  const updateForm = (step, data) => {
+    dispatch(updateFormData({ step, data }));
   };
 
   const handleFinish = () => {
     navigate("/pixel-grid");
-    setActiveStep(0);
-    setFormData({
-      profile: {},
-      selectPixels: {},
-      pixelInfo: {},
-      checkout: {},
-    });
-    localStorage.removeItem("stepperFormData");
-    localStorage.removeItem("selectionSummary");
+    dispatch(setActiveStep(0));
+    dispatch(clearFormData());
   };
 
   return (
@@ -122,7 +96,7 @@ const BuyGrid = () => {
 
               {/* Step Box */}
               <Step
-                // onClick={() => setActiveStep(index)}
+                onClick={() => dispatch(setActiveStep(index))}
                 style={{
                   height: "48px",
                   background: "#353535",
@@ -173,22 +147,16 @@ const BuyGrid = () => {
         </Stepper>
       </div>
       {activeStep === 0 && (
-        <ProfileCreation
-          handleNext={handleNext}
-          updateFormData={updateFormData}
-        />
+        <ProfileCreation handleNext={handleNext} updateFormData={updateForm} />
       )}
       {activeStep === 1 && (
-        <SelectPixels handleNext={handleNext} updateFormData={updateFormData} />
+        <SelectPixels handleNext={handleNext} updateFormData={updateForm} />
       )}
       {activeStep === 2 && (
-        <PixelInformation
-          handleNext={handleNext}
-          updateFormData={updateFormData}
-        />
+        <PixelInformation handleNext={handleNext} updateFormData={updateForm} />
       )}
       {activeStep === 3 && (
-        <Checkout handleNext={handleNext} updateFormData={updateFormData} />
+        <Checkout handleNext={handleNext} updateFormData={updateForm} />
       )}
       {activeStep === 4 && <FinishScreen handleSubmit={handleFinish} />}
       {/* Navigation Buttons */}

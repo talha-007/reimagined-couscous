@@ -9,12 +9,15 @@ import outlinedGrid from "../../../assets/icons/outlinedGrid.svg";
 import dimension from "../../../assets/icons/dimension.svg";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 import CustomButton from "../../button";
+import close from "../../../assets/icons/close btn.svg";
 import { toast } from "react-toastify";
 
 const PixelInformation = ({ handleNext, updateFormData }) => {
   const [profileImage, setProfileImage] = useState(null);
+  const [pixelImage, setPixelImage] = useState(null);
 
   const [selectionSummary, setSelectionSummary] = useState("");
+
   useEffect(() => {
     const summary = JSON.parse(localStorage.getItem("selectionSummary"));
     console.log("summary", summary);
@@ -28,6 +31,7 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
       reader.onload = () => {
         setProfileImage(reader.result);
       };
+      setPixelImage(file);
       reader.readAsDataURL(file);
     }
   };
@@ -38,11 +42,13 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
       toast.error("Please upload pixel image ");
       return;
     }
-    const datas = { pixelImage: profileImage };
+    const datas = { pixelImage: pixelImage };
 
     try {
       const res = await influencerProfileServices.uploadPixelImage(datas);
-      console.log(res);
+      if (res) {
+        console.log(res);
+      }
     } catch (error) {
       console.log("error", error);
     }

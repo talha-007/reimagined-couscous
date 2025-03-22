@@ -16,6 +16,7 @@ import bitcoin from "../../../assets/icons/bitcoin.png";
 import bnb from "../../../assets/icons/bnb.png";
 import eth from "../../../assets/icons/eth.png";
 import usdt from "../../../assets/icons/usdt.png";
+import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 
 const cryptoTokens = [
   {
@@ -65,13 +66,96 @@ const customTheme = {
   },
 };
 
-const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
+const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   const [selected, setSelected] = useState("card");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [credit, setCredit] = useState(null);
   const { countries } = useCountries();
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState("");
+  const [cardDetails, setCardDetails] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardHolder: "",
+    country: "",
+    address: "",
+  });
 
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let formattedValue = value;
+
+    if (name === "cardNumber") {
+      formattedValue = value.replace(/\D/g, "").slice(0, 16);
+      formattedValue = formattedValue.replace(/(.{4})/g, "$1 ").trim();
+    }
+
+    if (name === "expiryDate") {
+      formattedValue = value.replace(/\D/g, "").slice(0, 4);
+      if (formattedValue.length >= 3) {
+        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(
+          2
+        )}`;
+      }
+    }
+
+    if (name === "cvv") {
+      formattedValue = value.replace(/\D/g, "").slice(0, 4);
+    }
+
+    setCardDetails({ ...cardDetails, [name]: formattedValue });
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    // Card Number Validation
+    const cleanCardNumber = cardDetails.cardNumber.replace(/\s/g, "");
+    if (!/^\d{16}$/.test(cleanCardNumber)) {
+      newErrors.cardNumber = "Invalid card number. Must be 16 digits.";
+    }
+
+    // Expiry Date Validation
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardDetails.expiryDate)) {
+      newErrors.expiryDate = "Invalid format (MM/YY)";
+    } else {
+      const [month, year] = cardDetails.expiryDate.split("/");
+      const expiry = new Date(`20${year}`, month);
+      const today = new Date();
+      if (expiry <= today) {
+        newErrors.expiryDate = "Card expired";
+      }
+    }
+
+    // CVV Validation
+    if (!/^\d{3,4}$/.test(cardDetails.cvv)) {
+      newErrors.cvv = "Invalid CVV (3-4 digits)";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleBuyCredits = async () => {
+    const datas = {
+      coins: credit,
+      email: profileData?.email,
+    };
+    if (validateForm()) {
+      try {
+        const res = await influencerProfileServices.addCoins(datas);
+        console.log(res);
+        if (res.status === 200) {
+          handleShowSuccessPop();
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+  };
   return (
     <ThemeProvider value={customTheme}>
       <Dialog
@@ -121,6 +205,15 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                 <input
                   className="px-4 py-3 border bg-[#000000] border-[#766E53] text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase w-full"
                   required
+                  value={credit}
+                  type="text"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      // Allow only digits (0-9)
+                      setCredit(value);
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -209,6 +302,9 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                             />
                             <input
                               type="text"
+                              name="cardNumber"
+                              value={cardDetails.cardNumber}
+                              onChange={handleChange}
                               placeholder="Card Number (EG **** **** 1234 1234)"
                               className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
                             />
@@ -221,6 +317,11 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                             className="w-10 h-auto"
                           />
                         </div>
+                        {errors.cardNumber && (
+                          <p className="text-red-500 text-xs">
+                            {errors.cardNumber}
+                          </p>
+                        )}
 
                         <div className="flex items-center w-full">
                           <div
@@ -233,6 +334,10 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                             <input
                               className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
                               required
+                              type="text"
+                              name="expiryDate"
+                              value={cardDetails.expiryDate}
+                              onChange={handleChange}
                               placeholder="MM/YY"
                             />
                           </div>
@@ -245,13 +350,24 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                             <input
                               className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
                               required
+                              type="text"
+                              name="cvv"
+                              value={cardDetails.cvv}
+                              onChange={handleChange}
                               placeholder="CVV"
                             />
                           </div>
                         </div>
                       </div>
+                      {errors.expiryDate && (
+                        <p className="text-red-500 text-xs">
+                          {errors.expiryDate}
+                        </p>
+                      )}
+                      {errors.cvv && (
+                        <p className="text-red-500 text-xs">{errors.cvv}</p>
+                      )}
                     </div>
-
                     <div className="mb-4">
                       <p className="text-white font-[Inter] uppercase text-[14px] font-light">
                         Card Holder Name{" "}
@@ -267,6 +383,10 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                           className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
                           required
                           placeholder="Enter card holder name"
+                          type="text"
+                          name="cardHolder"
+                          value={cardDetails.cardHolder}
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -314,6 +434,10 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                         <input
                           className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full"
                           required
+                          type="text"
+                          name="address"
+                          value={cardDetails.address}
+                          onChange={handleChange}
                           placeholder="Address Manually"
                           style={{
                             borderTop: "1px solid #766E53",
@@ -422,7 +546,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop }) => {
                     py="py-4"
                     hidden="block"
                     name="Next"
-                    onClick={handleShowSuccessPop}
+                    onClick={handleBuyCredits}
                     width="w-full"
                     bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                     strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"

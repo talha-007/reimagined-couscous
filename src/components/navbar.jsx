@@ -13,6 +13,7 @@ import { IconButton } from "@material-tailwind/react";
 import grid from "../assets/icons/grid.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../redux/slice/userSlice";
+import { logout } from "../redux/slice/authSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -302,9 +303,8 @@ const Navbar = () => {
                             width="w-full"
                             name="Logout"
                             onClick={() => {
-                              localStorage.removeItem("token");
+                              dispatch(logout());
                               setIsDropdownOpen(false);
-                              window.location.reload();
                             }}
                           />
                           <CustomButton

@@ -21,7 +21,7 @@ const Checkout = ({ handleNext }) => {
     setSelectionSummary(summary);
   }, []);
   const profileData = useSelector((s) => s?.user?.data?.data);
-  // console.log("profileData", profileData);
+  console.log("profileData", profileData);
 
   useEffect(() => {
     fetchProfileData();
@@ -42,10 +42,8 @@ const Checkout = ({ handleNext }) => {
       console.log(error);
     }
   };
-  let coins = 0;
   const handleCheckout = () => {
-    if (Number(coins) < Number(selectionSummary?.subtotal)) {
-      toast.error("Buy Coins!");
+    if (Number(profileData?.coins || 0) < Number(selectionSummary?.subtotal)) {
       setOpenCoinsPopup(true);
     }
   };
@@ -129,6 +127,7 @@ const Checkout = ({ handleNext }) => {
         open={OpenPayModel}
         handleClose={() => setOpenPayModel(false)}
         handleShowSuccessPop={handleShowSuccessPop}
+        profileData={profileData}
       />
       <Popup
         open={showSccessPopup}

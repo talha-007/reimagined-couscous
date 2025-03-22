@@ -8,12 +8,15 @@ import { useState } from "react";
 import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { signupUser } from "../../redux/slice/authSlice";
+import { useDispatch } from "react-redux";
 const initialValues = {
   email: "",
   password: "",
   confirm_password: "",
 };
 const Signup = () => {
+  const dispatch = useDispatch();
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -71,25 +74,18 @@ const Signup = () => {
     if (!values.confirm_password) {
       newErrors.confirm_password = "Confirm Password is required";
     }
+
     setErrors(newErrors);
-    const datas = {
-      ...values,
-      confirmPassword: values.confirm_password,
-    };
-    try {
-      setIsLoading(true);
-      const res = await authService.signup(datas);
-      console.log("login res", res);
-      if (res.data.success) {
-        setIsLoading(false);
-        toast.success(res?.data?.message);
-        setValues(initialValues);
-        navigate("/sign-in");
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log("error", error);
-      toast.error(error?.response?.data?.message);
+    if (Object.keys(newErrors).length === 0) {
+      dispatch(
+        signupUser({ ...values, confirmPassword: values.confirm_password })
+      )
+        .unwrap()
+        .then(() => {
+          toast.success("Signup successful! Please log in.");
+          navigate("/sign-in");
+        })
+        .catch((error) => toast.error(error));
     }
   };
   const handleGoogleLogin = async () => {

@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Signin from "./components/pages/login";
 import Signup from "./components/pages/signup";
 import Home from "./components/pages/Home";
@@ -14,22 +15,14 @@ import BuyGrid from "./components/pages/buy grid/buyGrid";
 import UserProfile from "./components/pages/userprofile/profile";
 import EditProfile from "./components/pages/userprofile/editProfile";
 import Marketplace from "./components/pages/marketplace/marketplace";
-import { useEffect, useState } from "react";
 
 function App() {
-  const [isAuthenticated, setisAuthenticated] = useState(null);
-  useEffect(() => {
-    const Authenticated = !!localStorage.getItem("token"); // Ensure boolean value
-    setisAuthenticated(Authenticated);
-  }, []);
-
-  console.log("isAuthenticated", isAuthenticated);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <Router>
       <Routes>
-        {/* Public Routes (Accessible only if NOT logged in) */}
-        {!isAuthenticated && (
+        {!isAuthenticated ? (
           <>
             <Route path="/sign-in" element={<Signin />} />
             <Route path="/sign-up" element={<Signup />} />
@@ -38,10 +31,7 @@ function App() {
             <Route path="/pixel-grid" element={<PixelGrid />} />
             <Route path="/marketplace" element={<Marketplace />} />
           </>
-        )}
-
-        {/* Private Routes (Accessible only if logged in) */}
-        {isAuthenticated && (
+        ) : (
           <>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
@@ -54,7 +44,6 @@ function App() {
           </>
         )}
 
-        {/* Redirect unknown routes */}
         <Route
           path="*"
           element={
