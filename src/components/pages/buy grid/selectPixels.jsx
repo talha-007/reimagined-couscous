@@ -11,7 +11,7 @@ const SelectPixels = ({ handleNext }) => {
   const [selectionSummary, setSelectionSummary] = useState("");
   useEffect(() => {
     const summary = JSON.parse(localStorage.getItem("selectionSummary"));
-    console.log("summary", summary);
+    // console.log("summary", summary);
     setSelectionSummary(summary);
   }, []);
   return (

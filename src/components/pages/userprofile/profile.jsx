@@ -79,7 +79,7 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const openMenuRef = useRef();
   const profileData = useSelector((s) => s?.user?.data?.data);
-  console.log("profileData", profileData);
+  // console.log("profileData", profileData);
   useEffect(() => {
     fetchProfileData();
   }, []);

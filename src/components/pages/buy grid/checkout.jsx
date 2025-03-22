@@ -18,11 +18,11 @@ const Checkout = ({ handleNext }) => {
   const [showSccessPopup, setShowSccessPopup] = useState(false);
   useEffect(() => {
     const summary = JSON.parse(localStorage.getItem("selectionSummary"));
-    console.log("summary", summary);
+    // console.log("summary", summary);
     setSelectionSummary(summary);
   }, []);
   const profileData = useSelector((s) => s?.user?.data?.data);
-  console.log("profileData", profileData);
+  // console.log("profileData", profileData);
 
   useEffect(() => {
     fetchProfileData();
@@ -54,7 +54,7 @@ const Checkout = ({ handleNext }) => {
     };
     try {
       const res = await influencerProfileServices.SelectPixel(datas);
-      console.log(">>>>>>>>>>>>>>>>>>>>>>", res);
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>", res);
       if (res.data.success) {
         handleNext();
         dispatch(getUserProfile());

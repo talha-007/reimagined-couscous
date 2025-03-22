@@ -68,7 +68,7 @@ const Grid = ({ Summary, image }) => {
   const [clickedUser, setClickedUser] = useState(null);
 
   const influencersData = useSelector((s) => s?.influencer?.data?.data);
-  console.log("influencersData", influencersData);
+  // console.log("influencersData", influencersData);
   let users = influencersData?.map((user) => ({ ...user })); // Make objects mutable
   useEffect(() => {
     getData();
@@ -76,7 +76,7 @@ const Grid = ({ Summary, image }) => {
   const getData = async () => {
     try {
       const res = dispatch(getInfluencers());
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log("error", error);
     }
@@ -283,7 +283,7 @@ const Grid = ({ Summary, image }) => {
 
   const handleMouseDown = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    console.log("rect", rect);
+    // console.log("rect", rect);
 
     const x = Math.floor((e.clientX - rect.left) / pixelSize) * pixelSize;
     const y = Math.floor((e.clientY - rect.top) / pixelSize) * pixelSize;

@@ -32,7 +32,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form.formData);
   const profileData = useSelector((s) => s?.user?.data?.data);
-  console.log("profileData", profileData, formData);
+  // console.log("profileData", profileData, formData);
 
   useEffect(() => {
     dispatch(getUserProfile());
@@ -134,7 +134,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         const res = await influencerProfileServices.createInfluencerProfile(
           datas
         );
-        console.log("asdasdas", res);
+        // console.log("asdasdas", res);
         if (res) {
           toast.success("Information saved");
           handleNext();

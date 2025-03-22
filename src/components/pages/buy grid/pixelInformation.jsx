@@ -20,7 +20,7 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
 
   useEffect(() => {
     const summary = JSON.parse(localStorage.getItem("selectionSummary"));
-    console.log("summary", summary);
+    // console.log("summary", summary);
     setSelectionSummary(summary);
   }, []);
 
@@ -35,7 +35,7 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
       reader.readAsDataURL(file);
     }
   };
-  console.log(selectionSummary);
+  // console.log(selectionSummary);
 
   const handleUploadImage = async () => {
     if (!profileImage) {
@@ -47,7 +47,7 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
     try {
       const res = await influencerProfileServices.uploadPixelImage(datas);
       if (res) {
-        console.log(res);
+        // console.log(res);
         updateFormData("pixelInfo", profileImage);
         handleNext();
       }

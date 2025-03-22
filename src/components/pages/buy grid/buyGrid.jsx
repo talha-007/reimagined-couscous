@@ -19,9 +19,8 @@ const BuyGrid = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form.formData);
   const activeStep = useSelector((state) => state.stepper.activeStep);
-  console.log("formData", formData, activeStep);
+  // console.log("formData", formData, activeStep);
 
   const steps = [
     "Profile Creation",

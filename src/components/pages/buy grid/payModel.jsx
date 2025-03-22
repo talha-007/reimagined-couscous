@@ -152,7 +152,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
     if (validateForm()) {
       try {
         const res = await influencerProfileServices.addCoins(datas);
-        console.log(res);
+        // console.log(res);
         if (res.status === 200) {
           handleShowSuccessPop();
           dispatch(getUserProfile());

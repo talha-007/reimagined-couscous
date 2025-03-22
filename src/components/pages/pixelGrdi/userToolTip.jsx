@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 
 const UserToolTip = ({ tooltipPos, hoveredUser }) => {
   const navigate = useNavigate();
-  console.log("tooltipPos", tooltipPos);
-  console.log("hoveredUser", hoveredUser);
+  // console.log("tooltipPos", tooltipPos);
+  // console.log("hoveredUser", hoveredUser);
 
   return (
     <motion.div
