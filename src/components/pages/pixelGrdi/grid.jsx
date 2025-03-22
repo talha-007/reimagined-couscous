@@ -7,6 +7,7 @@ import UserToolTip from "./userToolTip";
 import SelectionToolTip from "./selectionToolTip";
 import { useDispatch, useSelector } from "react-redux";
 import { getInfluencers } from "../../../redux/slice/InfluencerSlice";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const BASE_GRID_SIZE = 100;
 const BASE_PIXEL_SIZE = 10;
@@ -56,7 +57,7 @@ const Grid = ({ Summary, image }) => {
   const [dragging, setDragging] = useState(false);
   const [startPos, setStartPos] = useState(null);
   const [endPos, setEndPos] = useState(null);
-  const [users, setUsers] = useState(dummyUsers);
+  // const [users, setUsers] = useState(dummyUsers);
   const [mousePos, setMousePos] = useState(null);
   const [hoveredUser, setHoveredUser] = useState(null);
   const [tooltipPos, setTooltipPos] = useState(null);
@@ -66,9 +67,9 @@ const Grid = ({ Summary, image }) => {
   const [tooltipActive, setToolTipActive] = useState(false);
   const [clickedUser, setClickedUser] = useState(null);
 
-  const influencersData = useSelector((s) => s?.influencer);
+  const influencersData = useSelector((s) => s?.influencer?.data?.data);
   console.log("influencersData", influencersData);
-
+  let users = influencersData?.map((user) => ({ ...user })); // Make objects mutable
   useEffect(() => {
     getData();
   }, []);
@@ -135,8 +136,8 @@ const Grid = ({ Summary, image }) => {
     endPos,
     gridSize,
     pixelSize,
-    users,
     saveSelection,
+    users,
     Summary,
     image,
   ]);
@@ -193,8 +194,8 @@ const Grid = ({ Summary, image }) => {
       }
     }
 
-    dummyUsers.forEach((user) => {
-      user.selectedPixels.forEach(({ startPos, endPos }) => {
+    users?.forEach((user) => {
+      user?.selectedPixels?.forEach(({ startPos, endPos }) => {
         const x = startPos.x;
         const y = startPos.y;
         const width = endPos.x - startPos.x;
@@ -225,7 +226,7 @@ const Grid = ({ Summary, image }) => {
 
         if (!user.imgElement) {
           user.imgElement = new Image();
-          user.imgElement.src = user.profilePic;
+          user.imgElement.src = IMAGE_BASEURL + user.pixelImage;
           user.imgElement.onload = () => {
             drawGrid(); // Redraw grid to show image after loading
           };

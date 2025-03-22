@@ -14,6 +14,7 @@ import grid from "../assets/icons/grid.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../redux/slice/userSlice";
 import { logout } from "../redux/slice/authSlice";
+import { API_URL, IMAGE_BASEURL } from "../redux/services/http-comman";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -160,8 +161,8 @@ const Navbar = () => {
                     <div className="relative w-10 h-10  p-[1px] before:absolute before:inset-0  before:-z-10">
                       <img
                         src={
-                          profileData?.userImage
-                            ? profileData?.userImage
+                          IMAGE_BASEURL + profileData?.profilePicture
+                            ? IMAGE_BASEURL + profileData?.profilePicture
                             : userImage
                         }
                         alt="User"
@@ -271,11 +272,12 @@ const Navbar = () => {
                           <div className="flex items-center gap-4 mb-8">
                             <div
                               style={{
-                                backgroundImage: `url(${
-                                  profileData?.userImage
-                                    ? profileData?.userImage
-                                    : ""
-                                })`,
+                                backgroundImage: profileData?.profilePicture
+                                  ? `url(${
+                                      IMAGE_BASEURL + profileData.profilePicture
+                                    })`
+                                  : "none",
+
                                 width: "148px",
                                 height: "148px",
                                 backgroundRepeat: "no-repeat",

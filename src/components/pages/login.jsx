@@ -10,6 +10,10 @@ import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUser, loginUser } from "../../redux/slice/authSlice";
+import {
+  loginWithGoogle,
+  logoutUser,
+} from "../../redux/services/googleAuthApi";
 
 const initialValues = {
   email: "",
@@ -82,11 +86,28 @@ const Signin = () => {
     }
   };
 
+  // const handleGoogleLogin = async () => {
+  //   dispatch(googleLoginUser())
+  //     .unwrap()
+  //     .then(() => navigate("/home"))
+  //     .catch((error) => toast.error(error));
+  // };
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  console.log("user", user);
+
   const handleGoogleLogin = async () => {
-    dispatch(googleLoginUser())
-      .unwrap()
-      .then(() => navigate("/home"))
-      .catch((error) => toast.error(error));
+    const response = await loginWithGoogle();
+    console.log("response", response);
+
+    if (response.success) {
+      setUser(response.user);
+      dispatch(googleLoginUser(response.user));
+    }
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
+    setUser(null);
   };
 
   return (

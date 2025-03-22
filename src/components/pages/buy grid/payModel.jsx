@@ -17,6 +17,8 @@ import bnb from "../../../assets/icons/bnb.png";
 import eth from "../../../assets/icons/eth.png";
 import usdt from "../../../assets/icons/usdt.png";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
+import { useDispatch } from "react-redux";
+import { getUserProfile } from "../../../redux/slice/userSlice";
 
 const cryptoTokens = [
   {
@@ -67,6 +69,7 @@ const customTheme = {
 };
 
 const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
+  const dispatch = useDispatch();
   const [selected, setSelected] = useState("card");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [credit, setCredit] = useState(null);
@@ -141,7 +144,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
 
   const handleBuyCredits = async () => {
     const datas = {
-      coins: credit,
+      coins: Number(credit),
       email: profileData?.email,
     };
     if (validateForm()) {
@@ -150,6 +153,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
         console.log(res);
         if (res.status === 200) {
           handleShowSuccessPop();
+          dispatch(getUserProfile());
         }
       } catch (error) {
         console.log("error", error);

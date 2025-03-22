@@ -42,18 +42,18 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
       toast.error("Please upload pixel image ");
       return;
     }
-    const datas = { pixelImage: pixelImage };
+    const datas = { file: pixelImage };
 
     try {
       const res = await influencerProfileServices.uploadPixelImage(datas);
       if (res) {
         console.log(res);
+        updateFormData("pixelInfo", profileImage);
+        handleNext();
       }
     } catch (error) {
       console.log("error", error);
     }
-    updateFormData("pixelInfo", profileImage);
-    handleNext();
   };
 
   return (

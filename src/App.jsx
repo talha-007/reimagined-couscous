@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Signin from "./components/pages/login";
 import Signup from "./components/pages/signup";
 import Home from "./components/pages/Home";
@@ -15,9 +15,18 @@ import BuyGrid from "./components/pages/buy grid/buyGrid";
 import UserProfile from "./components/pages/userprofile/profile";
 import EditProfile from "./components/pages/userprofile/editProfile";
 import Marketplace from "./components/pages/marketplace/marketplace";
+import { useEffect } from "react";
+import { logout } from "./redux/slice/authSlice";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  console.log("isAuthenticated", isAuthenticated);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(logout());
+    }
+  }, []);
 
   return (
     <Router>

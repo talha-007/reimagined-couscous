@@ -10,6 +10,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { signupUser } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
+import {
+  loginWithGoogle,
+  logoutUser,
+} from "../../redux/services/googleAuthApi";
 const initialValues = {
   email: "",
   password: "",
@@ -88,21 +92,36 @@ const Signup = () => {
         .catch((error) => toast.error(error));
     }
   };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     const res = await authService.googleLogin();
+  //     console.log("google login res", res);
+  //     if (res.data.success) {
+  //       toast.success(res.data.message);
+  //       setIsLoading(false);
+  //       localStorage.setItem("token", res.data.token);
+  //       localStorage.setItem("userData", JSON.stringify(res.data));
+  //       navigate("/home");
+  //     }
+  //   } catch (error) {
+  //     console.log("error", error);
+  //     toast.error(error?.response?.data?.message);
+  //   }
+  // };
+
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  console.log("user", user);
+
   const handleGoogleLogin = async () => {
-    try {
-      const res = await authService.googleLogin();
-      console.log("google login res", res);
-      if (res.data.success) {
-        toast.success(res.data.message);
-        setIsLoading(false);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("userData", JSON.stringify(res.data));
-        navigate("/home");
-      }
-    } catch (error) {
-      console.log("error", error);
-      toast.error(error?.response?.data?.message);
+    const response = await loginWithGoogle();
+    if (response.success) {
+      setUser(response.user);
     }
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
+    setUser(null);
   };
 
   return (

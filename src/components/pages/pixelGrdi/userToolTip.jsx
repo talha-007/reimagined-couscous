@@ -45,7 +45,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
         <div className="flex justify-between">
           <div
             style={{
-              backgroundImage: `url('${hoveredUser?.profilePic}')`,
+              backgroundImage: `url('${hoveredUser?.profilePicture}')`,
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               backgroundSize: "cover",

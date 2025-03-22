@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // export const API_URL = "https://5hwtmvdt-3334.inc1.devtunnels.ms/";
-// export const IMAGE_BASEURL = "https://5hwtmvdt-3334.inc1.devtunnels.ms/";
+// export const IMAGE_BASEURL = "https://5hwtmvdt-3334.inc1.devtunnels.ms";
 export const API_URL = "https://16.16.207.119/";
 export const IMAGE_BASEURL = "https://16.16.207.119/";
 

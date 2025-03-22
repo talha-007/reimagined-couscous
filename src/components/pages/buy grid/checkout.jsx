@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import BuyCredits from "./buyCredits";
 import PayModel from "./payModel";
 import Popup from "./popup";
+import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 
 const Checkout = ({ handleNext }) => {
   const dispatch = useDispatch();
@@ -42,9 +43,24 @@ const Checkout = ({ handleNext }) => {
       console.log(error);
     }
   };
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (Number(profileData?.coins || 0) < Number(selectionSummary?.subtotal)) {
       setOpenCoinsPopup(true);
+    }
+    const datas = {
+      subtotal: selectionSummary.subtotal,
+      email: profileData?.email,
+      selectedPixels: selectionSummary?.selectedCoordinates,
+    };
+    try {
+      const res = await influencerProfileServices.SelectPixel(datas);
+      console.log(">>>>>>>>>>>>>>>>>>>>>>", res);
+      if (res.data.success) {
+        handleNext();
+        dispatch(getUserProfile());
+      }
+    } catch (error) {
+      console.log("error", error);
     }
   };
   return (
@@ -135,7 +151,7 @@ const Checkout = ({ handleNext }) => {
         head={" Credits purchased succesfully"}
         text={"Credits are added in your credits vault"}
         btnText="Countinue"
-        handlenext={handleNext}
+        handlenext={() => {}}
       />
     </div>
   );

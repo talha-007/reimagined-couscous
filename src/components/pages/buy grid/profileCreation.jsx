@@ -115,13 +115,13 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
       const datas = {
         ...values,
         userName: generateRandomUsername(),
-        profilePicture: profile,
+        file: profile,
         firstName: values.first_name,
         lastName: values.last_name,
         facebook: values.facebook_link,
         instagram: values.instagram_link,
         twitter: values.twitter_link,
-        projetcs: [
+        projects: [
           {
             brandName: values.brand_name,
             details: values.details,

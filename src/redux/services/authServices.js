@@ -6,7 +6,7 @@ const signup = (data) => {
   return callAPi.post(`/api/v1/register`, data);
 };
 
-const googleLogin = () => callAPi.post(`/api/v1/googleLogin`);
+const googleLogin = (data) => callAPi.post(`/api/v1/googleLogin`, data);
 
 const authService = {
   login,

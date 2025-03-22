@@ -24,9 +24,11 @@ export const loginUser = createAsyncThunk(
 
 export const googleLoginUser = createAsyncThunk(
   "auth/googleLogin",
-  async (_, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const res = await authService.googleLogin();
+      console.log("asdasdas", data);
+
+      const res = await authService.googleLogin(data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error?.response?.data?.message);
@@ -65,6 +67,8 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log("actions", action);
+
         state.loading = false;
         state.token = action.payload.token;
         state.user = action.payload;
