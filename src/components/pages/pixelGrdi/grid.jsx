@@ -384,8 +384,8 @@ const Grid = ({ Summary, image }) => {
       setHoveredUser(null);
       setHoveredSelection(foundSelection);
       setTooltipPos({
-        x: foundSelection.endPos.x + pixelSize,
-        y: foundSelection.endPos.y + pixelSize,
+        x: foundSelection.endPos.x + 30,
+        y: foundSelection.endPos.y + 30,
       });
     } else {
       setHoveredUser(null);
