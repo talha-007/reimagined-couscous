@@ -8,7 +8,7 @@ import { useState } from "react";
 import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { signupUser } from "../../redux/slice/authSlice";
+import { googleLoginUser, signupUser } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
 import {
   loginWithGoogle,
@@ -116,6 +116,7 @@ const Signup = () => {
     const response = await loginWithGoogle();
     if (response.success) {
       setUser(response.user);
+      dispatch(googleLoginUser(response.user));
     }
   };
 

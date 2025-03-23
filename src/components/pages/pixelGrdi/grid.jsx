@@ -312,7 +312,7 @@ const Grid = ({ Summary, image }) => {
         return; // Do not clear selections if clicking inside
       }
 
-      setSelections((prevSelections) => [...prevSelections, newSelection]);
+      setSelections(() => [newSelection]);
     } else {
       // Clear selections when clicking outside
       setSelections([]);
@@ -383,7 +383,10 @@ const Grid = ({ Summary, image }) => {
     } else if (foundSelection) {
       setHoveredUser(null);
       setHoveredSelection(foundSelection);
-      setTooltipPos({ x: e.pageX, y: e.pageY });
+      setTooltipPos({
+        x: foundSelection.endPos.x + pixelSize,
+        y: foundSelection.endPos.y + pixelSize,
+      });
     } else {
       setHoveredUser(null);
       setHoveredSelection(null);

@@ -81,7 +81,7 @@ const Signin = () => {
     if (Object.keys(newErrors).length === 0) {
       dispatch(loginUser(values))
         .unwrap()
-        .then(() => navigate("/"))
+        .then(() => navigate("/pixel-grid"))
         .catch((error) => toast.error(error));
     }
   };
