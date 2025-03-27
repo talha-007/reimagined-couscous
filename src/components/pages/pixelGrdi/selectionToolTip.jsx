@@ -87,7 +87,7 @@ const SelectionToolTip = ({
           name={isAuthenticated ? "Select" : "Get Started"}
           width="w-full"
           onClick={() => {
-            isAuthenticated ? navigate("/buy-grid") : navigate("/sign-in");
+            isAuthenticated ? handleSelectPixels() : navigate("/sign-in");
           }}
           bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
           strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
