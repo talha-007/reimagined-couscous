@@ -50,10 +50,10 @@ const Auctions = ({ marketData }) => {
           <motion.div
             key={item?.id}
             className="max-w-none md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
-            onHoverStart={() => setHoveredId(item.id)}
+            onHoverStart={() => setHoveredId(item?._id)}
             onHoverEnd={() => setHoveredId(null)}
           >
-            {hoveredId === item.id && (
+            {hoveredId === item?._id && (
               <div className="absolute z-30 right-2 top-2">
                 <CustomButton
                   bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
@@ -107,7 +107,7 @@ const Auctions = ({ marketData }) => {
             <motion.div
               className="absolute bottom-0 left-0 w-full bg-black z-20"
               initial={{ y: 56 }}
-              animate={{ y: hoveredId === item.id ? 0 : 56 }}
+              animate={{ y: hoveredId === item?._id ? 0 : 56 }}
               transition={{ stiffness: 150 }}
             >
               <div
@@ -134,7 +134,7 @@ const Auctions = ({ marketData }) => {
                       Followers
                     </p>
                   </div>
-                  {hoveredId === item.id && (
+                  {hoveredId === item?._id && (
                     <div className="flex items-center justify-between">
                       <a
                         href="#"
