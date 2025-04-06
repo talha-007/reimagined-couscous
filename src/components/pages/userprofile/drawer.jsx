@@ -11,6 +11,8 @@ import CustomButton from "../../button";
 import { useState } from "react";
 import TimerInput from "../../shared/timerInput/Timer";
 import successIcon from "../../../assets/icons/world.svg";
+import marketPlaceServices from "../../../redux/services/marketplaceServices";
+import { toast } from "react-toastify";
 
 const theme = {
   drawer: {
@@ -54,16 +56,74 @@ const theme = {
     },
   },
 };
+
+const initialValues = {
+  minimum_value: "",
+  value: "",
+  timer: "",
+};
+
 const AuctionDrawer = ({ closeDrawer, open }) => {
   const [selectedMethod, setSelectedMethod] = useState("auction");
   const [isSold, setIsSold] = useState(false);
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [hours, setHours] = useState(null);
+  const [mins, setMins] = useState(null);
+  const [secs, setSecs] = useState(null);
 
-  const handleSell = () => {
-    setIsSold(true);
-  };
   const handleCheckboxChange = (method) => {
     setSelectedMethod(method);
   };
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    if (/^\d*$/.test(value)) {
+      console.log("name", name, value);
+      setValues((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  function addTimeToNow(h, m, s) {
+    const now = new Date();
+    const result = new Date(now.getTime());
+
+    result.setHours(result.getHours() + h);
+    result.setMinutes(result.getMinutes() + m);
+    result.setSeconds(result.getSeconds() + s);
+
+    return result;
+  }
+
+  const handleSell = async () => {
+    // setIsSold(true);
+    const newDate = addTimeToNow(hours, mins, secs);
+    const datas = {
+      ...values,
+      price: values?.minimum_value,
+      timer: newDate,
+      isBid: selectedMethod === "auction" ? true : false,
+    };
+    console.log(datas);
+
+    try {
+      const res = await marketPlaceServices.createMarketPlace(datas);
+      console.log(res);
+      if (res.status === 200) {
+        toast.success(res?.data?.message);
+        closeDrawer(false);
+        setIsSold(false); // Reset when closing
+        setValues(initialValues);
+        setHours(null);
+        setMins(null);
+        setSecs(null);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  console.log(values);
 
   return (
     <div>
@@ -75,6 +135,10 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
           onClose={() => {
             closeDrawer(false);
             setIsSold(false); // Reset when closing
+            setValues(initialValues);
+            setHours(null);
+            setMins(null);
+            setSecs(null);
           }}
           className="p-4 before:absolute before:inset-y-0 before:left-0 before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FFE395] before:to-transparent"
         >
@@ -211,6 +275,9 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
                   <input
                     className="px-4 py-3 border bg-[#000000] border-[#766E53] text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase w-full"
                     required
+                    name="value"
+                    onChange={handleOnChange}
+                    value={values?.value}
                   />
                 </div>
               )}
@@ -224,6 +291,9 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
                     <input
                       className="px-4 py-3 border bg-[#000000] border-[#766E53] text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase w-full"
                       required
+                      onChange={handleOnChange}
+                      name="minimum_value"
+                      value={values?.minimum_value}
                     />
                   </div>
                   <div className="mt-8">
@@ -231,9 +301,21 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
                       Set Timer
                     </h1>
                     <div className="flex items-center gap-3 mt-4">
-                      <TimerInput label="Hours" />
-                      <TimerInput label="Minutes" />
-                      <TimerInput label="Seconds" />
+                      <TimerInput
+                        value={hours}
+                        setValue={setHours}
+                        label="Hours"
+                      />
+                      <TimerInput
+                        value={mins}
+                        setValue={setMins}
+                        label="Minutes"
+                      />
+                      <TimerInput
+                        value={secs}
+                        setValue={setSecs}
+                        label="Seconds"
+                      />
                     </div>
                   </div>
                 </>

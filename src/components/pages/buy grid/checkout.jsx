@@ -127,7 +127,7 @@ const Checkout = ({ handleNext }) => {
         <CustomButton
           py="py-4"
           hidden="block"
-          name={"Pay Now"}
+          name={"Proceed"}
           onClick={handleCheckout}
           width="w-[200px] md:w-[400px]"
           bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"

@@ -1,12 +1,40 @@
 import { Button } from "@material-tailwind/react";
 import Layout from "../../layout/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BuyNow from "./buyNow";
 import Auctions from "./auctions";
 import Bids from "./bids";
+import marketPlaceServices from "../../../redux/services/marketplaceServices";
+import { getBids, getMarketPlaces } from "../../../redux/slice/marketSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Marketplace = () => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("Buy Now");
+
+  const marketData = useSelector((s) => s?.markets?.data);
+  const bids = useSelector((s) => s?.markets);
+  console.log(marketData, bids);
+
+  useEffect(() => {
+    fetchMarketData();
+    fetchBids();
+  }, []);
+  const fetchMarketData = async () => {
+    try {
+      await dispatch(getMarketPlaces());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchBids = async () => {
+    try {
+      await dispatch(getBids());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Layout>
       <div
@@ -65,8 +93,8 @@ const Marketplace = () => {
             </Button>
           ))}
         </div>
-        {activeTab === "Buy Now" && <BuyNow />}
-        {activeTab === "Auction" && <Auctions />}
+        {activeTab === "Buy Now" && <BuyNow marketData={marketData} />}
+        {activeTab === "Auction" && <Auctions marketData={marketData} />}
         {activeTab === "Bids" && <Bids />}
       </div>
     </Layout>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "../../layout/layout";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import close from "../../../assets/icons/close btn.svg";
 import facebookLogo from "../../../assets/icons/FacebookLogo.svg";
 import instaLogo from "../../../assets/icons/InstagramLogo.svg";
@@ -16,6 +16,8 @@ import grid from "../../../assets/grid2.png";
 import commas from "../../../assets/icons/commas.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
+import influencerProfileServices from "../../../redux/services/influencerProfileServices";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const socailLinks = [
   { id: 1, logo: facebookLogo, followers: "2.3M" },
@@ -29,11 +31,30 @@ const Acheivments = [
   { id: 2, logo: earlyAdopterIcon, followers: "2.3M" },
   { id: 3, logo: tenMIcon, followers: "2.3M" },
 ];
+
 const InfluencerProfile = () => {
-  const dispatch = useDispatch();
+  const { id } = useParams();
   const [coverImage, setCoverImage] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [data, setData] = useState(null);
   const navigate = useNavigate();
+
+  console.log(data);
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+
+  const fetchData = async () => {
+    try {
+      const res = await influencerProfileServices.getInfluencerById(id);
+      console.log("res", res);
+      if (res.status === 200) {
+        setData(res?.data?.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const handleImageUpload = (event, type) => {
     const file = event.target.files[0];
@@ -90,7 +111,12 @@ const InfluencerProfile = () => {
               <div className="flex items-center justify-between">
                 <div className="relative flex items-center p-4">
                   <div className="relative w-40 h-40 overflow-hidden border-4 border-black -mt-20 bg-gray-200">
-                    {profileImage ? (
+                    <img
+                      src={IMAGE_BASEURL + data[0]?.profilePicture}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                    {/* {profileImage ? (
                       <img
                         src={profileImage}
                         alt="Profile"
@@ -106,23 +132,23 @@ const InfluencerProfile = () => {
                           onChange={(e) => handleImageUpload(e, "profile")}
                         />
                       </label>
-                    )}
-                    {profileImage && (
+                    )} */}
+                    {/* {profileImage && (
                       <button
                         onClick={() => removeImage("profile")}
                         className="absolute top-2 right-2 ml-4 bg-[#0000009c] px-1 py-1 text-xs "
                       >
                         <img src={close} alt="" />
                       </button>
-                    )}
+                    )} */}
                   </div>
 
                   <div className="text-left p-3">
                     <h2 className="text-[20px] text-[#FEDB6B]  font-semibold">
-                      Alex Carter
+                      {data[0]?.firstName} {data[0]?.lastName}
                     </h2>
                     <p className="text-[16px] font-light text-[#feea9a9c]">
-                      @Alexcarter8998
+                      {data[0]?.userName}
                     </p>
                   </div>
                 </div>
@@ -166,9 +192,7 @@ const InfluencerProfile = () => {
               </div>
               <div>
                 <p className="text-[16px] text-[#FEDB6B] font-[200]">
-                  A creative soul blending design, tech, and a dash of humor,
-                  Alex shares their journey through design tips and daily life
-                  quirks. Coffee lover and weekend adventurer Socials:
+                  {data[0]?.bio}
                 </p>
               </div>
             </div>
@@ -282,7 +306,7 @@ const InfluencerProfile = () => {
                 </p>
                 <div className="mt-4">
                   <p className="text-[#FEDB6B]  font-semibold text-[16px]">
-                    PixelEmpire
+                    {data[0]?.projects[0]?.brandName}
                   </p>
                   <p className="text-[#FEEA9A]  font-light text-[12px]">
                     Brand Name
@@ -301,12 +325,7 @@ const InfluencerProfile = () => {
                 </p>
                 <div className="mt-4">
                   <p className="text-[16px] text-[#FEDB6B] font-extralight">
-                    PixelEmpire is a revolutionary digital real estate
-                    marketplace where users can purchase, own, and customize
-                    pixels on a massive 100x100 grid. Each pixel costs $1 and
-                    can be personalized with colors, images, or brand logos.
-                    Whether for advertising, personal expression, or just fun,
-                    PixelEmpire lets you leave your mark on the digital world!
+                    {data[0]?.projects[0]?.details}
                   </p>
                 </div>
                 <div className="mt-6">
@@ -318,10 +337,7 @@ const InfluencerProfile = () => {
                       <img src={commas} alt="" />
                     </div>
                     <p className="text-[16px] text-[#FEDB6B] font-extralight ">
-                      The Pixel Grid Marketplace is a genius concept! The buying
-                      process was smooth, and customizing my pixels was super
-                      easy. I love how I can showcase my brand creatively.
-                      Definitely a fun and unique investment!
+                      {data[0]?.projects[0]?.testimonial}
                     </p>
                     <div className="mt-2 flex justify-end items-center">
                       <img src={commas} alt="" className=" scale-x-[-1]" />

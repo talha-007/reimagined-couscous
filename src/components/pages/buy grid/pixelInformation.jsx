@@ -168,7 +168,13 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
             )}
           </div>
           <p className="text-[#FFF8C5] text-[16px] font-[Montserrat] mt-2">
-            Resolution 100px width & 70px Height
+            Resolution{" "}
+            {!selectionSummary?.pixelsInRow ? 0 : selectionSummary?.pixelsInRow}
+            px width &{" "}
+            {!selectionSummary?.pixelsInColumn
+              ? 0
+              : selectionSummary?.pixelsInColumn}
+            px Height
           </p>
         </div>
       </div>

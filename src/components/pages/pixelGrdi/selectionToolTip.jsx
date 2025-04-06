@@ -10,15 +10,15 @@ const SelectionToolTip = ({
   handleSelectPixels,
 }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  console.log("selectionSummary", selectionSummary, isAuthenticated);
+  console.log("selectionSummary", isAuthenticated);
 
   const navigate = useNavigate();
   return (
     <motion.div
-      className="absolute text-black text-sm px-3 py-2 shadow-lg font-[Montserrat] "
+      className="absolute z-4 text-black text-sm px-3 py-2 shadow-lg font-[Montserrat] "
       style={{
-        top: tooltipPos.y + 10,
-        left: tooltipPos.x + 10,
+        top: tooltipPos.y,
+        left: tooltipPos.x,
         background: "#000000a6",
         backdropFilter: "blur(39px)",
         border: "1px solid",

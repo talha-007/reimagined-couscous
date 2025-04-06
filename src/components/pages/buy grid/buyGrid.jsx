@@ -25,7 +25,7 @@ const BuyGrid = () => {
   const steps = [
     "Profile Creation",
     "Select Pixels",
-    "Pixel Information",
+    "Upload Image",
     "Checkout",
     "Finish",
   ];

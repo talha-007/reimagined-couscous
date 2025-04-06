@@ -46,16 +46,19 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
         <div className="flex justify-between">
           <div
             style={{
-              backgroundImage: hoveredUser?.profilePicture
-                ? `url('${IMAGE_BASEURL + hoveredUser?.profilePicture}')`
-                : "",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              minWidth: "84px",
-              minHeight: "84px",
+              width: "84px",
+              height: "84px",
             }}
-          />
+          >
+            <img
+              src={
+                hoveredUser?.profilePicture &&
+                IMAGE_BASEURL + hoveredUser?.profilePicture
+              }
+              alt="User"
+              className="h-full "
+            />
+          </div>
           <div className="w-full flex flex-col items-center ">
             <p className="font-semibold text-[16px] text-[#FEDB6B]">
               {hoveredUser?.firstName || ""} {hoveredUser?.lastName || ""}
@@ -172,7 +175,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
             bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
             strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
             hidden="hidden"
-            onClick={() => navigate("/influencer-profile")}
+            onClick={() => navigate(`/influencer-profile/${hoveredUser?._id}`)}
             name="See Profile"
           />
         </div>

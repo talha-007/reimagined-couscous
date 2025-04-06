@@ -87,8 +87,13 @@ const authSlice = createSlice({
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("userData", JSON.stringify(action.payload));
       })
-      .addCase(signupUser.fulfilled, (state) => {
+      .addCase(signupUser.fulfilled, (state, action) => {
         state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("userData", JSON.stringify(action.payload));
       })
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;

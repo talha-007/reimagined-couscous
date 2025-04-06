@@ -41,7 +41,7 @@ const ContactUs = () => {
             </label>
             <input
               type="text"
-              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter your first name"
               required
             />
@@ -54,7 +54,7 @@ const ContactUs = () => {
             </label>
             <input
               type="text"
-              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter your last name"
               required
             />
@@ -67,7 +67,7 @@ const ContactUs = () => {
             </label>
             <input
               type="email"
-              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter your email"
               required
             />
@@ -80,7 +80,7 @@ const ContactUs = () => {
             </label>
             <input
               type="url"
-              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter your website (optional)"
             />
           </div>
@@ -92,7 +92,7 @@ const ContactUs = () => {
             </label>
             <textarea
               rows="4"
-              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-[1rem] py-[1rem] border border-[#766E53cc] font-[Inter] text-[14px] text-white placeholder:text-[#353535] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter your message"
               required
             ></textarea>

@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import axios from "axios";
 
-// export const API_URL = "https://5hwtmvdt-3334.inc1.devtunnels.ms/";
-// export const IMAGE_BASEURL = "https://5hwtmvdt-3334.inc1.devtunnels.ms";
-export const API_URL = "https://api.milliondollarinfluencer.com/";
-export const IMAGE_BASEURL = "https://api.milliondollarinfluencer.com";
+export const API_URL = "http://localhost:3334/";
+export const IMAGE_BASEURL = "http://localhost:3334";
+// export const API_URL = "https://api.milliondollarinfluencer.com/";
+// export const IMAGE_BASEURL = "https://api.milliondollarinfluencer.com";
 
 export const callAPi = axios.create({
   withCredentials: true,

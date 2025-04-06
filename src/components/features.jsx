@@ -51,12 +51,12 @@ const Features = () => {
         viewport={{ once: false, amount: 0.2 }}
       >
         <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent font-[Montserrat] font-extrabold lg:text-[36px] sm:text-[24px] text-[24px] uppercase">
-          why million dollar pixel grid
+          WHY THE MILLION DOLLAR INFLUENCERS?
         </h1>
         <p className="text-white font-[Montserrat] mt-2 lg:text-[24px] sm:text-[20px] text-[16px]">
-          Join a global community of influencers for just $1 and unlock
-          exclusive opportunities to connect, collaborate, and grow your
-          influence.
+          Join an exclusive global network of influencers. Claim your space,
+          amplify your brand, and unlock elite opportunities to connect,
+          collaborate, and expand your influence.
         </p>
       </motion.div>
 

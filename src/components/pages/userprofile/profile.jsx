@@ -31,6 +31,10 @@ import { FaChevronRight } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
+import CountUp from "react-countup";
+import Grid from "../pixelGrdi/grid";
+import profileServices from "../../../redux/services/profileServices";
+import { toast } from "react-toastify";
 
 const socailLinks = [
   { id: 1, logo: facebookLogo, followers: "2.3M" },
@@ -74,6 +78,7 @@ const UserProfile = () => {
   const dispatch = useDispatch();
   const [coverImage, setCoverImage] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [pixelImage, setPixelImage] = useState(null);
   const [isOpenMenu, setOpenMenu] = useState(null);
   const [isOpenDelete, setOpenDelete] = useState(null);
   const [isOpenDrawer, setOpenDrawer] = useState(false);
@@ -102,11 +107,36 @@ const UserProfile = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const handleImageUpload = (event, type) => {
-    const file = event.target.files[0];
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      type === "cover" ? setCoverImage(imageUrl) : setProfileImage(imageUrl);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCoverImage(reader.result);
+      };
+      setPixelImage(file);
+      reader.readAsDataURL(file);
+      handleUploadImage();
+    }
+  };
+  console.log("setPixelImage");
+
+  const handleUploadImage = async () => {
+    if (!pixelImage) {
+      toast.error("Please upload image ");
+      return;
+    }
+    const datas = { file: pixelImage };
+
+    try {
+      const res = await profileServices.uploadCover(datas);
+      if (res) {
+        // console.log(res);
+        await dispatch(getUserProfile());
+      }
+    } catch (error) {
+      console.log("error", error);
     }
   };
 
@@ -148,9 +178,9 @@ const UserProfile = () => {
           <div className="shadow-lg">
             {/* Cover Image Section */}
             <div className="relative w-full h-40 bg-gray-200">
-              {coverImage ? (
+              {profileData?.cover ? (
                 <img
-                  src={coverImage}
+                  src={IMAGE_BASEURL + profileData?.cover}
                   alt="Cover"
                   className="w-full h-full object-cover"
                 />
@@ -158,10 +188,10 @@ const UserProfile = () => {
                 <label className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-600 cursor-pointer">
                   <span>Upload Cover</span>
                   <input
-                    // type="file"
+                    type="file"
                     accept="image/*"
                     className="hidden"
-                    // onChange={(e) => handleImageUpload(e, "cover")}
+                    onChange={(e) => handleImageUpload(e)}
                   />
                 </label>
               )}
@@ -179,11 +209,11 @@ const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div className="relative flex items-center p-4">
                 <div className="relative w-40 h-40 overflow-hidden border-4 border-black -mt-20 bg-gray-200">
-                  {profileImage || profileData.profilePicture ? (
+                  {profileImage || profileData?.profilePicture ? (
                     <img
                       src={
                         profileData.profilePicture
-                          ? IMAGE_BASEURL + profileData.profilePicture
+                          ? IMAGE_BASEURL + profileData?.profilePicture
                           : profileImage
                       }
                       alt="Profile"
@@ -222,7 +252,7 @@ const UserProfile = () => {
               <div className="flex items-center">
                 <div className="p-3 text-center">
                   <p className="text-[20px] text-[#FEDB6B]  font-semibold">
-                    4.3M
+                    <CountUp end={4.3} decimals={1} suffix="M" duration={2} />
                   </p>
                   <p className="text-[16px] font-light text-[#feea9a9c]">
                     Clicks
@@ -231,7 +261,7 @@ const UserProfile = () => {
                 <div className="w-[2px] h-10 bg-[#FEF6C026]"></div>
                 <div className="p-3 text-center">
                   <p className="text-[20px] text-[#FEDB6B]  font-semibold">
-                    2M
+                    <CountUp end={2} decimals={0} suffix="M" duration={2} />
                   </p>
                   <p className="text-[16px] font-light text-[#feea9a9c]">
                     Followers
@@ -378,9 +408,10 @@ const UserProfile = () => {
                   borderImage:
                     "linear-gradient(to right, rgb(255,248,197,52%) ,  rgb(140,94,28,21%)) 1",
                   width: "100%",
+                  overflow: "hidden",
                 }}
               >
-                <img src={grid} alt="" />
+                <Grid />
               </div>
             </div>
           </motion.div>

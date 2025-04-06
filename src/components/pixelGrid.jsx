@@ -57,7 +57,7 @@ const PixelGrid = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: false, amount: 0.2 }}
           >
-            Your pixel grid
+            THE MILLION DOLLAR GRID
           </motion.h1>
 
           {/* Animated Subtitle */}
@@ -68,8 +68,7 @@ const PixelGrid = () => {
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             viewport={{ once: false, amount: 0.2 }}
           >
-            Where you claim your space and resides, amplify and share your
-            vision
+            Your personal space to stand out, connect, and amplify your reach.
           </motion.p>
         </div>
 

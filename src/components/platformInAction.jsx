@@ -34,10 +34,11 @@ const PlatformInAction = () => {
             fontWeight: "800",
           }}
         >
-          Watch the Platform in Action!
+          See the Platform in <br /> Action!
         </h1>
         <p className="text-white text-[16px] sm:text-[24px] font-normal font-[Montserrat]">
-          Watch the platform's video tutorial to easily understand how it works.
+          Watch our quick video guide and learn <br /> how to claim your space
+          and elevate your <br /> influence.
         </p>
       </motion.div>
       {/* Video Section */}

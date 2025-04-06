@@ -45,10 +45,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/pixel-grid" element={<PixelGrid />} />
-            <Route path="/buy-grid" element={<BuyGrid />} />
+            <Route path="/buy-pixel" element={<BuyGrid />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/edit-profile" element={<EditProfile />} />
-            <Route path="/influencer-profile" element={<InfluencerProfile />} />
+            <Route
+              path="/influencer-profile/:id"
+              element={<InfluencerProfile />}
+            />
             <Route path="/marketplace" element={<Marketplace />} />
           </>
         )}

@@ -12,46 +12,11 @@ import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 const BASE_GRID_SIZE = 100;
 const BASE_PIXEL_SIZE = 10;
 
-const dummyUsers = [
-  {
-    id: 1,
-    name: "Alex Carter",
-    profilePic: user4,
-    bio: "A creative soul blending design, tech, and a dash of humor, Alex shares their journey through design tips and daily life quirks. Coffee lover and weekend adventurer.Socials:",
-    fbLink: "@acarterdesigns",
-    instaLink: "@alexdesigns",
-    tiktokLink: "@alexcarterdesigns",
-    selectedPixels: [{ startPos: { x: 40, y: 40 }, endPos: { x: 80, y: 80 } }],
-  },
-  {
-    id: 2,
-    name: "Bob",
-    profilePic: user2,
-    bio: "A creative soul blending design, tech, and a dash of humor, Alex shares their journey through design tips and daily life quirks. Coffee lover and weekend adventurer.Socials:",
-    fbLink: "@acarterdesigns",
-    instaLink: "@alexdesigns",
-    tiktokLink: "@alexcarterdesigns",
-    selectedPixels: [
-      { startPos: { x: 130, y: 70 }, endPos: { x: 170, y: 90 } },
-    ],
-  },
-  {
-    id: 3,
-    name: "Bob",
-    profilePic: user3,
-    bio: "A creative soul blending design, tech, and a dash of humor, Alex shares their journey through design tips and daily life quirks. Coffee lover and weekend adventurer.Socials:",
-    fbLink: "@acarterdesigns",
-    instaLink: "@alexdesigns",
-    tiktokLink: "@alexcarterdesigns",
-    selectedPixels: [
-      { startPos: { x: 230, y: 90 }, endPos: { x: 270, y: 130 } },
-    ],
-  },
-];
-
 const Grid = ({ Summary, image }) => {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
+  const imagesRef = useRef({});
+
   const [gridSize, setGridSize] = useState(BASE_GRID_SIZE);
   const [pixelSize, setPixelSize] = useState(BASE_PIXEL_SIZE);
   const [dragging, setDragging] = useState(false);
@@ -151,14 +116,13 @@ const Grid = ({ Summary, image }) => {
       img.src = image;
       img.onload = () => {
         Summary.imgElement = img;
-        drawGrid(); // Redraw grid with the new image
+        drawGrid();
       };
     } else {
-      Summary.imgElement = null; // Ensure it's reset when no image
-      drawGrid(); // Redraw grid with fallback color
+      Summary.imgElement = null;
+      drawGrid();
     }
-  }, [image]); // Reload when `image` changes
-  // Reload image when `image` prop changes
+  }, [image]);
 
   const updateGridSize = () => {
     const screenWidth = window.innerWidth;
@@ -182,11 +146,15 @@ const Grid = ({ Summary, image }) => {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    canvas.width = gridSize * pixelSize;
-    canvas.height = gridSize * pixelSize;
+    const width = gridSize * pixelSize;
+    const height = gridSize * pixelSize;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = width;
+    canvas.height = height;
 
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw grid
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
         ctx.strokeStyle = "#000";
@@ -194,6 +162,7 @@ const Grid = ({ Summary, image }) => {
       }
     }
 
+    // Draw users' selections
     users?.forEach((user) => {
       user?.selectedPixels?.forEach(({ startPos, endPos }) => {
         const x = startPos.x;
@@ -204,16 +173,15 @@ const Grid = ({ Summary, image }) => {
         const isHovered =
           mousePos &&
           mousePos.x >= x &&
-          mousePos.x <= x + width &&
+          mousePos.x < x + width &&
           mousePos.y >= y &&
-          mousePos.y <= y + height;
+          mousePos.y < y + height;
 
         ctx.save();
 
         if (isHovered) {
           ctx.shadowColor = "#0007";
           ctx.shadowBlur = 25;
-
           setToolTipActive(true);
         } else {
           ctx.shadowBlur = 0;
@@ -224,32 +192,52 @@ const Grid = ({ Summary, image }) => {
         ctx.strokeStyle = "#FFF8C5";
         ctx.strokeRect(x, y, width, height);
 
-        if (!user.imgElement) {
-          user.imgElement = new Image();
-          user.imgElement.crossOrigin = "anonymous"; // Fix CORS issues
-          user.imgElement.src = IMAGE_BASEURL + user.pixelImage;
-          user.imgElement.onload = () => {
-            requestAnimationFrame(drawGrid); // Redraw grid to show image after loading
+        // Check if image is already loaded
+        const userId = user._id; // Use a stable ID if possible
+        const imgData = imagesRef.current[userId];
+
+        // If image not loaded yet, load it
+        if (!imgData) {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = IMAGE_BASEURL + user.pixelImage;
+
+          img.onload = () => {
+            imagesRef.current[userId] = {
+              loaded: true,
+              element: img,
+            };
+            drawGrid(); // Redraw once image is loaded
+          };
+
+          img.onerror = () => {
+            console.error("Failed to load image:", user.pixelImage);
+          };
+
+          imagesRef.current[userId] = {
+            loaded: false,
+            element: img,
           };
         }
 
-        if (user.imgElement.complete) {
-          ctx.drawImage(user.imgElement, x, y, width, height);
+        // If loaded, draw image
+        if (imgData?.loaded) {
+          ctx.drawImage(imgData.element, x, y, width, height);
 
           if (isHovered) {
-            // Draw inner border only when hovered
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "#FFD700"; // Gold inner border
+            ctx.strokeStyle = "#FFD700";
             ctx.strokeRect(x + 1, y + 1, width - 2, height - 2);
           }
         }
 
-        ctx.restore(); // Restore state after drawing
-        // setToolTipActive(false);
+        ctx.restore();
       });
     });
+
+    // Draw summary selection
     if (Summary?.selectedCoordinates) {
-      Summary.selectedCoordinates?.forEach(({ startPos, endPos }) => {
+      Summary.selectedCoordinates.forEach(({ startPos, endPos }) => {
         const x = Math.min(startPos.x, endPos.x);
         const y = Math.min(startPos.y, endPos.y);
         const width = Math.abs(endPos.x - startPos.x);
@@ -266,6 +254,7 @@ const Grid = ({ Summary, image }) => {
       });
     }
 
+    // Draw currently selected region (drag area)
     if (startPos && endPos) {
       const x = Math.min(startPos.x, endPos.x);
       const y = Math.min(startPos.y, endPos.y);
@@ -283,12 +272,13 @@ const Grid = ({ Summary, image }) => {
 
   const handleMouseDown = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    // console.log("rect", rect);
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    const x = Math.floor((e.clientX - rect.left) / pixelSize) * pixelSize;
-    const y = Math.floor((e.clientY - rect.top) / pixelSize) * pixelSize;
+    const cellX = Math.floor(x / pixelSize) * pixelSize;
+    const cellY = Math.floor(y / pixelSize) * pixelSize;
 
-    setStartPos({ x, y });
+    setStartPos({ x: cellX, y: cellY });
     setEndPos(null);
     setDragging(true);
   };
@@ -326,33 +316,35 @@ const Grid = ({ Summary, image }) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setMousePos({ x, y });
+    // Clamp within canvas bounds
+    const clampedX = Math.min(x, gridSize * pixelSize - 1);
+    const clampedY = Math.min(y, gridSize * pixelSize - 1);
+
+    // Set actual mouse position for drawing/highlighting
+    setMousePos({ x: clampedX, y: clampedY });
+
+    const cellX = Math.floor(clampedX / pixelSize) * pixelSize;
+    const cellY = Math.floor(clampedY / pixelSize) * pixelSize;
 
     if (dragging && startPos) {
       setEndPos({
-        x:
-          startPos.x +
-          Math.floor((x - startPos.x) / pixelSize) * pixelSize +
-          pixelSize,
-        y:
-          startPos.y +
-          Math.floor((y - startPos.y) / pixelSize) * pixelSize +
-          pixelSize,
+        x: cellX + pixelSize,
+        y: cellY + pixelSize,
       });
-
-      return; // Do NOT reset tooltip here
+      return;
     }
 
     let foundUser = null;
     let foundSelection = null;
 
+    // Check for hovered user
     for (const user of users) {
       for (const { startPos, endPos } of user.selectedPixels) {
         if (
-          x >= startPos.x &&
-          x <= endPos.x &&
-          y >= startPos.y &&
-          y <= endPos.y
+          clampedX >= startPos.x &&
+          clampedX < endPos.x &&
+          clampedY >= startPos.y &&
+          clampedY < endPos.y
         ) {
           foundUser = user;
           break;
@@ -361,36 +353,28 @@ const Grid = ({ Summary, image }) => {
       if (foundUser) break;
     }
 
+    // Check for hovered selection
     for (const { startPos, endPos } of selections) {
       if (
-        x >= startPos.x &&
-        x <= endPos.x &&
-        y >= startPos.y &&
-        y <= endPos.y
+        clampedX >= startPos.x &&
+        clampedX < endPos.x &&
+        clampedY >= startPos.y &&
+        clampedY < endPos.y
       ) {
         foundSelection = { startPos, endPos };
         break;
       }
     }
 
-    // 🛠 If there's a clickedUser, do NOT override the tooltip
     if (clickedUser) return;
 
-    if (foundUser) {
+    // Only update state if there is a change
+    if (foundUser !== hoveredUser || foundSelection !== hoveredSelection) {
       setHoveredUser(foundUser);
-      setHoveredSelection(null);
-      setTooltipPos({ x: e.pageX, y: e.pageY });
-    } else if (foundSelection) {
-      setHoveredUser(null);
       setHoveredSelection(foundSelection);
-      setTooltipPos({
-        x: foundSelection.endPos.x + 30,
-        y: foundSelection.endPos.y + 30,
-      });
-    } else {
-      setHoveredUser(null);
-      setHoveredSelection(null);
-      setTooltipPos(null);
+      setTooltipPos(
+        foundUser || foundSelection ? { x: e.pageX, y: e.pageY } : null
+      );
     }
   };
 

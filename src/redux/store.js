@@ -4,6 +4,7 @@ import influencerReducer from "./slice/InfluencerSlice";
 import formReducer from "./slice/formSlice";
 import authReducer from "./slice/authSlice";
 import stepperReducer from "./slice/stepperSlice";
+import marketPlaceReducer from "./slice/marketSlice";
 
 const combineReducer = {
   auth: authReducer,
@@ -11,6 +12,7 @@ const combineReducer = {
   influencer: influencerReducer,
   form: formReducer,
   stepper: stepperReducer,
+  markets: marketPlaceReducer,
 };
 export const store = configureStore({
   reducer: combineReducer,

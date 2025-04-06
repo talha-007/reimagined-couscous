@@ -92,11 +92,11 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
     if (!values.last_name) errors.last_name = "Last name is required";
     if (!values.email) errors.email = "Email is required";
     if (!values.bio) errors.bio = "Bio is required";
-    if (!values.facebook_link)
-      errors.facebook_link = "Facebook link is required";
-    if (!values.instagram_link)
-      errors.instagram_link = "Instagram link is required";
-    if (!values.twitter_link) errors.twitter_link = "Twitter link is required";
+    // if (!values.facebook_link)
+    //   errors.facebook_link = "Facebook link is required";
+    // if (!values.instagram_link)
+    //   errors.instagram_link = "Instagram link is required";
+    // if (!values.twitter_link) errors.twitter_link = "Twitter link is required";
     if (!values.brand_name) errors.brand_name = "Brand name is required";
     if (!values.details) errors.details = "Details are required";
     if (!values.testimonial) errors.testimonial = "Testimonial is required";
@@ -107,10 +107,11 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
   const generateRandomUsername = () => {
     return `User_${Math.floor(1000 + Math.random() * 9000)}`;
   };
+
   const handleProfileCreation = async () => {
     const newErrors = validateProfileForm(values);
     setErrors(newErrors);
-
+    setIsLoading(true);
     if (Object.keys(newErrors).length === 0) {
       const datas = {
         ...values,
@@ -137,10 +138,12 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         // console.log("asdasdas", res);
         if (res) {
           toast.success("Information saved");
+          setIsLoading(false);
           handleNext();
         }
       } catch (error) {
         console.log("error", error);
+        setIsLoading(false);
       }
     }
   };
@@ -175,7 +178,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="text"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter First Name"
               required
               name="first_name"
@@ -195,7 +198,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="text"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter Last Name"
               required
               name="last_name"
@@ -215,13 +218,12 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="email"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter Email"
               required
               name="email"
               autoComplete="off"
               value={values.email}
-              disabled
               onChange={handleOnChange}
             />
             {errors.email && (
@@ -235,7 +237,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
               Bio<span style={{ color: "#FFE395" }}>*</span>
             </label>
             <textarea
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase resize-none"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none  resize-none"
               placeholder="Enter Bio"
               required
               rows={4}
@@ -321,7 +323,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="text"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter Facebook link"
               required
               name="facebook_link"
@@ -341,7 +343,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="text"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter Instagram Link"
               required
               name="instagram_link"
@@ -363,7 +365,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="text"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter Twitter Link"
               required
               name="twitter_link"
@@ -381,7 +383,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         <div className="w-full col-span-3">
           <div>
             <p className="text-white font-[Inter] text-[16px] font-semibold uppercase">
-              Projects
+              BRAND IDENTITY
             </p>
           </div>
         </div>
@@ -392,7 +394,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
             </label>
             <input
               type="text"
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
               placeholder="Enter Brand name"
               required
               name="brand_name"
@@ -411,7 +413,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
               Details<span style={{ color: "#FFE395" }}>*</span>
             </label>
             <textarea
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase resize-none"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none  resize-none"
               placeholder="Enter Details"
               required
               rows={4}
@@ -431,7 +433,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
               Testimonial<span style={{ color: "#FFE395" }}>*</span>
             </label>
             <textarea
-              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase resize-none"
+              className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none  resize-none"
               placeholder="Enter Testimonial"
               required
               rows={4}
@@ -448,6 +450,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         <div className="flex gap-4 max-w-5xl w-full justify-center mx-auto my-8 col-span-3">
           <CustomButton
             py="py-4"
+            isLoading={isLoading}
             hidden="block"
             name={"Next"}
             onClick={handleProfileCreation}

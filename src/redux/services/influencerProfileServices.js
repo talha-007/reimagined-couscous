@@ -8,6 +8,8 @@ const deleteUser = (data) => {
 };
 
 const getInfluencer = () => callAPi.get("/api/v1/getInfluencer");
+const getInfluencerById = (id) =>
+  callAPi.get(`/api/v1/getInfluencerById/${id}`);
 const addCoins = (data) => callAPi.patch("/api/v1/addCoins", data);
 const deductCoins = (data) => callAPi.patch("/api/v1/deductCoins", data);
 
@@ -21,6 +23,7 @@ const influencerProfileServices = {
   createInfluencerProfile,
   uploadPixelImage,
   getInfluencer,
+  getInfluencerById,
   addCoins,
   SelectPixel,
   deductCoins,

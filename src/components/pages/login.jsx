@@ -149,7 +149,7 @@ const Signin = () => {
               </label>
               <input
                 type="email"
-                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
                 placeholder="Enter your email"
                 required
                 name="email"
@@ -168,7 +168,7 @@ const Signin = () => {
               </label>
               <input
                 type="password"
-                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
                 placeholder="Enter your password"
                 required
                 name="password"
@@ -186,7 +186,7 @@ const Signin = () => {
                 strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
                 py="py-4"
                 hidden="block"
-                name="Login"
+                name="login"
                 width="w-full"
                 onClick={handleSubmit}
                 isLoading={isLoading}

@@ -110,7 +110,7 @@ const Navbar = () => {
             </a>
             {/* Desktop Nav Items */}
             <div className="hidden md:flex md:items-center md:space-x-6">
-              {["Home", "Pixel Grid", isLoggedIn && "Buy Grid", "Marketplace"]
+              {["Home", "Pixel Grid", isLoggedIn && "Buy Pixel", "Marketplace"]
                 .filter(Boolean) // Remove falsy values (if isLoggedIn is false)
                 .map((item, index) => {
                   const isActive =
@@ -288,19 +288,21 @@ const Navbar = () => {
                             <div className="flex items-center gap-4 mb-8">
                               <div
                                 style={{
-                                  backgroundImage: profileData?.profilePicture
-                                    ? `url(${
-                                        IMAGE_BASEURL +
-                                        profileData.profilePicture
-                                      })`
-                                    : "none",
-
                                   width: "148px",
                                   height: "148px",
-                                  backgroundRepeat: "no-repeat",
-                                  backgroundSize: "cover",
                                 }}
-                              ></div>
+                              >
+                                <img
+                                  src={
+                                    profileData?.profilePicture
+                                      ? IMAGE_BASEURL +
+                                        profileData?.profilePicture
+                                      : userImage
+                                  }
+                                  alt="User"
+                                  className="w-full h-full "
+                                />
+                              </div>
                               <div className="flex flex-col gap-4">
                                 <p className="text-[#FEDB6B] font-[Montserrat] font-bold text-[32px] w-max">
                                   {profileData?.name ? profileData?.name : ""}
@@ -338,7 +340,7 @@ const Navbar = () => {
                               onClick={() =>
                                 navigate(
                                   profileData?.role === "user"
-                                    ? "/buy-grid"
+                                    ? "/buy-pixel"
                                     : "/profile"
                                 )
                               }
@@ -356,7 +358,7 @@ const Navbar = () => {
                   <CustomButton
                     py="py-2"
                     onClick={() =>
-                      navigate(isLoggedIn ? "/buy-grid" : "/sign-up")
+                      navigate(isLoggedIn ? "/buy-pixel" : "/sign-up")
                     }
                     hidden="hidden"
                     name="Get Started for $1"
@@ -437,7 +439,7 @@ const Navbar = () => {
               {[
                 "Home",
                 "Pixel Grid",
-                isLoggedIn && "Buy Grid",
+                isLoggedIn && "Buy Pixel",
                 "Marketplace",
               ].map((item, index) => {
                 return (
@@ -464,7 +466,7 @@ const Navbar = () => {
                   py="py-2"
                   hidden="hidden"
                   name="Get Started for $1"
-                  onClick={() => navigate("/buy-grid")}
+                  onClick={() => navigate("/buy-pixel")}
                   bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                   strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
                 />

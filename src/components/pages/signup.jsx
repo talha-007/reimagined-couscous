@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUser, signupUser } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // install react-icons if not already
+
 import {
   loginWithGoogle,
   logoutUser,
@@ -24,6 +26,8 @@ const Signup = () => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
@@ -87,7 +91,7 @@ const Signup = () => {
         .unwrap()
         .then(() => {
           toast.success("Signup successful! Please log in.");
-          navigate("/sign-in");
+          navigate("/pixel-grid");
         })
         .catch((error) => toast.error(error));
     }
@@ -164,7 +168,7 @@ const Signup = () => {
               </label>
               <input
                 type="email"
-                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
                 placeholder="Enter your email"
                 required
                 name="email"
@@ -177,13 +181,13 @@ const Signup = () => {
               )}
             </div>
 
-            <div className="flex flex-col mb-4">
+            <div className="flex flex-col mb-4 relative">
               <label className="text-white font-medium mb-1 text-[14px] uppercase">
                 Password
               </label>
               <input
-                type="password"
-                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+                type={showPassword ? "text" : "password"}
+                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none  pr-10"
                 placeholder="Enter your password"
                 required
                 name="password"
@@ -191,18 +195,29 @@ const Signup = () => {
                 value={values.password}
                 onChange={handleOnChange}
               />
+              <span
+                className="absolute right-3 top-[50%] translate-y-1 cursor-pointer text-white"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </span>
               {errors.password && (
                 <p className="text-red-500 text-[10px]">{errors.password}</p>
               )}
             </div>
 
-            <div className="flex flex-col mb-6">
+            {/* Confirm Password Field */}
+            <div className="flex flex-col mb-6 relative">
               <label className="text-white font-medium mb-1 text-[14px] uppercase">
                 Confirm Password
               </label>
               <input
-                type="password"
-                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase"
+                type={showConfirm ? "text" : "password"}
+                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none  pr-10"
                 placeholder="Confirm your password"
                 required
                 name="confirm_password"
@@ -210,6 +225,16 @@ const Signup = () => {
                 value={values.confirm_password}
                 onChange={handleOnChange}
               />
+              <span
+                className="absolute right-3 top-[50%] translate-y-1 cursor-pointer text-white"
+                onClick={() => setShowConfirm((prev) => !prev)}
+              >
+                {showConfirm ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </span>
               {errors.confirm_password && (
                 <p className="text-red-500 text-[10px]">
                   {errors.confirm_password}
@@ -222,7 +247,7 @@ const Signup = () => {
                 strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
                 py="py-4"
                 hidden="block"
-                name="Sign Up"
+                name="sign up"
                 onClick={handleSubmit}
                 width="w-full"
                 isLoading={isLoading}
