@@ -1,30 +1,36 @@
 import herobg from "../../assets/herobg.png";
-import worldSvg from "../../assets/world.svg";
+import worldSvg from "../../assets/world.png";
 import { motion } from "framer-motion";
 
 const AuthLayout = ({ children }) => {
   return (
-    <div
-      className="relative h-screen flex items-center  "
-      style={{
-        backgroundImage: `linear-gradient(to left, #000000e6  50%, rgba(0, 0, 0, 0.0)100%), url(${herobg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-3 w-full h-full items-center">
+    <div className="relative h-screen flex items-center overflow-hidden">
+      {/* Blurred herobg background layer */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `linear-gradient(to left, #000000e6 50%, rgba(0, 0, 0, 0.0) 100%), url(${herobg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          filter: "blur(4px)", // adjust as needed
+        }}
+      />
+
+      {/* Content layer on top */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 w-full h-full items-center">
         {/* Left Side - Form */}
         {children}
 
+        {/* Right Side */}
         <div
-          className="h-full w-full justify-center border-l col-span-2  overflow-hidden hidden md:flex"
+          className="h-full w-full justify-center border-l col-span-2 overflow-hidden hidden md:flex"
           style={{
             borderLeft: "1px solid",
             borderImage: "linear-gradient(to bottom, #7A5018cc, #FEEA9Acc) 1",
           }}
         >
-          <div className="flex flex-col justify-center items-center text-center ">
+          <div className="flex flex-col justify-center items-center text-center">
             <div
               style={{
                 backgroundImage: `url(${worldSvg})`,
@@ -41,7 +47,7 @@ const AuthLayout = ({ children }) => {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <motion.h1
-                className="text-[16px] lg:text-[24px]  uppercase mb-4"
+                className="text-[16px] lg:text-[24px] uppercase mb-4"
                 style={{
                   backgroundImage:
                     "linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)",

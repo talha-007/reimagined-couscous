@@ -9,11 +9,18 @@ import { useDispatch } from "react-redux";
 import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+// import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { googleLoginUser, loginUser } from "../../redux/slice/authSlice";
 import {
   loginWithGoogle,
   logoutUser,
 } from "../../redux/services/googleAuthApi";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 
 const initialValues = {
   email: "",
@@ -24,6 +31,7 @@ const Signin = () => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -79,10 +87,17 @@ const Signin = () => {
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
+      setIsLoading(true); // Show loader
       dispatch(loginUser(values))
         .unwrap()
-        .then(() => navigate("/pixel-grid"))
-        .catch((error) => toast.error(error));
+        .then(() => {
+          setIsLoading(false); // Show loader
+          navigate("/pixel-grid");
+        })
+        .catch((error) => {
+          setIsLoading(false); // Show loader
+          toast.error(error);
+        });
     }
   };
 
@@ -112,6 +127,14 @@ const Signin = () => {
 
   return (
     <AuthLayout>
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
+          <AiOutlineLoading3Quarters
+            className="text-white animate-spin"
+            size={50}
+          />
+        </div>
+      )}
       <div className="flex items-center justify-center">
         <div className=" p-8 w-full max-w-md">
           <motion.div
@@ -162,19 +185,30 @@ const Signin = () => {
               )}
             </div>
 
-            <div className="flex flex-col mb-4">
+            <div className="flex flex-col mb-4 relative">
               <label className="text-white font-medium mb-1 text-[14px] uppercase">
                 Password
               </label>
               <input
-                type="password"
-                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none "
+                type={showPassword ? "text" : "password"}
+                className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none  pr-10"
                 placeholder="Enter your password"
                 required
                 name="password"
+                autoComplete="off"
                 value={values.password}
                 onChange={handleOnChange}
               />
+              <span
+                className="absolute right-3 top-[50%] translate-y-1 cursor-pointer text-white"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </span>
               {errors.password && (
                 <p className="text-red-500 text-[10px]">{errors.password}</p>
               )}

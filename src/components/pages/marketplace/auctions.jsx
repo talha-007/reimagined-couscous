@@ -42,11 +42,13 @@ const Auctions = ({ marketData }) => {
     }, 60000); // Updates every minute
     return () => clearInterval(timer);
   }, []);
+
+  const filteredData = marketData?.data?.filter((item) => item?.isBid === true);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4">
-      {marketData?.data
-        ?.filter((item) => item.isBid === false)
-        ?.map((item) => (
+      {filteredData?.length > 0 ? (
+        filteredData.map((item) => (
           <motion.div
             key={item?.id}
             className="max-w-none md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
@@ -69,8 +71,7 @@ const Auctions = ({ marketData }) => {
             <div
               style={{
                 backgroundImage: `url(${
-                  IMAGE_BASEURL +
-                  (item?.userId?.pixelImage || "").replace(/\\/g, "/")
+                  IMAGE_BASEURL + (item?.userId?.pixelImage).replace(/\\/g, "/")
                 })`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -123,12 +124,12 @@ const Auctions = ({ marketData }) => {
                       {item?.userId?.lastName}
                     </p>
                     <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                      {item.followers}
+                      {item?.followers ? item?.followers : "N/A"}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-[#feea9a9c] font-light text-[12px]">
-                      @{item?.userId?.userName}
+                      @{item?.userId?.userName ? item?.userId?.userName : "N/A"}
                     </p>
                     <p className="text-[#feea9a9c] font-light text-[12px]">
                       Followers
@@ -152,7 +153,7 @@ const Auctions = ({ marketData }) => {
                       Reserve Price
                     </p>
                     <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                      {item.price}
+                      ${item?.price ? item?.price.toLocaleString() : "N/A"}
                     </p>
                   </div>
                   <div className="mt-4">
@@ -172,7 +173,12 @@ const Auctions = ({ marketData }) => {
               </div>
             </motion.div>
           </motion.div>
-        ))}
+        ))
+      ) : (
+        <div className="col-span-full text-center text-[#FEDB6B] font-semibold text-[18px]">
+          No data available to display.
+        </div>
+      )}
       <BidDrawer
         open={openBidDrawer}
         closeDrawer={() => setOpenBidDrawer(false)}

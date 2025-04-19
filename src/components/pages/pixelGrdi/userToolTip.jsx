@@ -43,7 +43,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
         }}
       ></div>
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between">
+        <div className="flex items-center  gap-3">
           <div
             style={{
               width: "84px",
@@ -59,7 +59,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
               className="h-full "
             />
           </div>
-          <div className="w-full flex flex-col items-center ">
+          <div className="flex flex-col items-center ">
             <p className="font-semibold text-[16px] text-[#FEDB6B]">
               {hoveredUser?.firstName || ""} {hoveredUser?.lastName || ""}
             </p>

@@ -3,14 +3,16 @@ import CustomButton from "../../button";
 import { motion } from "framer-motion";
 import { buyNow } from "./data";
 import hourglass from "../../../assets/icons/HourglassMedium.svg";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
-const Bids = () => {
+const Bids = ({ bids }) => {
   const [hoveredId, setHoveredId] = useState(null);
   const [timeLeft, setTimeLeft] = useState({
     days: 5,
     hours: 24,
     minutes: 18,
   });
+  console.log("bids", bids);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -39,7 +41,7 @@ const Bids = () => {
   }, []);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4">
-      {buyNow.map((item) => (
+      {bids?.bids?.data?.map((item) => (
         <motion.div
           key={item.id}
           className="max-w-none md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
@@ -61,7 +63,10 @@ const Bids = () => {
           {/* Profile Image */}
           <div
             style={{
-              backgroundImage: `url(${item.userProfile})`,
+              backgroundImage: `url(${
+                IMAGE_BASEURL +
+                (item?.userId?.pixelImage || "").replace(/\\/g, "/")
+              })`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               width: "100%",

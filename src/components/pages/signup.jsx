@@ -10,7 +10,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUser, signupUser } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // install react-icons if not already
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai"; // install react-icons if not already
 
 import {
   loginWithGoogle,
@@ -81,10 +85,13 @@ const Signup = () => {
     }
     if (!values.confirm_password) {
       newErrors.confirm_password = "Confirm Password is required";
+    } else if (values.password !== values.confirm_password) {
+      newErrors.confirm_password = "Passwords do not match";
     }
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
+      setIsLoading(true); // Show loader
       dispatch(
         signupUser({ ...values, confirmPassword: values.confirm_password })
       )
@@ -93,7 +100,8 @@ const Signup = () => {
           toast.success("Signup successful! Please log in.");
           navigate("/pixel-grid");
         })
-        .catch((error) => toast.error(error));
+        .catch((error) => toast.error(error))
+        .finally(() => setIsLoading(false)); // Hide loader
     }
   };
   // const handleGoogleLogin = async () => {
@@ -131,6 +139,14 @@ const Signup = () => {
 
   return (
     <AuthLayout>
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
+          <AiOutlineLoading3Quarters
+            className="text-white animate-spin"
+            size={50}
+          />
+        </div>
+      )}
       <div className="flex items-center justify-center">
         <div className=" p-8 w-full max-w-md">
           <motion.div

@@ -252,7 +252,7 @@ const UserProfile = () => {
               <div className="flex items-center">
                 <div className="p-3 text-center">
                   <p className="text-[20px] text-[#FEDB6B]  font-semibold">
-                    <CountUp end={4.3} decimals={1} suffix="M" duration={2} />
+                    <CountUp end={2} decimals={0} suffix="" duration={2} />
                   </p>
                   <p className="text-[16px] font-light text-[#feea9a9c]">
                     Clicks
@@ -261,7 +261,7 @@ const UserProfile = () => {
                 <div className="w-[2px] h-10 bg-[#FEF6C026]"></div>
                 <div className="p-3 text-center">
                   <p className="text-[20px] text-[#FEDB6B]  font-semibold">
-                    <CountUp end={2} decimals={0} suffix="M" duration={2} />
+                    <CountUp end={0} decimals={0} suffix="" duration={2} />
                   </p>
                   <p className="text-[16px] font-light text-[#feea9a9c]">
                     Followers

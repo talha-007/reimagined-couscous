@@ -2,9 +2,11 @@ import { useState } from "react";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
 import { buyNow } from "./data";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const BuyNow = ({ marketData }) => {
   const [hoveredId, setHoveredId] = useState(null);
+  console.log("buy now", marketData);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4 mx-auto">
@@ -14,10 +16,10 @@ const BuyNow = ({ marketData }) => {
           <motion.div
             key={item?._id}
             className="max-w-[none] md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
-            onHoverStart={() => setHoveredId(item.id)}
+            onHoverStart={() => setHoveredId(item?._id)}
             onHoverEnd={() => setHoveredId(null)}
           >
-            {hoveredId === item.id && (
+            {hoveredId === item?._id && (
               <div className="absolute right-2 top-2">
                 <CustomButton
                   bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
@@ -33,7 +35,9 @@ const BuyNow = ({ marketData }) => {
             <div
               className="w-full md:w-[235px]"
               style={{
-                backgroundImage: `url(${item.userProfile})`,
+                backgroundImage: `url(${
+                  IMAGE_BASEURL + (item?.userId?.pixelImage).replace(/\\/g, "/")
+                })`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
                 height: "235px",
@@ -44,7 +48,7 @@ const BuyNow = ({ marketData }) => {
             <motion.div
               className="absolute bottom-0 left-0 w-full bg-black"
               initial={{ y: 56 }}
-              animate={{ y: hoveredId === item.id ? 0 : 56 }}
+              animate={{ y: hoveredId === item?._id ? 0 : 56 }}
               transition={{ stiffness: 150 }}
             >
               <div
@@ -56,21 +60,24 @@ const BuyNow = ({ marketData }) => {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                      {item.name}
+                      {item?.userId?.firstName
+                        ? item?.userId?.firstName
+                        : "N/A"}{" "}
+                      {item?.userId?.lastName ? item?.userId?.lastName : "N/A"}
                     </p>
                     <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                      {item.followers}
+                      {item?.followers ? item?.followers : "N/A"}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-[#feea9a9c] font-light text-[12px]">
-                      {item.username}
+                      {item?.userId?.username}
                     </p>
                     <p className="text-[#feea9a9c] font-light text-[12px]">
                       Followers
                     </p>
                   </div>
-                  {hoveredId === item.id && (
+                  {hoveredId === item?._id && (
                     <div className="flex items-center justify-between">
                       <a
                         href="#"
@@ -88,7 +95,7 @@ const BuyNow = ({ marketData }) => {
                       Price
                     </p>
                     <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                      {item.price}
+                      ${item?.price ? item?.price?.toLocaleString() : 0}
                     </p>
                   </div>
                   <div className="mt-3">

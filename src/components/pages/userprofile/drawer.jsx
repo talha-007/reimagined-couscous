@@ -100,7 +100,7 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
     const newDate = addTimeToNow(hours, mins, secs);
     const datas = {
       ...values,
-      price: values?.minimum_value,
+      price: Number(values?.minimum_value),
       timer: newDate,
       isBid: selectedMethod === "auction" ? true : false,
     };

@@ -9,6 +9,7 @@ const CustomButton = ({
   onClick,
   width,
   icon,
+  disabled,
   px,
   text,
   isLoading,
@@ -31,6 +32,7 @@ const CustomButton = ({
       whileHover={{ backgroundPosition: "left" }}
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
+      disabled={disabled}
     >
       <span
         className="absolute inset-0 border-2 "

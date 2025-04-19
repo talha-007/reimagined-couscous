@@ -152,7 +152,9 @@ const Navbar = () => {
                   >
                     <img src={coinsIcon} alt="Coins" />
                     <p className="text-[#FEDF7A] font-[Inter] text-[16px] ">
-                      {profileData?.coins ? profileData?.coins : "0"}
+                      {profileData?.coins
+                        ? profileData?.coins.toLocaleString()
+                        : "0"}
                     </p>
                   </div>
                   <div

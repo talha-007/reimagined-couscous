@@ -95,7 +95,7 @@ const Marketplace = () => {
         </div>
         {activeTab === "Buy Now" && <BuyNow marketData={marketData} />}
         {activeTab === "Auction" && <Auctions marketData={marketData} />}
-        {activeTab === "Bids" && <Bids />}
+        {activeTab === "Bids" && <Bids bids={bids} />}
       </div>
     </Layout>
   );
