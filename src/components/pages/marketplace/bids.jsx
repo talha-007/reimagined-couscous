@@ -11,7 +11,7 @@ const Bids = ({ bids }) => {
     hours: 24,
     minutes: 18,
   });
-  console.log("bids", bids);
+  // console.log("bids", bids);
 
   useEffect(() => {
     const timer = setInterval(() => {

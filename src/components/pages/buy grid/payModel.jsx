@@ -145,13 +145,13 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  console.log("credit", credit);
+  // console.log("credit", credit);
   const handleBuyCredits = async () => {
     const datas = {
       coins: Number(credit),
       email: profileData?.email,
     };
-    console.log("data", datas);
+    // console.log("data", datas);
     if (validateForm()) {
       try {
         setIsLoading(true);

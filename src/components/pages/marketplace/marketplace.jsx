@@ -14,7 +14,7 @@ const Marketplace = () => {
 
   const marketData = useSelector((s) => s?.markets?.data);
   const bids = useSelector((s) => s?.markets);
-  console.log(marketData, bids);
+  // console.log(marketData, bids);
 
   useEffect(() => {
     fetchMarketData();

@@ -44,7 +44,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
         followeeId: hoveredUser?._id,
       };
       const res = await followerServices.followUser(datas);
-      console.log("res", res);
+      // console.log("res", res);
 
       // Toggle follow status after successful API call
       setIsFollowing((prev) => !prev);

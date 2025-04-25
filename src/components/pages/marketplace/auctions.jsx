@@ -19,8 +19,8 @@ const Auctions = ({ marketData }) => {
       marketData?.data?.forEach((item) => {
         const targetTime = new Date(item.timer); // Timer from API
         const difference = targetTime - now; // Difference in milliseconds
-        console.log("difference", difference);
-        console.log("targetTime", targetTime);
+        // console.log("difference", difference);
+        // console.log("targetTime", targetTime);
         if (difference > 0) {
           const days = Math.floor(difference / (1000 * 60 * 60 * 24));
           const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);

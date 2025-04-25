@@ -5,7 +5,7 @@ import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const BuyNow = ({ marketData }) => {
   const [hoveredId, setHoveredId] = useState(null);
-  console.log("buy now", marketData);
+  // console.log("buy now", marketData);
 
   const filteredData = marketData?.data?.filter(
     (item) => item?.isBid === false

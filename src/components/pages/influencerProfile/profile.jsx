@@ -39,7 +39,7 @@ const InfluencerProfile = () => {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
 
-  console.log(data);
+  // console.log(data);
   useEffect(() => {
     fetchData();
   }, [id]);
@@ -47,7 +47,7 @@ const InfluencerProfile = () => {
   const fetchData = async () => {
     try {
       const res = await influencerProfileServices.getInfluencerById(id);
-      console.log("res", res);
+      // console.log("res", res);
       if (res.status === 200) {
         setData(res?.data?.data);
       }

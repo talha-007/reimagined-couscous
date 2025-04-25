@@ -65,7 +65,7 @@ const BidDrawer = ({ closeDrawer, open, itemData }) => {
     };
     try {
       const res = await marketPlaceServices.createBid(itemData?._id, datas);
-      console.log("res", res);
+      // console.log("res", res);
       toast.success("Bid placed successfully!");
       closeDrawer(false); // Close the drawer on success
     } catch (error) {

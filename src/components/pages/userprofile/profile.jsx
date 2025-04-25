@@ -120,7 +120,7 @@ const UserProfile = () => {
       handleUploadImage();
     }
   };
-  console.log("setPixelImage");
+  // console.log("setPixelImage");
 
   const handleUploadImage = async () => {
     if (!pixelImage) {

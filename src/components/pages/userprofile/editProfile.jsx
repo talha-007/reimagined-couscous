@@ -33,7 +33,7 @@ const EditProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const profileData = useSelector((s) => s?.user?.data?.data);
-  console.log("profileData", profileData);
+  // console.log("profileData", profileData);
 
   useEffect(() => {
     dispatch(getUserProfile());

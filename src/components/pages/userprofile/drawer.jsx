@@ -79,13 +79,13 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     if (/^\d*$/.test(value)) {
-      console.log("name", name, value);
+      // console.log("name", name, value);
       setValues((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   function addTimeToNow(h, m, s) {
-    console.log("Input values:", { h, m, s });
+    // console.log("Input values:", { h, m, s });
     const now = new Date();
     const result = new Date(now.getTime());
 
@@ -98,8 +98,8 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
     result.setMinutes(result.getMinutes() + minutes);
     result.setSeconds(result.getSeconds() + seconds);
 
-    console.log("Resulting Date (UTC):", result.toISOString());
-    console.log("Resulting Date (Local):", result.toLocaleString());
+    // console.log("Resulting Date (UTC):", result.toISOString());
+    // console.log("Resulting Date (Local):", result.toLocaleString());
 
     return result;
   }
@@ -113,11 +113,11 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
       timer: newDate,
       isBid: selectedMethod === "auction" ? true : false,
     };
-    console.log(datas);
+    // console.log(datas);
 
     try {
       const res = await marketPlaceServices.createMarketPlace(datas);
-      console.log(res);
+      // console.log(res);
       if (res.status === 200) {
         toast.success(res?.data?.message);
         closeDrawer(false);
