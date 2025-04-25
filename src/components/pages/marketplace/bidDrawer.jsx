@@ -10,6 +10,7 @@ import { PiInfoBold } from "react-icons/pi";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 import marketPlaceServices from "../../../redux/services/marketplaceServices";
 import { useState } from "react";
+import { toast } from "react-toastify";
 const theme = {
   drawer: {
     defaultProps: {
@@ -55,18 +56,22 @@ const theme = {
 const BidDrawer = ({ closeDrawer, open, itemData }) => {
   const [price, setPrice] = useState("");
   const [error, setError] = useState(""); // State to track error message
+  const [loading, setLoading] = useState(false); // State to track loading
 
   const handleBid = async () => {
-    alert("Bid placed successfully!");
+    setLoading(true); // Start loader
     const datas = {
       bidPrice: Number(price),
     };
     try {
-      alert("Bid placed successfully!");
       const res = await marketPlaceServices.createBid(itemData?._id, datas);
       console.log("res", res);
+      toast.success("Bid placed successfully!");
+      closeDrawer(false); // Close the drawer on success
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -186,10 +191,10 @@ const BidDrawer = ({ closeDrawer, open, itemData }) => {
             <CustomButton
               py="py-4"
               hidden="block"
-              name={"Place Bid"}
+              name={loading ? "Placing Bid..." : "Place Bid"} // Show loader text
               onClick={handleBid}
               width="w-full"
-              disabled={error}
+              disabled={loading || !!error} // Disable button when loading or error exists
               bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
               strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
             />

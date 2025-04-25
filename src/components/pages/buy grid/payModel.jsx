@@ -19,6 +19,7 @@ import usdt from "../../../assets/icons/usdt.png";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 import { useDispatch } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
+import { toast } from "react-toastify";
 
 const cryptoTokens = [
   {
@@ -87,6 +88,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   const [selectedToken, setSelectedToken] = useState("");
   const [cardDetails, setCardDetails] = useState(initialCardDetails);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -143,17 +145,20 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  console.log("credit", credit);
   const handleBuyCredits = async () => {
     const datas = {
       coins: Number(credit),
       email: profileData?.email,
     };
+    console.log("data", datas);
     if (validateForm()) {
       try {
+        setIsLoading(true);
         const res = await influencerProfileServices.addCoins(datas);
         // console.log(res);
         if (res.status === 200) {
+          setIsLoading(false);
           handleShowSuccessPop();
           dispatch(getUserProfile());
           setCardDetails(initialCardDetails);
@@ -161,6 +166,8 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
         }
       } catch (error) {
         console.log("error", error);
+        toast.error("Something went wrong. Please try again.");
+        setIsLoading(false);
       }
     }
   };
@@ -553,6 +560,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                   <CustomButton
                     py="py-4"
                     hidden="block"
+                    isLoading={isLoading}
                     name="Next"
                     onClick={handleBuyCredits}
                     width="w-full"

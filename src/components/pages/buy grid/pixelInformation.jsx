@@ -16,6 +16,7 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [pixelImage, setPixelImage] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [selectionSummary, setSelectionSummary] = useState("");
 
   useEffect(() => {
@@ -44,15 +45,19 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
     }
     const datas = { file: pixelImage };
 
+    setIsLoading(true);
     try {
       const res = await influencerProfileServices.uploadPixelImage(datas);
       if (res) {
         // console.log(res);
         updateFormData("pixelInfo", profileImage);
         handleNext();
+        setIsLoading(false);
       }
     } catch (error) {
       console.log("error", error);
+      toast.error("Image upload failed. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -235,6 +240,7 @@ const PixelInformation = ({ handleNext, updateFormData }) => {
         <CustomButton
           py="py-4"
           hidden="block"
+          isLoading={isLoading}
           name={"Next"}
           onClick={handleUploadImage}
           width="w-[200px] md:w-[400px]"

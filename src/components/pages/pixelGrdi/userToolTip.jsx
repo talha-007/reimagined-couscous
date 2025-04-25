@@ -1,15 +1,59 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import fbIcon from "../../../assets/icons/fb.svg";
 import instaIcon from "../../../assets/icons/insta.svg";
 import tiktokIcon from "../../../assets/icons/tiktok.svg";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
+import followerServices from "../../../redux/services/followerServices";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../../redux/slice/userSlice";
 
 const UserToolTip = ({ tooltipPos, hoveredUser }) => {
   const navigate = useNavigate();
-  // console.log("tooltipPos", tooltipPos);
-  console.log("hoveredUser", hoveredUser);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false); // State to track loading
+  const [isFollowing, setIsFollowing] = useState(false); // State to track follow status
+
+  const loggedInUserId = useSelector((s) => s?.user?.data?.data);
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+  const fetchProfileData = async () => {
+    try {
+      await dispatch(getUserProfile());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    // Check if the logged-in user is in the followers array
+    if (hoveredUser?.followers?.includes(loggedInUserId?._id)) {
+      setIsFollowing(true);
+    } else {
+      setIsFollowing(false);
+    }
+  }, [hoveredUser, loggedInUserId]);
+
+  const handleFollow = async () => {
+    setLoading(true); // Start loader
+    try {
+      const datas = {
+        followeeId: hoveredUser?._id,
+      };
+      const res = await followerServices.followUser(datas);
+      console.log("res", res);
+
+      // Toggle follow status after successful API call
+      setIsFollowing((prev) => !prev);
+    } catch (error) {
+      console.error("Error following/unfollowing user:", error);
+    } finally {
+      setLoading(false); // Stop loader
+    }
+  };
 
   return (
     <motion.div
@@ -22,7 +66,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
         border: "1px solid",
         borderImage: "linear-gradient(to right, #FFF8C5, #8C5E1C) 1",
         padding: "1rem",
-        width: "277px",
+        width: "320px",
         height: "fit-content",
       }}
       initial={{ opacity: 0, scale: 0.8 }}
@@ -165,8 +209,17 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
           <CustomButton
             py="py-2"
             hidden="block"
-            name="Follow"
-            onClick={() => navigate("/sign-in")}
+            name={
+              loading
+                ? isFollowing
+                  ? "Unfollowing..."
+                  : "Following..."
+                : isFollowing
+                ? "Unfollow"
+                : "Follow"
+            } // Show appropriate text
+            onClick={handleFollow}
+            disabled={loading} // Disable button while loading
             bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
             strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
           />

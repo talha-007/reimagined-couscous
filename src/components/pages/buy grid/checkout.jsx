@@ -16,6 +16,7 @@ const Checkout = ({ handleNext }) => {
   const [openCoinsPopup, setOpenCoinsPopup] = useState(false);
   const [OpenPayModel, setOpenPayModel] = useState(false);
   const [showSccessPopup, setShowSccessPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const summary = JSON.parse(localStorage.getItem("selectionSummary"));
     // console.log("summary", summary);
@@ -53,14 +54,17 @@ const Checkout = ({ handleNext }) => {
       selectedPixels: selectionSummary?.selectedCoordinates,
     };
     try {
+      setIsLoading(true);
       const res = await influencerProfileServices.SelectPixel(datas);
       // console.log(">>>>>>>>>>>>>>>>>>>>>>", res);
       if (res.data.success) {
+        setIsLoading(false);
         handleNext();
         dispatch(getUserProfile());
       }
     } catch (error) {
       console.log("error", error);
+      setIsLoading(false);
     }
   };
   return (
@@ -127,6 +131,7 @@ const Checkout = ({ handleNext }) => {
         <CustomButton
           py="py-4"
           hidden="block"
+          isLoading={isLoading}
           name={"Proceed"}
           onClick={handleCheckout}
           width="w-[200px] md:w-[400px]"

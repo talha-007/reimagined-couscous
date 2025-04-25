@@ -85,12 +85,21 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
   };
 
   function addTimeToNow(h, m, s) {
+    console.log("Input values:", { h, m, s });
     const now = new Date();
     const result = new Date(now.getTime());
 
-    result.setHours(result.getHours() + h);
-    result.setMinutes(result.getMinutes() + m);
-    result.setSeconds(result.getSeconds() + s);
+    // Ensure h, m, and s are numbers; default to 0 if invalid
+    const hours = Number(h) || 0;
+    const minutes = Number(m) || 0;
+    const seconds = Number(s) || 0;
+
+    result.setHours(result.getHours() + hours);
+    result.setMinutes(result.getMinutes() + minutes);
+    result.setSeconds(result.getSeconds() + seconds);
+
+    console.log("Resulting Date (UTC):", result.toISOString());
+    console.log("Resulting Date (Local):", result.toLocaleString());
 
     return result;
   }
@@ -120,6 +129,7 @@ const AuctionDrawer = ({ closeDrawer, open }) => {
       }
     } catch (error) {
       console.log("error", error);
+      toast.error(error.response.data.message);
     }
   };
 

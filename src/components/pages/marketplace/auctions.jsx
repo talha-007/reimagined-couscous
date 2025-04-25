@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
-import { buyNow } from "./data";
 import hourglass from "../../../assets/icons/HourglassMedium.svg";
 import BidDrawer from "./bidDrawer";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
@@ -10,43 +9,48 @@ const Auctions = ({ marketData }) => {
   const [hoveredId, setHoveredId] = useState(null);
   const [openBidDrawer, setOpenBidDrawer] = useState(false);
   const [itemData, setItemData] = useState(null);
-  const [timeLeft, setTimeLeft] = useState({
-    days: 5,
-    hours: 24,
-    minutes: 18,
-  });
-  console.log("marketData", marketData);
+  const [timeLeft, setTimeLeft] = useState({});
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, minutes } = prev;
+    const updateTimers = () => {
+      const now = new Date(); // Current time in UTC
+      const updatedTimeLeft = {};
 
-        if (minutes > 0) {
-          minutes -= 1;
+      marketData?.data?.forEach((item) => {
+        const targetTime = new Date(item.timer); // Timer from API
+        const difference = targetTime - now; // Difference in milliseconds
+        console.log("difference", difference);
+        console.log("targetTime", targetTime);
+        if (difference > 0) {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((difference / (1000 * 60)) % 60);
+          const seconds = Math.floor((difference / 1000) % 60);
+
+          updatedTimeLeft[item?._id] = { days, hours, minutes, seconds };
         } else {
-          if (hours > 0) {
-            hours -= 1;
-            minutes = 59;
-          } else if (days > 0) {
-            days -= 1;
-            hours = 23;
-            minutes = 59;
-          } else {
-            clearInterval(timer);
-          }
+          updatedTimeLeft[item?._id] = {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          };
         }
-
-        return { days, hours, minutes };
       });
-    }, 60000); // Updates every minute
-    return () => clearInterval(timer);
-  }, []);
 
-  const filteredData = marketData?.data?.filter((item) => item?.isBid === true);
+      setTimeLeft(updatedTimeLeft);
+    };
 
+    const timer = setInterval(updateTimers, 1000); // Update every second
+    return () => clearInterval(timer); // Cleanup on component unmount
+  }, [marketData]);
+
+  const filteredData = marketData?.data?.filter(
+    (item) => item?.isBid === true && item?.active === true
+  );
+  console.log("timeLeft", timeLeft);
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4 min-h-[352px]">
       {filteredData?.length > 0 ? (
         filteredData.map((item) => (
           <motion.div
@@ -90,15 +94,20 @@ const Auctions = ({ marketData }) => {
                 <div className="flex items-center justify-between">
                   <img src={hourglass} alt="Hourglass" className="w-6 h-6" />
                   <p className="font-[Movie Poster] text-[12px]">
-                    {timeLeft.days} <span className="text-[#FEF6C0]">Days</span>
+                    {timeLeft[item?._id]?.days || 0}{" "}
+                    <span className="text-[#FEF6C0]">Days</span>
                   </p>
                   <p className="font-[Movie Poster] text-[12px]">
-                    {timeLeft.hours}{" "}
+                    {timeLeft[item?._id]?.hours || 0}{" "}
                     <span className="text-[#FEF6C0]">Hours</span>
                   </p>
                   <p className="font-[Movie Poster] text-[12px]">
-                    {timeLeft.minutes}{" "}
+                    {timeLeft[item?._id]?.minutes || 0}{" "}
                     <span className="text-[#FEF6C0]">Min</span>
+                  </p>
+                  <p className="font-[Movie Poster] text-[12px]">
+                    {timeLeft[item?._id]?.seconds || 0}{" "}
+                    <span className="text-[#FEF6C0]">Sec</span>
                   </p>
                 </div>
               </div>
@@ -175,8 +184,8 @@ const Auctions = ({ marketData }) => {
           </motion.div>
         ))
       ) : (
-        <div className="col-span-full text-center text-[#FEDB6B] font-semibold text-[18px]">
-          No data available to display.
+        <div className="col-span-full text-center text-[#FEDB6B] font-semibold text-[18px] flex items-center justify-center h-full">
+          <p>No data available to display.</p>
         </div>
       )}
       <BidDrawer

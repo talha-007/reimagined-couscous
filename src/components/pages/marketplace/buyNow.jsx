@@ -1,18 +1,20 @@
 import { useState } from "react";
 import CustomButton from "../../button";
 import { motion } from "framer-motion";
-import { buyNow } from "./data";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const BuyNow = ({ marketData }) => {
   const [hoveredId, setHoveredId] = useState(null);
   console.log("buy now", marketData);
 
+  const filteredData = marketData?.data?.filter(
+    (item) => item?.isBid === false
+  );
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4 mx-auto">
-      {marketData?.data
-        ?.filter((item) => item.isBid === true)
-        ?.map((item) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 my-4 mx-auto min-h-[352px]">
+      {filteredData?.length > 0 ? (
+        filteredData.map((item) => (
           <motion.div
             key={item?._id}
             className="max-w-[none] md:max-w-[235px] max-h-[352px] h-[352px] border-[1px] border-transparent overflow-hidden relative hover:border-[#DDA74D]"
@@ -111,7 +113,12 @@ const BuyNow = ({ marketData }) => {
               </div>
             </motion.div>
           </motion.div>
-        ))}
+        ))
+      ) : (
+        <div className="col-span-full text-center text-[#FEDB6B] font-semibold text-[18px] flex items-center justify-center h-full">
+          <p>No data available to display.</p>
+        </div>
+      )}
     </div>
   );
 };
