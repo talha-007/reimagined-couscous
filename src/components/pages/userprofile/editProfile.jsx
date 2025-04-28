@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
 import Layout from "../../layout/layout";
 import { FaChevronRight } from "react-icons/fa";
+import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
 const initialValues = {
   first_name: "",
@@ -302,7 +303,7 @@ const EditProfile = () => {
                     className="w-full h-full cursor-pointer"
                   >
                     <img
-                      src={profileImage}
+                      src={IMAGE_BASEURL + profileImage}
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />

@@ -14,8 +14,9 @@ import earlyAdopterIcon from "../../../assets/icons/early adopter.svg";
 import tenMIcon from "../../../assets/icons/10M.svg";
 import grid from "../../../assets/grid2.png";
 import commas from "../../../assets/icons/commas.svg";
-import { RiMore2Fill } from "react-icons/ri";
+import { RiMore2Fill, RiUploadCloudFill } from "react-icons/ri";
 import UserCircleGear from "../../../assets/icons/UserCircleGear.svg";
+
 import {
   Button,
   Dialog,
@@ -35,6 +36,7 @@ import CountUp from "react-countup";
 import Grid from "../pixelGrdi/grid";
 import profileServices from "../../../redux/services/profileServices";
 import { toast } from "react-toastify";
+import { logout } from "../../../redux/slice/authSlice";
 
 const socailLinks = [
   { id: 1, logo: facebookLogo, followers: "2.3M" },
@@ -82,10 +84,38 @@ const UserProfile = () => {
   const [isOpenMenu, setOpenMenu] = useState(null);
   const [isOpenDelete, setOpenDelete] = useState(null);
   const [isOpenDrawer, setOpenDrawer] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const openMenuRef = useRef();
   const profileData = useSelector((s) => s?.user?.data?.data);
   // console.log("profileData", profileData);
+  const [promoVideo, setPromoVideo] = useState(null);
+
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const videoURL = URL.createObjectURL(file);
+      setPromoVideo(videoURL);
+      handleUploadReel(file);
+    }
+  };
+  const handleUploadReel = async (file) => {
+    console.log(file);
+
+    const datas = {
+      file: file,
+    };
+    try {
+      const res = await profileServices.uploadPromo(datas);
+      console.log(res);
+      if (res) {
+        toast.success(res?.data?.message);
+        await dispatch(getUserProfile());
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     fetchProfileData();
   }, []);
@@ -117,17 +147,17 @@ const UserProfile = () => {
       };
       setPixelImage(file);
       reader.readAsDataURL(file);
-      handleUploadImage();
+      handleUploadImage(file);
     }
   };
   // console.log("setPixelImage");
 
-  const handleUploadImage = async () => {
-    if (!pixelImage) {
+  const handleUploadImage = async (file) => {
+    if (!file) {
       toast.error("Please upload image ");
       return;
     }
-    const datas = { file: pixelImage };
+    const datas = { file: file };
 
     try {
       const res = await profileServices.uploadCover(datas);
@@ -142,6 +172,22 @@ const UserProfile = () => {
 
   const removeImage = (type) => {
     type === "cover" ? setCoverImage(null) : setProfileImage(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      const res = await profileServices.deleteUser();
+      console.log("res", res);
+      if (res) {
+        toast.success("Profile Deleted Successfully");
+        dispatch(logout());
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
   };
   return (
     <Layout>
@@ -388,15 +434,47 @@ const UserProfile = () => {
             <div className="box3 md:col-span-4">
               <p className="text-[#766E53] uppercase font-bold">Promo REEL</p>
               <div
-                className="mt-4 h-fit md:h-[347px]"
+                className="mt-4 h-fit md:h-[347px] flex items-center justify-center relative"
                 style={{
                   width: "100%",
                   background:
                     "linear-gradient(120deg,rgb(254, 246, 192,  0.15) 0%, rgb(232, 199, 118, 0.51)300%)",
-
                   border: "1px solid #feea9a38",
                 }}
-              ></div>
+              >
+                {promoVideo || profileData?.promo ? (
+                  <div className="relative w-full h-full">
+                    <video
+                      src={promoVideo || `${IMAGE_BASEURL}${profileData.promo}`}
+                      controls
+                      className="w-full h-full object-cover"
+                    ></video>
+                    <button
+                      onClick={() => {
+                        setPromoVideo(null);
+                      }}
+                      className="absolute top-2 right-2 ml-4 bg-[#0000009c] px-1 py-1 text-xs "
+                    >
+                      <img src={close} alt="" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center cursor-pointer">
+                    <p className="text-[#FEDB6B] font-semibold flex flex-col items-center">
+                      <RiUploadCloudFill
+                        style={{ color: "#FEDB6B", fontSize: "20px" }}
+                      />
+                      Upload Promo Reel
+                    </p>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      onChange={(e) => handleVideoUpload(e)}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
             <div className="box4 md:col-span-4">
               <p className="text-[#766E53] uppercase font-bold">
@@ -564,7 +642,8 @@ const UserProfile = () => {
                       name="Yes, delete my profile"
                       width="w-full"
                       px="px-6"
-                      onClick={() => navigate("/sign-in")}
+                      isLoading={isLoading}
+                      onClick={handleDelete}
                       bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                       strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
                     />

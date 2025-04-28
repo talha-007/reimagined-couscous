@@ -12,7 +12,7 @@ const getInfluencerById = (id) =>
   callAPi.get(`/api/v1/getInfluencerById/${id}`);
 const addCoins = (data) => callAPi.patch("/api/v1/addCoins", data);
 const deductCoins = (data) => callAPi.patch("/api/v1/deductCoins", data);
-
+const createCharge = (data) => callAPi.post("/api/v1/createCharge", data);
 const uploadPixelImage = (data) =>
   callAPiMultiPart.patch("/api/v1/uploadPixelImage", data);
 const SelectPixel = (data) => callAPi.patch("/api/v1/SelectPixel", data);
@@ -27,6 +27,7 @@ const influencerProfileServices = {
   addCoins,
   SelectPixel,
   deductCoins,
+  createCharge,
 };
 
 export default influencerProfileServices;

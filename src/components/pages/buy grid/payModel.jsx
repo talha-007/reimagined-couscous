@@ -9,7 +9,7 @@ import {
 import closeBtn from "../../../assets/icons/close btn.svg";
 import cardIcon from "../../../assets/icons/card.svg";
 import visa from "../../../assets/icons/visa.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCountries } from "use-react-countries";
 import CustomButton from "../../button";
 import bitcoin from "../../../assets/icons/bitcoin.png";
@@ -90,6 +90,55 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isTcoReady, setIsTcoReady] = useState(false);
+
+  useEffect(() => {
+    // First remove any existing scripts to avoid conflicts
+    const existingScript = document.getElementById('tco-script');
+    if (existingScript) {
+      document.body.removeChild(existingScript);
+    }
+
+    // Create and add the script tag
+    const script = document.createElement("script");
+    script.src = "https://www.2checkout.com/checkout/api/2co.min.js";
+    script.async = true;
+    script.id = "tco-script";
+
+    script.onload = () => {
+      console.log("✅ 2Checkout SDK loaded!");
+      
+      // According to 2Checkout documentation, need to call loadPubKey directly
+      try {
+        // Use sandbox mode as instructed by 2Checkout documentation
+        if (window.TCO) {
+          window.TCO.loadPubKey('sandbox');
+          console.log("✅ Public key loaded in sandbox mode");
+          setIsTcoReady(true);
+        } else {
+          console.error("❌ TCO object not found after script load");
+          toast.error("Payment system failed to initialize properly. Please try again later.");
+        }
+      } catch (err) {
+        console.error("❌ Error initializing 2Checkout:", err);
+        toast.error("Payment system initialization failed. Please try again later.");
+      }
+    };
+
+    script.onerror = () => {
+      console.error("❌ Failed to load 2Checkout script");
+      toast.error("Payment system failed to load. Please refresh the page and try again.");
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      const scriptElement = document.getElementById('tco-script');
+      if (scriptElement && scriptElement.parentNode) {
+        document.body.removeChild(scriptElement);
+      }
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -145,32 +194,108 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  // console.log("credit", credit);
+
   const handleBuyCredits = async () => {
+    if (!window.TCO) {
+      console.error("TCO object not available");
+      toast.error("Payment system is not ready. Please refresh and try again.");
+      return;
+    }
+
+    if (!isTcoReady) {
+      toast.error("Payment system is still initializing. Please wait a moment and try again.");
+      return;
+    }
+
+    if (!validateForm()) {
+      return; // Exit if form validation fails
+    }
+
     const datas = {
       coins: Number(credit),
       email: profileData?.email,
     };
-    // console.log("data", datas);
-    if (validateForm()) {
-      try {
-        setIsLoading(true);
-        const res = await influencerProfileServices.addCoins(datas);
-        // console.log(res);
-        if (res.status === 200) {
+
+    try {
+      setIsLoading(true);
+
+      // Prepare arguments for token generation
+      const args = {
+        sellerId: "255503763294", // Replace with your seller ID
+        publishableKey: "86800182-FFCF-45F7-89B7-E623E4DBC1AF", // Replace with your publishable key
+        ccNo: cardDetails.cardNumber.replace(/\s/g, ""), // Remove spaces from card number
+        cvv: cardDetails.cvv,
+        expMonth: cardDetails.expiryDate.split("/")[0],
+        expYear: `20${cardDetails.expiryDate.split("/")[1]}`, // Convert YY to YYYY
+      };
+
+      // Request token from 2Checkout
+      window.TCO.requestToken(
+        async (data) => {
+          const token = data?.response?.token?.token;
+          if (!token) {
+            toast.error("Failed to create payment token. Please try again.");
+            setIsLoading(false);
+            return;
+          }
+
+          console.log("Token created:", token);
+
+          // Call the payment API with the generated token
+          try {
+            const paymentResponse =
+              await influencerProfileServices.createCharge({
+                token,
+                amount: credit, // Use the credit amount as the payment amount
+                name: cardDetails.cardHolder,
+                email: profileData?.email,
+              });
+
+            if (paymentResponse?.status === 200) {
+              console.log("Payment successful:", paymentResponse.data);
+
+              // Call the addCoins API after successful payment
+              const res = await influencerProfileServices.addCoins(datas);
+              if (res?.status === 200) {
+                toast.success("Credits added successfully!");
+                handleShowSuccessPop();
+                dispatch(getUserProfile());
+                setCardDetails(initialCardDetails);
+                setCredit(null);
+              } else {
+                throw new Error("Failed to add coins.");
+              }
+            } else {
+              throw new Error(
+                `Payment failed with status: ${paymentResponse?.status}`
+              );
+            }
+          } catch (paymentError) {
+            console.error("Payment error:", paymentError);
+            toast.error(
+              paymentError.message || "Payment failed. Please try again."
+            );
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        (error) => {
+          console.error("Token error:", error);
+          toast.error(
+            error?.message ||
+              "Failed to create payment token. Please try again."
+          );
           setIsLoading(false);
-          handleShowSuccessPop();
-          dispatch(getUserProfile());
-          setCardDetails(initialCardDetails);
-          setCredit(null);
-        }
-      } catch (error) {
-        console.log("error", error);
-        toast.error("Something went wrong. Please try again.");
-        setIsLoading(false);
-      }
+        },
+        args
+      );
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error?.message || "Something went wrong. Please try again.");
+      setIsLoading(false);
     }
   };
+
   return (
     <ThemeProvider value={customTheme}>
       <Dialog

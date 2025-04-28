@@ -12,7 +12,7 @@ import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 const BASE_GRID_SIZE = 100;
 const BASE_PIXEL_SIZE = 10;
 
-const Grid = ({ Summary, image }) => {
+const Grid = ({ Summary, image, selection }) => {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const imagesRef = useRef({});
@@ -271,6 +271,8 @@ const Grid = ({ Summary, image }) => {
   console.log(tooltipActive);
 
   const handleMouseDown = (e) => {
+    if (!selection) return;
+
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -278,12 +280,28 @@ const Grid = ({ Summary, image }) => {
     const cellX = Math.floor(x / pixelSize) * pixelSize;
     const cellY = Math.floor(y / pixelSize) * pixelSize;
 
+    // Check if the starting position overlaps with any user's selected pixels
+    for (const user of users) {
+      for (const { startPos, endPos } of user.selectedPixels) {
+        if (
+          cellX >= startPos.x &&
+          cellX < endPos.x &&
+          cellY >= startPos.y &&
+          cellY < endPos.y
+        ) {
+          // Disable selection if it overlaps
+          return;
+        }
+      }
+    }
+
     setStartPos({ x: cellX, y: cellY });
     setEndPos(null);
     setDragging(true);
   };
 
   const handleMouseUp = (e) => {
+    if (!selection) return;
     if (startPos && endPos) {
       const newSelection = { startPos, endPos };
 
@@ -312,6 +330,7 @@ const Grid = ({ Summary, image }) => {
   };
 
   const handleMouseMove = (e) => {
+    if (!selection) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;

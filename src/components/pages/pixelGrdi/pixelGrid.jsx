@@ -67,7 +67,7 @@ function PixelGrid() {
               borderImage: "linear-gradient(to right, #7A5018cc, #FEEA9Acc) 1",
             }}
           >
-            <Grid />
+            <Grid selection={false} />
           </div>
         </div>
       </div>

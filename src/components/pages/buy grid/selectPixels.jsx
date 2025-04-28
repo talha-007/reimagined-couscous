@@ -63,7 +63,7 @@ const SelectPixels = ({ handleNext }) => {
                 </p>
               </div>
             </div>
-            <Grid selectionSummary={selectionSummary} />
+            <Grid selectionSummary={selectionSummary} selection={true} />
           </div>
         </div>
       </div>
