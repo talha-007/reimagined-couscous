@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import close from "../../../assets/icons/close btn.svg";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import CustomButton from "../../button";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
@@ -30,7 +29,6 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form.formData);
   const profileData = useSelector((s) => s?.user?.data?.data);
   // console.log("profileData", profileData, formData);
 
@@ -135,7 +133,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         const res = await influencerProfileServices.createInfluencerProfile(
           datas
         );
-        // console.log("asdasdas", res);
+        console.log("asdasdas", res);
         if (res) {
           toast.success("Information saved");
           setIsLoading(false);
@@ -144,6 +142,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
       } catch (error) {
         console.log("error", error);
         setIsLoading(false);
+        toast.error(error?.response?.data?.message);
       }
     }
   };
@@ -319,7 +318,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         <div className="w-full">
           <div className="flex flex-col mb-2">
             <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-              Facebook Link<span style={{ color: "#FFE395" }}>*</span>
+              Facebook Username<span style={{ color: "#FFE395" }}>*</span>
             </label>
             <input
               type="text"
@@ -339,7 +338,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         <div className="w-full">
           <div className="flex flex-col mb-2">
             <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-              Instagram Link<span style={{ color: "#FFE395" }}>*</span>
+              Instagram Username<span style={{ color: "#FFE395" }}>*</span>
             </label>
             <input
               type="text"
@@ -361,7 +360,7 @@ const ProfileCreation = ({ handleNext, updateFormData }) => {
         <div className="w-full">
           <div className="flex flex-col mb-2">
             <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-              Twitter Link<span style={{ color: "#FFE395" }}>*</span>
+              Twitter Username<span style={{ color: "#FFE395" }}>*</span>
             </label>
             <input
               type="text"

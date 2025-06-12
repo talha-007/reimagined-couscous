@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
-    <div className="border border-t-[#333333cc] relative overflow-hidden h-[348px]">
+    <div className="border border-t-[#333333cc] relative overflow-hidden h-[300px]">
       <div className=" max-w-7xl w-full mx-auto relative px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 text-center gap-2 py-[3rem]">
-          <div className="flex flex-col">
+        <div className="flex flex-col items-center justify-center text-center gap-[3rem] pt-[4rem]">
+          <div className="w-full flex justify-center ">
             <motion.div
-              className="flex justify-center sm:justify-start"
+              className="flex justify-center"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
@@ -18,14 +18,14 @@ const Footer = () => {
               <img src={logo} alt="logo" />
             </motion.div>
           </div>
-          <div className="flex flex-col">
+          <div className="w-full flex justify-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: false, amount: 0.2 }}
             >
-              <ul className="text-white space-y-3 text-left w-fit mx-auto sm:mx-[unset]">
+              <ul className="text-white space-y-3 text-center flex gap-4">
                 <li>
                   <a
                     href="#"

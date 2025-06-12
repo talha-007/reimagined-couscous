@@ -7,32 +7,52 @@ const faqs = [
   {
     question: "What is Million Dollar Influencers?",
     answer:
-      "Million Dollar Influencers is a platform where you can purchase and claim pixels to promote your brand, link to your social profiles, and join a global network of influencers—all for just $1 per pixel per year.",
+      "Million Dollar Influencers is a pixel-based platform where influencers, brands, and individuals can claim digital space to amplify their reach.",
   },
   {
     question: "How does the platform work?",
     answer:
-      "You can enroll in a course by signing up, selecting your desired course, and making a payment.",
+      "Users buy pixels for $1 per pixel and create their profile, upload their display image, logo, or promo reel. These pixels link to their social media, website, or other content, allowing them to gain exposure.",
   },
   {
     question: "How much does it cost to buy pixels?",
     answer:
-      "The cost is $1 per pixel per year. You can buy as many pixels as you need to showcase your brand.",
+      "Each pixel costs a one-time fee of $1, with a minimum purchase of 10x10 pixels.The more pixels you purchase, the larger your display space on the grid.",
   },
   {
     question: "Can I update my image or link after purchasing pixels?",
     answer:
-      "Yes, you can update your image or link at any time through your account dashboard.",
+      "Yes! You can update your images or links periodically to keep your content fresh and relevant. However, changes may be subject to approval to maintain platform quality.",
   },
   {
-    question: "What happens if I don’t renew my pixels?",
+    question: "Is there a renewal fee for my pixels?",
     answer:
-      "If you don't renew, your pixels will be made available for others to purchase after a grace period.",
+      "No, once you purchase pixels, they are yours for a lifetime—there are no renewal fees.",
   },
   {
-    question: "Is there a free trial?",
+    question: "Who can buy pixels?",
     answer:
-      "No, but you can start with a minimal purchase and expand later as needed.",
+      "Anyone—whether you're an influencer, business, content creator, or entrepreneur—can purchase pixels to promote their brand or message.",
+  },
+  {
+    question: "How does Million Dollar Influencers help me grow?",
+    answer:
+      "By securing space on the platform, you gain visibility among a global audience. The more engaging your content, the more traffic and interactions you can drive to your linked pages.",
+  },
+  {
+    question: "Are there any size limits for images?",
+    answer:
+      "Yes, images must fit within the purchased pixel area. We recommend high-quality, clear visuals that are eye-catching within the grid layout.",
+  },
+  {
+    question: "Can I sell my pixel space to someone else?",
+    answer:
+      "Yes! Million Dollar Influencers features a marketplace where users can sell or auction their pixels. This allows you to transfer ownership and monetize your space based on demand.",
+  },
+  {
+    question: "How do I get started?",
+    answer:
+      "Simply choose your desired number of pixels, upload your image, link your content, and secure your spot in influencer history!",
   },
 ];
 

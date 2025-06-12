@@ -1,5 +1,5 @@
 import icon1 from "../assets/icon1.svg";
-import icon2 from "../assets/icon2.svg";
+import icon2 from "../assets/vision.svg";
 import icon3 from "../assets/icon3.svg";
 import icon4 from "../assets/icon4.svg";
 import { motion } from "framer-motion";
@@ -42,7 +42,7 @@ const HowItWorks = () => {
               <p>{item.id}</p>
             </div>
             <motion.div
-              className="flex justify-center items-center bg-gradient-to-b from-[rgba(254,246,192,0.15)] to-[rgba(232,200,118,0.53)]  w-16 h-16"
+              className="flex justify-center items-center bg-gradient-to-b from-[rgba(254,246,192,0.15)] to-[rgba(232, 200, 118, 0.484)]  w-16 h-16"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}

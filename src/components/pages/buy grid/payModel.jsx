@@ -9,7 +9,7 @@ import {
 import closeBtn from "../../../assets/icons/close btn.svg";
 import cardIcon from "../../../assets/icons/card.svg";
 import visa from "../../../assets/icons/visa.svg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCountries } from "use-react-countries";
 import CustomButton from "../../button";
 import bitcoin from "../../../assets/icons/bitcoin.png";
@@ -20,6 +20,7 @@ import influencerProfileServices from "../../../redux/services/influencerProfile
 import { useDispatch } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const cryptoTokens = [
   {
@@ -87,58 +88,8 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   const [amount, setAmount] = useState("");
   const [selectedToken, setSelectedToken] = useState("");
   const [cardDetails, setCardDetails] = useState(initialCardDetails);
-
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [isTcoReady, setIsTcoReady] = useState(false);
-
-  useEffect(() => {
-    // First remove any existing scripts to avoid conflicts
-    const existingScript = document.getElementById('tco-script');
-    if (existingScript) {
-      document.body.removeChild(existingScript);
-    }
-
-    // Create and add the script tag
-    const script = document.createElement("script");
-    script.src = "https://www.2checkout.com/checkout/api/2co.min.js";
-    script.async = true;
-    script.id = "tco-script";
-
-    script.onload = () => {
-      console.log("✅ 2Checkout SDK loaded!");
-      
-      // According to 2Checkout documentation, need to call loadPubKey directly
-      try {
-        // Use sandbox mode as instructed by 2Checkout documentation
-        if (window.TCO) {
-          window.TCO.loadPubKey('sandbox');
-          console.log("✅ Public key loaded in sandbox mode");
-          setIsTcoReady(true);
-        } else {
-          console.error("❌ TCO object not found after script load");
-          toast.error("Payment system failed to initialize properly. Please try again later.");
-        }
-      } catch (err) {
-        console.error("❌ Error initializing 2Checkout:", err);
-        toast.error("Payment system initialization failed. Please try again later.");
-      }
-    };
-
-    script.onerror = () => {
-      console.error("❌ Failed to load 2Checkout script");
-      toast.error("Payment system failed to load. Please refresh the page and try again.");
-    };
-
-    document.body.appendChild(script);
-
-    return () => {
-      const scriptElement = document.getElementById('tco-script');
-      if (scriptElement && scriptElement.parentNode) {
-        document.body.removeChild(scriptElement);
-      }
-    };
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -196,65 +147,60 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   };
 
   const handleBuyCredits = async () => {
-    if (!window.TCO) {
-      console.error("TCO object not available");
-      toast.error("Payment system is not ready. Please refresh and try again.");
-      return;
-    }
-
-    if (!isTcoReady) {
-      toast.error("Payment system is still initializing. Please wait a moment and try again.");
-      return;
-    }
-
     if (!validateForm()) {
-      return; // Exit if form validation fails
+      return;
     }
 
-    const datas = {
-      coins: Number(credit),
-      email: profileData?.email,
-    };
+    if (!credit || credit <= 0) {
+      toast.error("Please enter a valid credit amount");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
+      // Step 1: Initialize payment with backend
+      const initResponse = await axios.post(
+        "https://5hwtmvdt-3334.inc1.devtunnels.ms/api/v1/initialize",
+        {
+          email: profileData?.email,
+          amount: Number(credit),
+        }
+      );
 
-      // Prepare arguments for token generation
-      const args = {
-        sellerId: "255503763294", // Replace with your seller ID
-        publishableKey: "86800182-FFCF-45F7-89B7-E623E4DBC1AF", // Replace with your publishable key
-        ccNo: cardDetails.cardNumber.replace(/\s/g, ""), // Remove spaces from card number
-        cvv: cardDetails.cvv,
-        expMonth: cardDetails.expiryDate.split("/")[0],
-        expYear: `20${cardDetails.expiryDate.split("/")[1]}`, // Convert YY to YYYY
-      };
+      if (initResponse.data.status) {
+        const { authorization_url, reference } = initResponse.data.data;
 
-      // Request token from 2Checkout
-      window.TCO.requestToken(
-        async (data) => {
-          const token = data?.response?.token?.token;
-          if (!token) {
-            toast.error("Failed to create payment token. Please try again.");
-            setIsLoading(false);
-            return;
-          }
+        // Open the authorization URL in a new window
+        window.open(authorization_url, "_blank");
 
-          console.log("Token created:", token);
+        // Set up a polling mechanism to check payment status
+        let retryCount = 0;
+        const maxRetries = 12; // Will try for 1 minute (12 * 5 seconds)
 
-          // Call the payment API with the generated token
+        const checkPaymentStatus = async () => {
           try {
-            const paymentResponse =
-              await influencerProfileServices.createCharge({
-                token,
-                amount: credit, // Use the credit amount as the payment amount
-                name: cardDetails.cardHolder,
+            if (retryCount >= maxRetries) {
+              toast.error(
+                "Payment verification timeout. Please check your payment status manually."
+              );
+              setIsLoading(false);
+              return;
+            }
+
+            const verifyResponse = await axios.get(
+              `https://5hwtmvdt-3334.inc1.devtunnels.ms/api/v1/verify/${reference}`
+            );
+            console.log("verifyResponse", verifyResponse);
+
+            // Check the gateway response message
+            if (verifyResponse.data.data?.gateway_response === "Successful") {
+              // Add coins after successful payment verification
+              const datas = {
+                coins: Number(credit),
                 email: profileData?.email,
-              });
+              };
 
-            if (paymentResponse?.status === 200) {
-              console.log("Payment successful:", paymentResponse.data);
-
-              // Call the addCoins API after successful payment
               const res = await influencerProfileServices.addCoins(datas);
               if (res?.status === 200) {
                 toast.success("Credits added successfully!");
@@ -262,36 +208,45 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                 dispatch(getUserProfile());
                 setCardDetails(initialCardDetails);
                 setCredit(null);
+                setIsLoading(false);
+                return; // Stop polling after success
               } else {
                 throw new Error("Failed to add coins.");
               }
+            } else if (
+              verifyResponse.data.data?.gateway_response ===
+              "The transaction was not completed"
+            ) {
+              // Continue polling if transaction is not completed
+              retryCount++;
+              setTimeout(checkPaymentStatus, 5000); // Check every 5 seconds
             } else {
-              throw new Error(
-                `Payment failed with status: ${paymentResponse?.status}`
-              );
+              // Handle other cases as failed
+              toast.error("Payment failed. Please try again.");
+              setIsLoading(false);
+              return; // Stop polling after failure
             }
-          } catch (paymentError) {
-            console.error("Payment error:", paymentError);
-            toast.error(
-              paymentError.message || "Payment failed. Please try again."
-            );
-          } finally {
+          } catch (error) {
+            console.error("Error checking payment status:", error);
+            toast.error("Failed to process payment. Please contact support.");
             setIsLoading(false);
           }
-        },
-        (error) => {
-          console.error("Token error:", error);
-          toast.error(
-            error?.message ||
-              "Failed to create payment token. Please try again."
-          );
-          setIsLoading(false);
-        },
-        args
-      );
+        };
+
+        // Start polling for payment status
+        checkPaymentStatus();
+      } else {
+        toast.error(
+          initResponse.data.message || "Failed to initialize payment"
+        );
+        setIsLoading(false);
+      }
     } catch (error) {
-      console.error("Error:", error);
-      toast.error(error?.message || "Something went wrong. Please try again.");
+      console.error("Payment initialization error:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to initialize payment. Please try again."
+      );
       setIsLoading(false);
     }
   };
