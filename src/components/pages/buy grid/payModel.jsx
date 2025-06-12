@@ -194,7 +194,9 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
             console.log("verifyResponse", verifyResponse);
 
             // Check the gateway response message
-            if (verifyResponse.data.data?.gateway_response === "Successful") {
+            if (
+              verifyResponse.data.data?.gateway_response === "[Test] Approved"
+            ) {
               // Add coins after successful payment verification
               const datas = {
                 coins: Number(credit),

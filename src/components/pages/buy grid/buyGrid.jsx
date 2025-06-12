@@ -95,7 +95,7 @@ const BuyGrid = () => {
 
               {/* Step Box */}
               <Step
-                // onClick={() => dispatch(setActiveStep(index))}
+                onClick={() => dispatch(setActiveStep(index))}
                 style={{
                   height: "48px",
                   background: "#353535",

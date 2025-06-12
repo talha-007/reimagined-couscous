@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")).render(
   // <StrictMode>
   <Provider store={store}>
     <App />
-    <ToastContainer theme="dark" />
+    <ToastContainer theme="dark" style={{ zIndex: 999999 }} />
   </Provider>
   // </StrictMode>,
 );

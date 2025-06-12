@@ -47,6 +47,7 @@ const Checkout = ({ handleNext }) => {
   const handleCheckout = async () => {
     if (Number(profileData?.coins || 0) < Number(selectionSummary?.subtotal)) {
       setOpenCoinsPopup(true);
+      return;
     }
     const datas = {
       subtotal: selectionSummary.subtotal,
