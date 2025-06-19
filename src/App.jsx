@@ -17,6 +17,8 @@ import EditProfile from "./components/pages/userprofile/editProfile";
 import Marketplace from "./components/pages/marketplace/marketplace";
 import { useEffect } from "react";
 import { logout } from "./redux/slice/authSlice";
+import CancelScreen from "./components/pages/buy grid/cancelScreen";
+import SuccessScreen from "./components/pages/buy grid/successScreen";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -39,6 +41,8 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/pixel-grid" element={<PixelGrid />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/success" element={<SuccessScreen />} />
+            <Route path="/cancel" element={<CancelScreen />} />
           </>
         ) : (
           <>
@@ -53,6 +57,8 @@ function App() {
               element={<InfluencerProfile />}
             />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/success" element={<SuccessScreen />} />
+            <Route path="/cancel" element={<CancelScreen />} />
           </>
         )}
 

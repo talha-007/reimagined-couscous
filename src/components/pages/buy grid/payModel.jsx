@@ -9,7 +9,7 @@ import {
 import closeBtn from "../../../assets/icons/close btn.svg";
 import cardIcon from "../../../assets/icons/card.svg";
 import visa from "../../../assets/icons/visa.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCountries } from "use-react-countries";
 import CustomButton from "../../button";
 import bitcoin from "../../../assets/icons/bitcoin.png";
@@ -90,6 +90,9 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
   const [cardDetails, setCardDetails] = useState(initialCardDetails);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [cryptoEstimate, setCryptoEstimate] = useState(null);
+  const [isEstimating, setIsEstimating] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -161,7 +164,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
     try {
       // Step 1: Initialize payment with backend
       const initResponse = await axios.post(
-        "https://5hwtmvdt-3334.inc1.devtunnels.ms/api/v1/initialize",
+        "https://api.milliondollarinfluencer.com/api/v1/initialize",
         {
           email: profileData?.email,
           amount: Number(credit),
@@ -189,7 +192,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
             }
 
             const verifyResponse = await axios.get(
-              `https://5hwtmvdt-3334.inc1.devtunnels.ms/api/v1/verify/${reference}`
+              `https://api.milliondollarinfluencer.com/api/v1/verify/${reference}`
             );
             console.log("verifyResponse", verifyResponse);
 
@@ -250,6 +253,93 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
           "Failed to initialize payment. Please try again."
       );
       setIsLoading(false);
+    }
+  };
+
+  const getCryptoEstimate = async (usdAmount, token) => {
+    if (!usdAmount || !token) return;
+    if (!credit || credit <= 0) {
+      toast.error("Please enter a valid credit amount");
+      return;
+    }
+    setIsEstimating(true);
+    try {
+      const response = await axios.get(
+        `https://api.nowpayments.io/v1/estimate?amount=${usdAmount}&currency_from=usd&currency_to=${token.toLowerCase()}`,
+        {
+          headers: {
+            "x-api-key": "9P7PYPH-VRQ4NZK-GCPRMMF-B6YGT9K",
+          },
+        }
+      );
+      console.log(response);
+
+      setCryptoEstimate(response.data);
+    } catch (error) {
+      console.error("Error getting crypto estimate:", error);
+      toast.error("Failed to get crypto estimate");
+    } finally {
+      setIsEstimating(false);
+    }
+  };
+
+  // Update estimate when amount or token changes
+  useEffect(() => {
+    if (selected === "crypto" && amount && selectedToken) {
+      getCryptoEstimate(amount, selectedToken);
+    }
+  }, [amount, selectedToken, selected]);
+
+  const handleCryptoPayment = async () => {
+    if (!credit || credit <= 0) {
+      toast.error("Please enter a valid credit amount");
+      return;
+    }
+    if (!cryptoEstimate) {
+      toast.error("Please enter all required information");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "https://api.nowpayments.io/v1/invoice",
+        {
+          price_amount: cryptoEstimate.estimated_amount,
+          price_currency: "eth",
+          pay_currency: "eth",
+          order_id: `order_${Date.now()}`,
+          order_description: `Buying ${credit} credits`,
+          ipn_callback_url: "https://milliondollarinfluencer.com/", // You may want to handle this for backend notifications
+          success_url: `https://milliondollarinfluencer.com/success?credits=${credit}`,
+          cancel_url: "https://milliondollarinfluencer.com/cancel",
+        },
+        {
+          headers: {
+            "x-api-key": "9P7PYPH-VRQ4NZK-GCPRMMF-B6YGT9K",
+          },
+        }
+      );
+      console.log("res", response);
+
+      if (response.data) {
+        // Open the payment URL in a new window
+        window.open(response.data.invoice_url, "_blank");
+        // Do NOT call addCoins here. It will be called on the success page.
+      }
+    } catch (error) {
+      console.error("Error creating crypto payment:", error);
+      toast.error("Failed to create crypto payment. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (selected === "card") {
+      handleBuyCredits();
+    } else {
+      handleCryptoPayment();
     }
   };
 
@@ -558,8 +648,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                         }}
                         className="mb-4"
                       >
-                        <div className="flex items-center px-4  bg-[#000000]">
-                          {/* Show Icon When Selected */}
+                        <div className="flex items-center px-4 bg-[#000000]">
                           {selectedToken && (
                             <img
                               src={
@@ -572,7 +661,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                             />
                           )}
                           <select
-                            className=" py-3 bg-[#000000] text-white outline-none w-full uppercase"
+                            className="py-3 bg-[#000000] text-white outline-none w-full uppercase"
                             required
                             value={selectedToken}
                             onChange={(e) => setSelectedToken(e.target.value)}
@@ -580,7 +669,6 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                             <option value="" disabled>
                               Select Token
                             </option>
-
                             {cryptoTokens.map((token) => (
                               <option key={token.symbol} value={token.symbol}>
                                 {token.name}
@@ -589,51 +677,65 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                           </select>
                         </div>
 
-                        {/* Amount Input with Token Symbol on the Right */}
+                        {/* USD Amount Input */}
                         <div className="relative">
                           <input
                             className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full pr-14"
                             required
-                            placeholder="Enter Amount"
+                            placeholder="Enter Amount in USD"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             style={{
                               borderTop: "1px solid #766E53",
                             }}
                           />
-                          {selectedToken && (
-                            <span
-                              className={`absolute right-4 top-1/2 transform -translate-y-1/2 text-[#50AF95] font-[Inter] uppercase`}
-                            >
-                              {selectedToken}
-                            </span>
-                          )}
+                          <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#50AF95] font-[Inter] uppercase">
+                            USD
+                          </span>
+                        </div>
+
+                        {/* Crypto Estimate Display */}
+                        <div className="relative">
+                          <input
+                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full pr-14"
+                            readOnly
+                            placeholder="Estimated Amount"
+                            value={
+                              isEstimating
+                                ? "Calculating..."
+                                : cryptoEstimate
+                                ? `${cryptoEstimate.estimated_amount}`
+                                : ""
+                            }
+                            style={{
+                              borderTop: "1px solid #766E53",
+                            }}
+                          />
+                          <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#50AF95] font-[Inter] uppercase">
+                            {selectedToken || ""}
+                          </span>
                         </div>
                       </div>
-                      <div
-                        className="relative"
-                        style={{
-                          border: "1px solid #766E53",
-                          width: "100%",
-                        }}
-                      >
-                        <input
-                          className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full pr-14"
-                          required
-                          placeholder="Enter Address"
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
+
+                      <div className="mb-4">
+                        <p className="text-white font-[Inter] uppercase text-[14px] font-light">
+                          Your Wallet Address{" "}
+                          <span className="text-[#FFE395]">*</span>
+                        </p>
+                        <div
                           style={{
-                            borderTop: "1px solid #766E53",
+                            border: "1px solid #766E53",
+                            width: "100%",
                           }}
-                        />
-                        {selectedToken && (
-                          <span
-                            className={`absolute right-4 top-1/2 transform -translate-y-1/2 text-[#50AF95] font-[Inter] uppercase`}
-                          >
-                            {selectedToken}
-                          </span>
-                        )}
+                        >
+                          <input
+                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full"
+                            required
+                            placeholder="Enter your wallet address"
+                            value={walletAddress}
+                            onChange={(e) => setWalletAddress(e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
                   </>
@@ -644,7 +746,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                     hidden="block"
                     isLoading={isLoading}
                     name="Next"
-                    onClick={handleBuyCredits}
+                    onClick={handleNext}
                     width="w-full"
                     bgGradient="linear-gradient(to right, #B48B34 0%, #E8C776 50%, #A67921 100%)"
                     strokeGradient="linear-gradient(to right, #7A5018cc 0%, #FEEA9Acc 100%)"
