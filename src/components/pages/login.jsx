@@ -6,16 +6,12 @@ import { motion } from "framer-motion";
 import AuthLayout from "../layout/authLayout";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 // import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 // import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { googleLoginUser, loginUser } from "../../redux/slice/authSlice";
-import {
-  loginWithGoogle,
-  logoutUser,
-} from "../../redux/services/googleAuthApi";
+import { loginWithGoogle } from "../../redux/services/googleAuthApi";
 import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
@@ -118,11 +114,6 @@ const Signin = () => {
       setUser(response.user);
       dispatch(googleLoginUser(response.user));
     }
-  };
-
-  const handleLogout = async () => {
-    await logoutUser();
-    setUser(null);
   };
 
   return (

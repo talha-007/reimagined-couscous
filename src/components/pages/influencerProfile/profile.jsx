@@ -14,18 +14,9 @@ import earlyAdopterIcon from "../../../assets/icons/early adopter.svg";
 import tenMIcon from "../../../assets/icons/10M.svg";
 import grid from "../../../assets/grid2.png";
 import commas from "../../../assets/icons/commas.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserProfile } from "../../../redux/slice/userSlice";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 
-const socailLinks = [
-  { id: 1, logo: facebookLogo, followers: "2.3M" },
-  { id: 2, logo: instaLogo, followers: "2.3M" },
-  { id: 3, logo: XLogo, followers: "2.3M" },
-  { id: 4, logo: tiktokLogo, followers: "2.3M" },
-  { id: 5, logo: threadsLogo, followers: "2.3M" },
-];
 const Acheivments = [
   { id: 1, logo: monthlyAwardIcon, followers: "2.3M" },
   { id: 2, logo: earlyAdopterIcon, followers: "2.3M" },
@@ -39,15 +30,37 @@ const InfluencerProfile = () => {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
 
+  const socailLinks = [
+    {
+      id: 1,
+      logo: facebookLogo,
+      followers: "2.3M",
+      username: data?.[0]?.facebook,
+    },
+    {
+      id: 2,
+      logo: instaLogo,
+      followers: "2.3M",
+      username: data?.[0]?.instagram,
+    },
+    { id: 3, logo: XLogo, followers: "2.3M", username: data?.[0]?.twitter },
+    { id: 4, logo: tiktokLogo, followers: "2.3M" },
+    { id: 5, logo: threadsLogo, followers: "2.3M" },
+  ];
+
   // console.log(data);
   useEffect(() => {
-    fetchData();
+    console.log("id from useParams:", id);
+    if (id) {
+      fetchData();
+    }
   }, [id]);
 
   const fetchData = async () => {
+    console.log("fetchData called with id:", id);
     try {
       const res = await influencerProfileServices.getInfluencerById(id);
-      // console.log("res", res);
+      console.log("API response:", res);
       if (res.status === 200) {
         setData(res?.data?.data);
       }
@@ -67,6 +80,11 @@ const InfluencerProfile = () => {
   const removeImage = (type) => {
     type === "cover" ? setCoverImage(null) : setProfileImage(null);
   };
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Layout>
       <div className="pt-20">
@@ -231,10 +249,7 @@ const InfluencerProfile = () => {
                         </div>
                         <div>
                           <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                            {item.followers}
-                          </p>
-                          <p className="text-[#fedb6b94] font-regular text-[12px]">
-                            Followers
+                            @{item.username ?? "n/a"}
                           </p>
                         </div>
                       </div>

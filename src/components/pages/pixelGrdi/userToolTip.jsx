@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import fbIcon from "../../../assets/icons/fb.svg";
 import instaIcon from "../../../assets/icons/insta.svg";
 import tiktokIcon from "../../../assets/icons/tiktok.svg";
@@ -9,8 +9,9 @@ import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
 import followerServices from "../../../redux/services/followerServices";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
+import PropTypes from "prop-types";
 
-const UserToolTip = ({ tooltipPos, hoveredUser }) => {
+const UserToolTip = forwardRef(({ tooltipPos, hoveredUser }, ref) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false); // State to track loading
@@ -43,9 +44,7 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
       const datas = {
         followeeId: hoveredUser?._id,
       };
-      const res = await followerServices.followUser(datas);
-      // console.log("res", res);
-
+      await followerServices.followUser(datas);
       // Toggle follow status after successful API call
       setIsFollowing((prev) => !prev);
     } catch (error) {
@@ -55,8 +54,29 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
     }
   };
 
+  UserToolTip.displayName = "UserToolTip";
+
+  UserToolTip.propTypes = {
+    tooltipPos: PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+    }).isRequired,
+    hoveredUser: PropTypes.shape({
+      _id: PropTypes.string,
+      profilePicture: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      facebook: PropTypes.string,
+      instagram: PropTypes.string,
+      twitter: PropTypes.string,
+      bio: PropTypes.string,
+      followers: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
+  };
+
   return (
     <motion.div
+      ref={ref}
       className="absolute text-black text-sm px-3 py-2 shadow-lg font-[Montserrat] "
       style={{
         top: tooltipPos.y + 10,
@@ -235,6 +255,6 @@ const UserToolTip = ({ tooltipPos, hoveredUser }) => {
       </div>
     </motion.div>
   );
-};
+});
 
 export default UserToolTip;

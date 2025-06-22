@@ -396,8 +396,8 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                   type="text"
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (/^\d*$/.test(value)) {
-                      // Allow only digits (0-9)
+                    // Allow only numbers (integer or decimal)
+                    if (/^\d*\.?\d*$/.test(value)) {
                       setCredit(value);
                     }
                   }}
@@ -684,7 +684,13 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                             required
                             placeholder="Enter Amount in USD"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Allow only numbers (integer or decimal)
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setAmount(value);
+                              }
+                            }}
                             style={{
                               borderTop: "1px solid #766E53",
                             }}

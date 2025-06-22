@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 
 import AuthLayout from "../layout/authLayout";
 import { useState } from "react";
-import authService from "../../redux/services/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUser, signupUser } from "../../redux/slice/authSlice";
@@ -97,7 +96,7 @@ const Signup = () => {
       )
         .unwrap()
         .then(() => {
-          toast.success("Signup successful! Please log in.");
+          toast.success("Signup successful!");
           navigate("/pixel-grid");
         })
         .catch((error) => toast.error(error))

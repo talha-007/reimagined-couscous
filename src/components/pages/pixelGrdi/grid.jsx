@@ -1,13 +1,10 @@
 import { useRef, useState, useEffect } from "react";
-
-import user2 from "../../../assets/users/image2.png";
-import user3 from "../../../assets/users/image3.png";
-import user4 from "../../../assets/users/image4.png";
 import UserToolTip from "./userToolTip";
 import SelectionToolTip from "./selectionToolTip";
 import { useDispatch, useSelector } from "react-redux";
 import { getInfluencers } from "../../../redux/slice/InfluencerSlice";
 import { IMAGE_BASEURL } from "../../../redux/services/http-comman";
+import PropTypes from "prop-types";
 
 const BASE_GRID_SIZE = 100;
 const BASE_PIXEL_SIZE = 10;
@@ -16,6 +13,7 @@ const Grid = ({ Summary, image, selection }) => {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const imagesRef = useRef({});
+  const tooltipRef = useRef(null);
 
   const [gridSize, setGridSize] = useState(BASE_GRID_SIZE);
   const [pixelSize, setPixelSize] = useState(BASE_PIXEL_SIZE);
@@ -30,7 +28,7 @@ const Grid = ({ Summary, image, selection }) => {
   const [hoveredSelection, setHoveredSelection] = useState([]);
   const [saveSelection, setSaveSelection] = useState(false);
   const [tooltipActive, setToolTipActive] = useState(false);
-  const [clickedUser, setClickedUser] = useState(null);
+  const [isTooltipPersistent, setIsTooltipPersistent] = useState(false);
 
   const influencersData = useSelector((s) => s?.influencer?.data?.data);
   // console.log("influencersData", influencersData);
@@ -40,7 +38,7 @@ const Grid = ({ Summary, image, selection }) => {
   }, []);
   const getData = async () => {
     try {
-      const res = dispatch(getInfluencers());
+      dispatch(getInfluencers());
       // console.log(res);
     } catch (error) {
       console.log("error", error);
@@ -300,7 +298,7 @@ const Grid = ({ Summary, image, selection }) => {
     setDragging(true);
   };
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = () => {
     if (!selection) return;
     if (startPos && endPos) {
       const newSelection = { startPos, endPos };
@@ -330,7 +328,7 @@ const Grid = ({ Summary, image, selection }) => {
   };
 
   const handleMouseMove = (e) => {
-    if (!selection) return;
+    if (isTooltipPersistent) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -385,8 +383,6 @@ const Grid = ({ Summary, image, selection }) => {
       }
     }
 
-    if (clickedUser) return;
-
     // Only update state if there is a change
     if (foundUser !== hoveredUser || foundSelection !== hoveredSelection) {
       setHoveredUser(foundUser);
@@ -437,17 +433,17 @@ const Grid = ({ Summary, image, selection }) => {
     }
 
     if (foundUser) {
-      setClickedUser(foundUser); // Store clicked user to keep tooltip persistent
+      setIsTooltipPersistent(true);
       setHoveredUser(foundUser);
       setHoveredSelection(null);
       setTooltipPos({ x: e.pageX, y: e.pageY });
     } else if (foundSelection) {
-      setClickedUser(null);
+      setIsTooltipPersistent(true);
       setHoveredUser(null);
       setHoveredSelection(foundSelection);
       setTooltipPos({ x: e.pageX, y: e.pageY });
     } else {
-      setClickedUser(null);
+      setIsTooltipPersistent(false);
       setHoveredUser(null);
       setHoveredSelection(null);
       setTooltipPos(null);
@@ -471,9 +467,15 @@ const Grid = ({ Summary, image, selection }) => {
   };
 
   const handleClickOutside = (event) => {
-    if (!canvasRef.current.contains(event.target)) {
-      // Clicked outside canvas → clear everything
+    const isOverTooltip =
+      tooltipRef.current && tooltipRef.current.contains(event.target);
+    if (!canvasRef.current.contains(event.target) && !isOverTooltip) {
+      // Clicked outside canvas and tooltip → clear everything
       setToolTipActive(false);
+      setIsTooltipPersistent(false);
+      setHoveredUser(null);
+      setHoveredSelection(null);
+      setTooltipPos(null);
     }
   };
 
@@ -483,6 +485,22 @@ const Grid = ({ Summary, image, selection }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  // Also clear persistent mode on mouse leave
+  const handleMouseLeave = (event) => {
+    // Only clear if not moving into the tooltip
+    if (
+      tooltipRef.current &&
+      event.relatedTarget &&
+      tooltipRef.current.contains(event.relatedTarget)
+    ) {
+      return;
+    }
+    setIsTooltipPersistent(false);
+    setHoveredUser(null);
+    setHoveredSelection(null);
+    setTooltipPos(null);
+  };
 
   return (
     <>
@@ -497,9 +515,14 @@ const Grid = ({ Summary, image, selection }) => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
       />
       {hoveredUser && tooltipPos && (
-        <UserToolTip hoveredUser={hoveredUser} tooltipPos={tooltipPos} />
+        <UserToolTip
+          ref={tooltipRef}
+          hoveredUser={hoveredUser}
+          tooltipPos={tooltipPos}
+        />
       )}
       {hoveredSelection && tooltipPos && (
         <SelectionToolTip
@@ -511,6 +534,26 @@ const Grid = ({ Summary, image, selection }) => {
       )}
     </>
   );
+};
+
+Grid.propTypes = {
+  Summary: PropTypes.shape({
+    imgElement: PropTypes.any,
+    selectedCoordinates: PropTypes.arrayOf(
+      PropTypes.shape({
+        startPos: PropTypes.shape({
+          x: PropTypes.number.isRequired,
+          y: PropTypes.number.isRequired,
+        }),
+        endPos: PropTypes.shape({
+          x: PropTypes.number.isRequired,
+          y: PropTypes.number.isRequired,
+        }),
+      })
+    ),
+  }),
+  image: PropTypes.string,
+  selection: PropTypes.bool,
 };
 
 export default Grid;
