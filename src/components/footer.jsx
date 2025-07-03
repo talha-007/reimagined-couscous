@@ -1,8 +1,22 @@
 import { BsLinkedin, BsTwitter, BsYoutube } from "react-icons/bs";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNav = (sectionId) => {
+    if (location.pathname === "/") {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+      else window.location.hash = `#${sectionId}`;
+    } else {
+      navigate("/", { state: { scrollTo: sectionId } });
+    }
+  };
+
   return (
     <div className="border border-t-[#333333cc] relative overflow-hidden h-[300px]">
       <div className=" max-w-7xl w-full mx-auto relative px-4">
@@ -15,7 +29,7 @@ const Footer = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: false, amount: 0.2 }}
             >
-              <img src={logo} alt="logo" />
+              <img style={{ width: "180px" }} src={logo} alt="logo" />
             </motion.div>
           </div>
           <div className="w-full flex justify-center">
@@ -27,37 +41,37 @@ const Footer = () => {
             >
               <ul className="text-white space-y-3 text-center flex gap-4">
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300"
+                  <button
+                    onClick={() => handleNav("home")}
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
                   >
                     Home
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300"
+                  <button
+                    onClick={() => handleNav("how-it-works")}
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
                   >
                     How It Works
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300"
+                  <button
+                    onClick={() => handleNav("features")}
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
                   >
                     Features
-                  </a>
+                  </button>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300"
+                {/* <li>
+                  <button
+                    onClick={() => handleNav("faq")}
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
                   >
                     Pricing
-                  </a>
-                </li>
+                  </button>
+                </li> */}
               </ul>
             </motion.div>
           </div>

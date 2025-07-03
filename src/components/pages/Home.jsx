@@ -8,6 +8,7 @@ import HowItWorks from "../howItWorks";
 import PlatformInAction from "../platformInAction";
 import Faq from "../faq";
 import ContactUs from "../contactUs";
+import { useLocation } from "react-router-dom";
 
 function AnimatedSection({ id, children }) {
   const controls = useAnimation();
@@ -44,6 +45,17 @@ function AnimatedSection({ id, children }) {
   );
 }
 const Home = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const el = document.getElementById(location.state.scrollTo);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location.state]);
+
   return (
     <div>
       <Layout>

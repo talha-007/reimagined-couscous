@@ -200,7 +200,7 @@ const EditProfile = () => {
           <div className="w-full">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                First Name<span style={{ color: "#FFE395" }}>*</span>
+                First Name
               </label>
               <input
                 type="text"
@@ -220,7 +220,7 @@ const EditProfile = () => {
           <div className="w-full">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Last Name<span style={{ color: "#FFE395" }}>*</span>
+                Last Name
               </label>
               <input
                 type="text"
@@ -240,7 +240,7 @@ const EditProfile = () => {
           <div className="w-full">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Email<span style={{ color: "#FFE395" }}>*</span>
+                Email
               </label>
               <input
                 type="email"
@@ -260,7 +260,7 @@ const EditProfile = () => {
           <div className="w-full col-span-3">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Bio<span style={{ color: "#FFE395" }}>*</span>
+                Bio
               </label>
               <textarea
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none  resize-none"
@@ -281,7 +281,6 @@ const EditProfile = () => {
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-2 font-[Inter] text-[14px] uppercase">
                 Upload your profile picture
-                <span style={{ color: "#FFE395" }}>*</span>
               </label>
 
               <div className="w-[190px] h-[190px] border-2 border-[#766E53cc] flex items-center justify-center relative bg-[#FFD363] relative">
@@ -347,7 +346,7 @@ const EditProfile = () => {
           <div className="w-full">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Facebook Link<span style={{ color: "#FFE395" }}>*</span>
+                Facebook Username
               </label>
               <input
                 type="text"
@@ -369,7 +368,7 @@ const EditProfile = () => {
           <div className="w-full">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Instagram Link<span style={{ color: "#FFE395" }}>*</span>
+                Instagram Username
               </label>
               <input
                 type="text"
@@ -391,7 +390,7 @@ const EditProfile = () => {
           <div className="w-full">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Twitter Link<span style={{ color: "#FFE395" }}>*</span>
+                Twitter Username
               </label>
               <input
                 type="text"
@@ -422,7 +421,7 @@ const EditProfile = () => {
           <div className="w-full col-span-3">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Brand Name<span style={{ color: "#FFE395" }}>*</span>
+                Brand Name
               </label>
               <input
                 type="text"
@@ -442,7 +441,7 @@ const EditProfile = () => {
           <div className="w-full col-span-3">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Details<span style={{ color: "#FFE395" }}>*</span>
+                Details
               </label>
               <textarea
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none  resize-none"
@@ -462,7 +461,7 @@ const EditProfile = () => {
           <div className="w-full col-span-3">
             <div className="flex flex-col mb-2">
               <label className="text-white font-medium mb-1 font-[Inter] text-[14px] uppercase">
-                Testimonial<span style={{ color: "#FFE395" }}>*</span>
+                Testimonial
               </label>
               <textarea
                 className="px-4 py-3 border border-[#766E53cc] bg-transparent text-white font-[Inter] placeholder:text-[#484848] focus:ring-2 focus:ring-[#7d6a2b] outline-none  resize-none"

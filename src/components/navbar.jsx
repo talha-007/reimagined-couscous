@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomButton from "./button";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import coinsIcon from "../assets/icons/Coins.svg";
 import Bell from "../assets/icons/Bell.svg";
@@ -106,7 +106,7 @@ const Navbar = () => {
           <div className="flex justify-between h-16 items-center">
             {/* Logo */}
             <a href="/">
-              <img src={logo} alt="logo" />
+              <img style={{ width: "180px" }} src={logo} alt="logo" />
             </a>
             {/* Desktop Nav Items */}
             <div className="hidden md:flex md:items-center md:space-x-6">

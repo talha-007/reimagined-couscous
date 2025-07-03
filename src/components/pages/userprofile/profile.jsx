@@ -38,13 +38,6 @@ import profileServices from "../../../redux/services/profileServices";
 import { toast } from "react-toastify";
 import { logout } from "../../../redux/slice/authSlice";
 
-const socailLinks = [
-  { id: 1, logo: facebookLogo, followers: "2.3M" },
-  { id: 2, logo: instaLogo, followers: "2.3M" },
-  { id: 3, logo: XLogo, followers: "2.3M" },
-  { id: 4, logo: tiktokLogo, followers: "2.3M" },
-  { id: 5, logo: threadsLogo, followers: "2.3M" },
-];
 const Acheivments = [
   { id: 1, logo: monthlyAwardIcon, followers: "2.3M" },
   { id: 2, logo: earlyAdopterIcon, followers: "2.3M" },
@@ -88,8 +81,31 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const openMenuRef = useRef();
   const profileData = useSelector((s) => s?.user?.data?.data);
-  // console.log("profileData", profileData);
+  console.log("profileData", profileData);
   const [promoVideo, setPromoVideo] = useState(null);
+
+  const socailLinks = [
+    {
+      id: 1,
+      logo: facebookLogo,
+      followers: "2.3M",
+      username: profileData?.facebook,
+    },
+    {
+      id: 2,
+      logo: instaLogo,
+      followers: "2.3M",
+      username: profileData?.instagram,
+    },
+    {
+      id: 3,
+      logo: XLogo,
+      followers: "2.3M",
+      username: profileData?.twitter,
+    },
+    { id: 4, logo: tiktokLogo, followers: "2.3M" },
+    { id: 5, logo: threadsLogo, followers: "2.3M" },
+  ];
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
@@ -384,12 +400,13 @@ const UserProfile = () => {
               <p className="text-[#766E53] uppercase font-bold">Social Links</p>
               <div className="flex items-center flex-wrap gap-5 p-4">
                 {socailLinks.map((item, index) => (
-                  <React.Fragment key={item?.id || index}>
-                    <div className="flex items-center gap-3">
+                  <>
+                    <div key={item.id} className="flex items-center gap-3">
                       <div
                         style={{
                           backgroundImage:
                             "linear-gradient(120deg, rgba(254, 246, 192, 0.14) 30%, rgba(232, 199, 118, 0.52) 150%)",
+
                           minHeight: "40px",
                           minWidth: "40px",
                           width: "40px",
@@ -402,17 +419,14 @@ const UserProfile = () => {
                       </div>
                       <div>
                         <p className="text-[#FEDB6B] font-semibold text-[16px]">
-                          {item.followers}
-                        </p>
-                        <p className="text-[#fedb6b94] font-regular text-[12px]">
-                          Followers
+                          @{item.username ?? "n/a"}
                         </p>
                       </div>
                     </div>
                     {index !== socailLinks.length - 1 && (
                       <div className="w-[1px] h-10 bg-[#FEF6C026]"></div>
                     )}
-                  </React.Fragment>
+                  </>
                 ))}
               </div>
             </div>

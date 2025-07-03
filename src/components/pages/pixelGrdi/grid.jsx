@@ -29,6 +29,7 @@ const Grid = ({ Summary, image, selection }) => {
   const [saveSelection, setSaveSelection] = useState(false);
   const [tooltipActive, setToolTipActive] = useState(false);
   const [isTooltipPersistent, setIsTooltipPersistent] = useState(false);
+  const [selectionTooltipPos, setSelectionTooltipPos] = useState(null);
 
   const influencersData = useSelector((s) => s?.influencer?.data?.data);
   // console.log("influencersData", influencersData);
@@ -319,9 +320,35 @@ const Grid = ({ Summary, image, selection }) => {
       }
 
       setSelections(() => [newSelection]);
+
+      // Set tooltip position to the center of the selection, robust to scroll
+      const left = Math.min(startPos.x, endPos.x);
+      const top = Math.min(startPos.y, endPos.y);
+      const width = Math.abs(endPos.x - startPos.x);
+      const height = Math.abs(endPos.y - startPos.y);
+      const TOOLTIP_WIDTH = 215; // px
+      const TOOLTIP_HEIGHT = 180; // px (adjust if needed)
+      const canvasRect = canvasRef.current.getBoundingClientRect();
+      const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      // Canvas position relative to the document
+      const canvasDocLeft = canvasRect.left + scrollLeft;
+      const canvasDocTop = canvasRect.top + scrollTop;
+      // Center of selection in canvas coordinates
+      let x = canvasDocLeft + left + width / 2;
+      let y = canvasDocTop + top + height / 2;
+      // Clamp to canvas area (relative to document)
+      const canvasRight = canvasDocLeft + canvasRef.current.width;
+      const canvasBottom = canvasDocTop + canvasRef.current.height;
+      if (x + TOOLTIP_WIDTH > canvasRight) x = canvasRight - TOOLTIP_WIDTH;
+      if (y + TOOLTIP_HEIGHT > canvasBottom) y = canvasBottom - TOOLTIP_HEIGHT;
+      if (x < canvasDocLeft) x = canvasDocLeft;
+      if (y < canvasDocTop) y = canvasDocTop;
+      setSelectionTooltipPos({ x, y });
     } else {
       // Clear selections when clicking outside
       setSelections([]);
+      setSelectionTooltipPos(null);
     }
 
     setDragging(false);
@@ -344,9 +371,30 @@ const Grid = ({ Summary, image, selection }) => {
     const cellY = Math.floor(clampedY / pixelSize) * pixelSize;
 
     if (dragging && startPos) {
+      // Prevent selection from overlapping with any user's selected pixels
+      let maxX = cellX + pixelSize;
+      let maxY = cellY + pixelSize;
+      for (const user of users) {
+        for (const { startPos: uStart, endPos: uEnd } of user.selectedPixels) {
+          // If dragging right/down, clamp to before the occupied area
+          if (
+            startPos.x < uEnd.x &&
+            maxX > uStart.x &&
+            startPos.y < uEnd.y &&
+            maxY > uStart.y
+          ) {
+            if (cellX >= uStart.x && cellX < uEnd.x) {
+              maxX = uStart.x;
+            }
+            if (cellY >= uStart.y && cellY < uEnd.y) {
+              maxY = uStart.y;
+            }
+          }
+        }
+      }
       setEndPos({
-        x: cellX + pixelSize,
-        y: cellY + pixelSize,
+        x: maxX,
+        y: maxY,
       });
       return;
     }
@@ -476,6 +524,8 @@ const Grid = ({ Summary, image, selection }) => {
       setHoveredUser(null);
       setHoveredSelection(null);
       setTooltipPos(null);
+      setSelectionTooltipPos(null);
+      setSelections([]);
     }
   };
 
@@ -500,6 +550,8 @@ const Grid = ({ Summary, image, selection }) => {
     setHoveredUser(null);
     setHoveredSelection(null);
     setTooltipPos(null);
+    setSelectionTooltipPos(null);
+    setSelections([]);
   };
 
   return (
@@ -524,10 +576,11 @@ const Grid = ({ Summary, image, selection }) => {
           tooltipPos={tooltipPos}
         />
       )}
-      {hoveredSelection && tooltipPos && (
+      {selections.length > 0 && selectionTooltipPos && (
         <SelectionToolTip
-          hoveredSelection={hoveredSelection}
-          tooltipPos={tooltipPos}
+          ref={tooltipRef}
+          hoveredSelection={selections[0]}
+          tooltipPos={selectionTooltipPos}
           selectionSummary={selectionSummary}
           handleSelectPixels={handleSelectPixels}
         />

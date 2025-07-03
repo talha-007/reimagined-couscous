@@ -306,8 +306,8 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
         "https://api.nowpayments.io/v1/invoice",
         {
           price_amount: cryptoEstimate.estimated_amount,
-          price_currency: "eth",
-          pay_currency: "eth",
+          price_currency: selectedToken ? selectedToken.toLowerCase() : "",
+          pay_currency: selectedToken ? selectedToken.toLowerCase() : "",
           order_id: `order_${Date.now()}`,
           order_description: `Buying ${credit} credits`,
           ipn_callback_url: "https://milliondollarinfluencer.com/", // You may want to handle this for backend notifications
@@ -473,7 +473,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                   <>
                     <div className="mb-4">
                       <div>
-                        <p className="text-white font-[Inter] uppercase text-[14px] font-light">
+                        <p className="text-white font-[Inter] text-[14px] font-light">
                           Card Information{" "}
                           <span className="text-[#FFE395]">*</span>{" "}
                         </p>
@@ -493,7 +493,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                               value={cardDetails.cardNumber}
                               onChange={handleChange}
                               placeholder="Card Number (EG **** **** 1234 1234)"
-                              className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
+                              className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none  w-full"
                             />
                           </div>
 
@@ -519,7 +519,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                             }}
                           >
                             <input
-                              className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
+                              className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none  w-full"
                               required
                               type="text"
                               name="expiryDate"
@@ -535,7 +535,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                             }}
                           >
                             <input
-                              className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
+                              className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none  w-full"
                               required
                               type="text"
                               name="cvv"
@@ -556,7 +556,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                       )}
                     </div>
                     <div className="mb-4">
-                      <p className="text-white font-[Inter] uppercase text-[14px] font-light">
+                      <p className="text-white font-[Inter]  text-[14px] font-light">
                         Card Holder Name{" "}
                         <span className="text-[#FFE395]">*</span>{" "}
                       </p>
@@ -567,7 +567,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                         }}
                       >
                         <input
-                          className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none uppercase w-full"
+                          className="px-4 py-3  bg-[#000000]  text-white placeholder:text-[#aaa]  outline-none  w-full"
                           required
                           placeholder="Enter card holder name"
                           type="text"
@@ -579,7 +579,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                     </div>
 
                     <div className="mb-6">
-                      <p className="text-white font-[Inter] uppercase text-[14px] font-light">
+                      <p className="text-white font-[Inter]  text-[14px] font-light">
                         Billing Address{" "}
                         <span className="text-[#FFE395]">*</span>
                       </p>
@@ -591,7 +591,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                       >
                         {/* Country Selection Dropdown */}
                         <select
-                          className="px-4 py-3 bg-[#000000] text-white outline-none w-full uppercase"
+                          className="px-4 py-3 bg-[#000000] text-white outline-none w-full "
                           required
                           value={selectedCountry}
                           onChange={(e) => setSelectedCountry(e.target.value)}
@@ -619,7 +619,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
 
                         {/* Manual Address Input */}
                         <input
-                          className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full"
+                          className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none  w-full"
                           required
                           type="text"
                           name="address"
@@ -637,7 +637,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                 {selected === "crypto" && (
                   <>
                     <div className="mb-6">
-                      <p className="text-white font-[Inter] uppercase text-[14px] font-light">
+                      <p className="text-white font-[Inter]  text-[14px] font-light">
                         Select Token <span className="text-[#FFE395]">*</span>
                       </p>
 
@@ -661,7 +661,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                             />
                           )}
                           <select
-                            className="py-3 bg-[#000000] text-white outline-none w-full uppercase"
+                            className="py-3 bg-[#000000] text-white outline-none w-full "
                             required
                             value={selectedToken}
                             onChange={(e) => setSelectedToken(e.target.value)}
@@ -680,7 +680,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                         {/* USD Amount Input */}
                         <div className="relative">
                           <input
-                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full pr-14"
+                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none  w-full pr-14"
                             required
                             placeholder="Enter Amount in USD"
                             value={amount}
@@ -703,7 +703,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                         {/* Crypto Estimate Display */}
                         <div className="relative">
                           <input
-                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full pr-14"
+                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none  w-full pr-14"
                             readOnly
                             placeholder="Estimated Amount"
                             value={
@@ -724,7 +724,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                       </div>
 
                       <div className="mb-4">
-                        <p className="text-white font-[Inter] uppercase text-[14px] font-light">
+                        <p className="text-white font-[Inter]  text-[14px] font-light">
                           Your Wallet Address{" "}
                           <span className="text-[#FFE395]">*</span>
                         </p>
@@ -735,7 +735,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                           }}
                         >
                           <input
-                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none uppercase w-full"
+                            className="px-4 py-3 bg-[#000000] text-white placeholder:text-[#aaa] outline-none  w-full"
                             required
                             placeholder="Enter your wallet address"
                             value={walletAddress}
