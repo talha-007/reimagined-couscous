@@ -16,6 +16,9 @@ import bitcoin from "../../../assets/icons/bitcoin.png";
 import bnb from "../../../assets/icons/bnb.png";
 import eth from "../../../assets/icons/eth.png";
 import usdt from "../../../assets/icons/usdt.png";
+import trx from "../../../assets/icons/tron-trx-logo.svg";
+import ton from "../../../assets/icons/toncoin-ton-logo.svg";
+import sol from "../../../assets/icons/solana-sol-logo.svg";
 import influencerProfileServices from "../../../redux/services/influencerProfileServices";
 import { useDispatch } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
@@ -34,14 +37,19 @@ const cryptoTokens = [
     icon: eth,
   },
   {
-    name: "Binance Coin",
-    symbol: "BNB",
-    icon: bnb,
+    name: "Tron",
+    symbol: "trx",
+    icon: trx,
   },
   {
-    name: "Tether",
-    symbol: "USDT",
-    icon: usdt,
+    name: "Solana",
+    symbol: "sol",
+    icon: sol,
+  },
+  {
+    name: "Toncoin",
+    symbol: "ton",
+    icon: ton,
   },
 ];
 const customTheme = {
@@ -393,11 +401,15 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                   className="px-4 py-3 border bg-[#000000] border-[#766E53] text-white placeholder:text-[#aaa] focus:ring-2 focus:ring-[#7d6a2b] outline-none uppercase w-full"
                   required
                   value={credit}
-                  type="text"
+                  type="number"
+                  min="0"
+                  step="any"
                   onChange={(e) => {
                     const value = e.target.value;
-                    // Allow only numbers (integer or decimal)
-                    if (/^\d*\.?\d*$/.test(value)) {
+                    // Only allow valid numbers (not empty, not just a dot)
+                    if (value === "" || isNaN(Number(value)) || value === ".") {
+                      setCredit("");
+                    } else {
                       setCredit(value);
                     }
                   }}
@@ -625,7 +637,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                           name="address"
                           value={cardDetails.address}
                           onChange={handleChange}
-                          placeholder="Address Manually"
+                          placeholder="Enter your wallet address"
                           style={{
                             borderTop: "1px solid #766E53",
                           }}
