@@ -1,5 +1,5 @@
 import icon1 from "../assets/icon1.svg";
-import icon2 from "../assets/vision.svg";
+import icon2 from "../assets/icon2.svg";
 import icon3 from "../assets/icon3.svg";
 import icon4 from "../assets/icon4.svg";
 import { motion } from "framer-motion";
@@ -7,15 +7,15 @@ import { motion } from "framer-motion";
 const HowItWorks = () => {
   const items = [
     { id: 1, icon: icon1, title: "Claim your pixel" },
-    { id: 2, icon: icon2, title: "Share your vision" },
-    { id: 3, icon: icon3, title: "Amplify your impact" },
-    { id: 4, icon: icon4, title: "Join the community" },
+    { id: 2, icon: icon2, title: "Upload your image/logo" },
+    { id: 3, icon: icon3, title: "Link it to your website or profile" },
+    { id: 4, icon: icon4, title: "Watch your influence grow" },
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-transparent lg:my-[10rem] md:my-[8rem] sm:my-[4rem] my-[2rem]">
       <motion.div
-        className="text-center sm:px-[12rem]"
+        className="text-center sm:px-[5rem]"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -25,8 +25,8 @@ const HowItWorks = () => {
           How it works
         </h1>
         <p className="text-white  font-[Montserrat] mt-2 lg:text-[24px] sm:text-[20px] text-[16px]">
-          upload your DP or logo and link your account. Then, sit back and enjoy
-          your growth!
+          Claim your pixel, showcase your brand, sit back, and watch your
+          influence grow effortlessly!
         </p>
       </motion.div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 sm:mt-[4rem] mt-[2rem]">
@@ -56,7 +56,7 @@ const HowItWorks = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: false, amount: 0.2 }}
-              className="text-[24px] font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center max-w-[200px]"
+              className="text-[24px] font-bold text-transparent bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text uppercase mt-2 text-center max-w-[250px]"
             >
               {item.title}
             </motion.h1>

@@ -12,6 +12,8 @@ const editProfile = (data) => {
   return callAPi.post(`/api/v1/register`, data);
 };
 
+const contact = (data) => callAPi.post("api/v1/sendMail", data);
+
 const profileServices = {
   userProfile,
   editProfile,
@@ -19,6 +21,7 @@ const profileServices = {
   uploadCover,
   deleteUser,
   uploadPromo,
+  contact,
 };
 
 export default profileServices;

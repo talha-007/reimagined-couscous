@@ -8,7 +8,7 @@ const Features = () => {
   const items = [
     {
       title: "Claim Your Space",
-      text: "Secure your exclusive pixel spot and make it yours",
+      text: "Secure your exclusive pixel spot and establish your presence in a world of influencers.",
       image: image1,
       colSpan: "col-span-1",
       textLeft: true,
@@ -16,7 +16,7 @@ const Features = () => {
     },
     {
       title: "Global Visibility",
-      text: "Be part of a platform that showcases your presence to audiences worldwide.",
+      text: "Be seen. Be recognized. Gain worldwide exposure on a platform designed for impact.",
       image: image3,
       colSpan: "lg:col-span-2 sm:col-span-1",
       textLeft: true,
@@ -25,7 +25,7 @@ const Features = () => {
     },
     {
       title: "Community-Driven",
-      text: "Join a growing ecosystem of brands, creators, and influencers sharing the grid.",
+      text: "Join the dynamic network of brands, creators, and influencers shaping the digital landscape.",
       image: image2,
       colSpan: "lg:col-span-2 sm:col-span-1",
       textLeft: true,
@@ -34,7 +34,7 @@ const Features = () => {
     },
     {
       title: "Affordable Entry",
-      text: "A simple, cost-effective way to get noticed and amplify your reach.",
+      text: "Stay noticed and extend your influence with minimal effort.",
       image: image4,
       colSpan: "col-span-1",
       textLeft: true,
@@ -42,7 +42,10 @@ const Features = () => {
   ];
 
   return (
-    <div className="max-w-7xl w-full mx-auto relative px-4 overflow-hidden">
+    <div
+      className="max-w-7xl w-full mx-auto relative px-4 overflow-hidden"
+      id="features"
+    >
       <motion.div
         className="text-center px-4"
         initial={{ opacity: 0, y: 50 }}
@@ -51,7 +54,7 @@ const Features = () => {
         viewport={{ once: false, amount: 0.2 }}
       >
         <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent font-[Montserrat] font-extrabold lg:text-[36px] sm:text-[24px] text-[24px] uppercase">
-          WHY THE MILLION DOLLAR INFLUENCERS?
+          WHY BECOME A MILLION DOLLAR INFLUENCER?
         </h1>
         <p className="text-white font-[Montserrat] mt-2 lg:text-[24px] sm:text-[20px] text-[16px]">
           Join an exclusive global network of influencers. Claim your space,
@@ -104,7 +107,7 @@ const Features = () => {
               <h1 className="bg-gradient-to-r from-[#B48B34] via-[#E8C776] to-[#A67921] bg-clip-text text-transparent font-[Montserrat] font-extrabold text-[24px] uppercase">
                 {item.title}
               </h1>
-              <p className="text-white font-[Montserrat] font-light mt-2 text-base">
+              <p className="text-white font-[Montserrat] font-light mt-2 text-base uppercase">
                 {item.text}
               </p>
             </motion.div>

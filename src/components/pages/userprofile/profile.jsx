@@ -81,9 +81,10 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const openMenuRef = useRef();
   const profileData = useSelector((s) => s?.user?.data?.data);
-  console.log("profileData", profileData);
+  // console.log("profileData", profileData);
   const [promoVideo, setPromoVideo] = useState(null);
 
+  const isLoggedIn = localStorage.getItem("token");
   const socailLinks = [
     {
       id: 1,
@@ -430,21 +431,25 @@ const UserProfile = () => {
                 ))}
               </div>
             </div>
-            <div className="box2 md:col-span-3">
-              <p className="text-[#766E53] uppercase font-bold">Acheivments</p>
-              <div className="flex items-center justify-between p-4">
-                {Acheivments.map((item) => (
-                  <div key={item.id}>
-                    <img
-                      src={item.logo}
-                      width={"fit-content"}
-                      height={"40px"}
-                      alt=""
-                    />
-                  </div>
-                ))}
+            {!isLoggedIn && (
+              <div className="box2 md:col-span-3">
+                <p className="text-[#766E53] uppercase font-bold">
+                  Acheivments
+                </p>
+                <div className="flex items-center justify-between p-4">
+                  {Acheivments.map((item) => (
+                    <div key={item.id}>
+                      <img
+                        src={item.logo}
+                        width={"fit-content"}
+                        height={"40px"}
+                        alt=""
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             <div className="box3 md:col-span-4">
               <p className="text-[#766E53] uppercase font-bold">Promo REEL</p>
               <div

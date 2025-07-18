@@ -1,5 +1,5 @@
 import CustomButton from "../button";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.svg";
 import googleIcon from "../../assets/google.svg";
 import { motion } from "framer-motion";
 

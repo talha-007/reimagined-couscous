@@ -20,10 +20,11 @@ const CustomButton = ({
         px ? px : "px-8"
       }  ${py} transition-all duration-500 bg-[length:200%] bg-left relative `}
       style={{
-        fontFamily: "Cal Sans, sans-serif",
+        fontFamily: "InterCal Sans, sans-serif",
         background: bgGradient,
         backgroundSize: "200% 100%",
         backgroundPosition: "center",
+        fontSize: "16px",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",

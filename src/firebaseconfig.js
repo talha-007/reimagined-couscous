@@ -7,13 +7,13 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAZGUW77hwIW1xY0zCwUWlYgMhInYdmrAE",
-  authDomain: "million-dollar-influencer.firebaseapp.com",
-  projectId: "million-dollar-influencer",
-  storageBucket: "million-dollar-influencer.firebasestorage.app",
-  messagingSenderId: "253383941540",
-  appId: "1:253383941540:web:df49980079845f14a07531",
-  measurementId: "G-D6F1C35JS5",
+  apiKey: "AIzaSyADvxP01G6rQn7VvMjvl_n_8Hp0Ro8CfLw",
+  authDomain: "milliondollarinfluencer-c96ee.firebaseapp.com",
+  projectId: "milliondollarinfluencer-c96ee",
+  storageBucket: "milliondollarinfluencer-c96ee.firebasestorage.app",
+  messagingSenderId: "363354177930",
+  appId: "1:363354177930:web:2252ac1c0dc7bef418c873",
+  measurementId: "G-K6WCQK5Y2J",
 };
 
 // Initialize Firebase

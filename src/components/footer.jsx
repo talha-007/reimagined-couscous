@@ -7,6 +7,8 @@ const Footer = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const token = localStorage.getItem("token");
+
   const handleNav = (sectionId) => {
     if (location.pathname === "/") {
       const el = document.getElementById(sectionId);
@@ -50,6 +52,14 @@ const Footer = () => {
                 </li>
                 <li>
                   <button
+                    onClick={() => handleNav("pixel-grid")}
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
+                  >
+                    Pixel Grid
+                  </button>
+                </li>
+                <li>
+                  <button
                     onClick={() => handleNav("how-it-works")}
                     className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
                   >
@@ -63,6 +73,24 @@ const Footer = () => {
                   >
                     Features
                   </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() =>
+                      token ? navigate("/buy-pixel") : navigate("/sign-in")
+                    }
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
+                  >
+                    Buy Pixel
+                  </button>
+                </li>
+                <li>
+                  <a
+                    href="mailto:hello@milliondollarinfluencer.com"
+                    className="hover:text-[#FFE395] font-[Inter] text-[16px] transition duration-300 bg-transparent border-none cursor-pointer"
+                  >
+                    Partnership
+                  </a>
                 </li>
                 {/* <li>
                   <button
@@ -86,7 +114,7 @@ const Footer = () => {
       <div className="sm:border sm:border-t-[#333333cc] absolute bottom-0 left-0 right-0">
         <div className="flex flex-col-reverse  sm:flex-row gap-6 items-center sm:justify-between max-w-7xl w-full mx-auto px-4 py-[1.5rem] ">
           <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-[#ffffff79] text-center sm:text-left">
-            <p>© 2025 Milllion Dollar infuencers. All right reserved.</p>
+            <p>© 2025 Milllion Dollar Infuencer. All right reserved.</p>
             <div className="flex items-center gap-2">
               <a href="">Privacy Policy</a>
               <a href="">Terms of Service</a>

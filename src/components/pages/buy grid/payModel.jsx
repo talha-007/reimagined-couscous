@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { getUserProfile } from "../../../redux/slice/userSlice";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { API_URL } from "../../../redux/services/http-comman";
 
 const cryptoTokens = [
   {
@@ -171,13 +172,10 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
 
     try {
       // Step 1: Initialize payment with backend
-      const initResponse = await axios.post(
-        "https://api.milliondollarinfluencer.com/api/v1/initialize",
-        {
-          email: profileData?.email,
-          amount: Number(credit),
-        }
-      );
+      const initResponse = await axios.post(`${API_URL}api/v1/initialize`, {
+        email: profileData?.email,
+        amount: Number(credit),
+      });
 
       if (initResponse.data.status) {
         const { authorization_url, reference } = initResponse.data.data;
@@ -200,7 +198,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
             }
 
             const verifyResponse = await axios.get(
-              `https://api.milliondollarinfluencer.com/api/v1/verify/${reference}`
+              `${API_URL}api/v1/verify/${reference}`
             );
             console.log("verifyResponse", verifyResponse);
 
@@ -375,10 +373,10 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Pixel Information
+                Purchase Information
               </h1>
               <p className="text-[16px] lg:text-[16px] text-[#FFF8C5] font-light">
-                Add the necessary pixel information
+                Fill in the details to make your purchase
               </p>
             </div>
             <IconButton onClick={handleClose}>
@@ -637,7 +635,7 @@ const PayModel = ({ open, handleClose, handleShowSuccessPop, profileData }) => {
                           name="address"
                           value={cardDetails.address}
                           onChange={handleChange}
-                          placeholder="Enter your wallet address"
+                          placeholder="Enter your billing address"
                           style={{
                             borderTop: "1px solid #766E53",
                           }}

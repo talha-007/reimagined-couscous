@@ -34,6 +34,7 @@ function AnimatedSection({ id, children }) {
   return (
     <motion.div
       id={id}
+      style={{ scrollMarginTop: "120px" }}
       initial={{ opacity: 0, y: 20 }}
       animate={controls}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -51,7 +52,9 @@ const Home = () => {
     if (location.state?.scrollTo) {
       const el = document.getElementById(location.state.scrollTo);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+        const yOffset = -96; // Navbar height: h-16 (64px) + py-4 (32px) = 96px
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
       }
     }
   }, [location.state]);

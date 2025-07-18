@@ -23,8 +23,7 @@ const PixelGrid = () => {
               "linear-gradient(to right, transparent 0%, #FFE395cc 50%, transparent 100%)",
           }}
         />
-        Claim your space, share your vision, and let every pixel amplify your
-        impact
+        Own your space, share your story, and turn every pixel into influence.
         <div
           className="absolute bottom-0 left-0 right-0 h-[1px]"
           style={{

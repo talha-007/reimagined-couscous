@@ -48,7 +48,7 @@ const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                OWN A PIECE OF INFLUENCER HISTORY AMPLIFY YOUR INFLUENCE TODAY
+                OWN A PIECE OF INFLUENCER HISTORY
               </motion.h1>
               <motion.h1
                 className="font-montserrat font-semibold text-white sm:text-[32px] text-[26px] uppercase"
