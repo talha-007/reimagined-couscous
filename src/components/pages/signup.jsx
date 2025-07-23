@@ -274,7 +274,7 @@ const Signup = () => {
                   <a href="/sign-in">login</a>
                 </span>
               </p>
-              <CustomButton
+              {/* <CustomButton
                 bgGradient="linear-gradient(to right, #D9D9D9 0%, #ffffff 50%, #D9D9D9 100%)"
                 strokeGradient="linear-gradient(to right, #FFFFFF 0%, #B7B7B7 100%)"
                 py="py-4"
@@ -283,7 +283,7 @@ const Signup = () => {
                 icon={googleIcon}
                 onClick={handleGoogleLogin}
                 width="w-full"
-              />
+              /> */}
             </div>
           </motion.div>
         </div>

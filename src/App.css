@@ -8,3 +8,24 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
+
+.footer-wrapper{
+  height: 300px;
+}
+
+@media screen and (max-width: 600px) {
+  .footer-wrapper {
+    height: 400px;
+  }
+  .footer-links ul{
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .footer-links ul button {
+    font-size: 12px;
+  }
+  .footer-links ul a {
+    font-size: 12px;
+  }
+  
+}

@@ -19,6 +19,9 @@ import { useEffect } from "react";
 import { logout } from "./redux/slice/authSlice";
 import CancelScreen from "./components/pages/buy grid/cancelScreen";
 import SuccessScreen from "./components/pages/buy grid/successScreen";
+import PrivacyPolicy from "./components/pages/privacyPolicy";
+import TermsAndConditions from "./components/pages/termsAndConditions";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -32,6 +35,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {!isAuthenticated ? (
           <>
@@ -43,6 +47,8 @@ function App() {
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/success" element={<SuccessScreen />} />
             <Route path="/cancel" element={<CancelScreen />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           </>
         ) : (
           <>

@@ -20,7 +20,7 @@ const Footer = () => {
   };
 
   return (
-    <div className="border border-t-[#333333cc] relative overflow-hidden h-[300px]">
+    <div className="border border-t-[#333333cc] relative overflow-hidden footer-wrapper">
       <div className=" max-w-7xl w-full mx-auto relative px-4">
         <div className="flex flex-col items-center justify-center text-center gap-[3rem] pt-[4rem]">
           <div className="w-full flex justify-center ">
@@ -34,7 +34,7 @@ const Footer = () => {
               <img style={{ width: "180px" }} src={logo} alt="logo" />
             </motion.div>
           </div>
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center footer-links">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -116,8 +116,8 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-[#ffffff79] text-center sm:text-left">
             <p>© 2025 Milllion Dollar Infuencer. All right reserved.</p>
             <div className="flex items-center gap-2">
-              <a href="">Privacy Policy</a>
-              <a href="">Terms of Service</a>
+              <button onClick={() => navigate("/privacy-policy")} className="hover:underline bg-transparent border-none text-[#ffffff79] cursor-pointer">Privacy Policy</button>
+              <button onClick={() => navigate("/terms-and-conditions")} className="hover:underline bg-transparent border-none text-[#ffffff79] cursor-pointer">Terms & Conditions</button>
             </div>
           </div>
           <div className="text-[#ffffff79] flex items-center gap-3">

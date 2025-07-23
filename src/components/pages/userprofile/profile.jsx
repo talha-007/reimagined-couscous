@@ -104,8 +104,8 @@ const UserProfile = () => {
       followers: "2.3M",
       username: profileData?.twitter,
     },
-    { id: 4, logo: tiktokLogo, followers: "2.3M" },
-    { id: 5, logo: threadsLogo, followers: "2.3M" },
+    // { id: 4, logo: tiktokLogo, followers: "2.3M" },
+    // { id: 5, logo: threadsLogo, followers: "2.3M" },
   ];
 
   const handleVideoUpload = (e) => {
@@ -307,9 +307,9 @@ const UserProfile = () => {
                   <h2 className="text-[20px] text-[#FEDB6B]  font-semibold">
                     {profileData?.firstName || ""} {profileData?.lastName || ""}
                   </h2>
-                  <p className="text-[16px] font-light text-[#feea9a9c]">
+                  {/* <p className="text-[16px] font-light text-[#feea9a9c]">
                     {profileData?.userName || ""}
-                  </p>
+                  </p> */}
                 </div>
               </div>
               <div className="flex items-center">

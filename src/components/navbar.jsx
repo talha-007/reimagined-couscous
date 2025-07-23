@@ -284,7 +284,7 @@ const Navbar = () => {
                         }}
                       >
                         <div>
-                          {(profileData?.name ||
+                          {(profileData?.firstName ||
                             profileData?.userName ||
                             profileData?.userImage) && (
                             <div className="flex items-center gap-4 mb-8">
@@ -306,14 +306,16 @@ const Navbar = () => {
                                 />
                               </div>
                               <div className="flex flex-col gap-4">
-                                <p className="text-[#FEDB6B] font-[Montserrat] font-bold text-[32px] w-max">
-                                  {profileData?.name ? profileData?.name : ""}
+                                <p className="text-[#FEDB6B] font-[Montserrat] font-bold text-[16px] w-max">
+                                  {profileData?.firstName +
+                                    " " +
+                                    profileData?.lastName}
                                 </p>
-                                <p className="text-[#FEDB6B] font-[Montserrat] font-light text-[20px]">
+                                {/* <p className="text-[#FEDB6B] font-[Montserrat] font-light text-[20px]">
                                   {profileData?.userName
                                     ? profileData?.userName
                                     : ""}
-                                </p>
+                                </p> */}
                               </div>
                             </div>
                           )}
